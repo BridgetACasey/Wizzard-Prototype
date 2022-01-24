@@ -2,7 +2,7 @@
 
 #include "Application.h"
 
-namespace Engine
+namespace Wizzard
 {
 	Application::Application()
 	{

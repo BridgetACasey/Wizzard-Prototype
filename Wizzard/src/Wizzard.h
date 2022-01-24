@@ -2,6 +2,6 @@
 
 #pragma once
 
-#include "core/Application.h"
-#include "core/EntryPoint.h"
-#include "core/Log.h"
+#include "wizzard/core/Application.h"
+#include "wizzard/core/Log.h"
+#include "wizzard/core/EntryPoint.h"

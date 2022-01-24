@@ -9,9 +9,12 @@ extern Wizzard::Application* Wizzard::createApplication();
 int main(int argc, int** argv)
 {
 	Wizzard::Log::init();
-	LOG_ENGINE_WARN("Initialised Engine Log!");
-	int appleCount = 5;
-	LOG_GAME_INFO("Initialised Application Log! Apples={0}", appleCount);
+
+	LOG_WIZZARD_WARN("Initialised Engine Log!");
+
+	int testNum = 5;
+
+	LOG_APP_INFO("Initialised Application Log! Test Number={0}", testNum);
 
 	auto app = Wizzard::createApplication();
 
