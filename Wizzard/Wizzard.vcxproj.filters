@@ -30,6 +30,21 @@
     <ClInclude Include="src\wizzard\core\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\wizzard\event\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wizzard\event\EventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wizzard\event\KeyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wizzard\event\MouseEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wizzard\core\KeyCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Log.cpp">

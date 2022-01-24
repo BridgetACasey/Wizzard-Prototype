@@ -167,11 +167,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\wizzard\core\KeyCode.h" />
     <ClInclude Include="src\wizzard\core\Log.h" />
     <ClInclude Include="src\wizzard\core\Application.h" />
     <ClInclude Include="src\wizzard\core\Core.h" />
     <ClInclude Include="src\wizzard\core\EntryPoint.h" />
     <ClInclude Include="src\Wizzard.h" />
+    <ClInclude Include="src\wizzard\event\Event.h" />
+    <ClInclude Include="src\wizzard\event\EventHandler.h" />
+    <ClInclude Include="src\wizzard\event\KeyEvent.h" />
+    <ClInclude Include="src\wizzard\event\MouseEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Log.cpp" />
