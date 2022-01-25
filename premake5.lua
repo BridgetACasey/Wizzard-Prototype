@@ -18,6 +18,9 @@ project "Wizzard"
 	targetdir ("build/" .. outputdir .. "/%{prj.name}")
 	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "wzpch.h"
+	pchsource "Wizzard/src/wizzard/wzpch.cpp"
+
 	files
 	{
 		"%{prj.name}/src/**.h",

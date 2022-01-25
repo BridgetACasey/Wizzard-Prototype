@@ -1,5 +1,7 @@
 //@BridgetACasey
 
+#include "wzpch.h"
+
 #include "Log.h"
 
 namespace Wizzard

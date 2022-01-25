@@ -3,6 +3,9 @@
 #pragma once
 
 #include "core/Core.h"
+#include <functional>
+#include <string>
+#include <sstream>
 
 namespace Wizzard
 {
@@ -10,18 +13,21 @@ namespace Wizzard
 
 #define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::type; }\
 	virtual EventType getEventType() const override { return getStaticType(); }\
-	virtual const char* getName() const override { return #type; }
+	virtual const char* getEventName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int getEventCategoryFlags() const override { return category };
+#define EVENT_CLASS_CATEGORY(category) virtual int getEventCategoryFlags() const override { return category; }
 
 	enum class EventType
 	{
-		None,
-		WindowClosed,
-		WindowResized,
-		WindowFocused,
+		None = 0,
+		WindowClose,
+		WindowResize,
+		WindowFocus,
 		WindowNotFocused,
 		WindowMoved,
+		ApplicationTick,
+		ApplicationUpdate,
+		ApplicationRender,
 		KeyPressed,
 		KeyReleased,
 		KeyTyped,
@@ -35,8 +41,8 @@ namespace Wizzard
 
 	enum EventCategory
 	{
-		None,
-		EventCategoryWindow = BIT(0),
+		None = 0,
+		EventCategoryApplication = BIT(0),
 		EventCategoryInput = BIT(1),
 		EventCategoryKeyboard = BIT(2),
 		EventCategoryMouse = BIT(3),
@@ -51,6 +57,7 @@ namespace Wizzard
 		virtual EventType getEventType() const = 0;
 		virtual const char* getEventName() const = 0;
 		virtual int getEventCategoryFlags() const = 0;
+		virtual std::string toString() const { return getEventName(); }
 
 		inline bool isInCategory(EventCategory category)
 		{
@@ -59,4 +66,9 @@ namespace Wizzard
 
 		bool isHandled = false;
 	};
+
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	{
+		return os << e.toString();
+	}
 }

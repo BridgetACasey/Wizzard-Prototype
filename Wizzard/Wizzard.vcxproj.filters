@@ -28,6 +28,9 @@
     <ClInclude Include="src\wizzard\core\Log.h">
       <Filter>wizzard\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\wizzard\core\MouseCode.h">
+      <Filter>wizzard\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\wizzard\event\Event.h">
       <Filter>wizzard\event</Filter>
     </ClInclude>
@@ -40,6 +43,10 @@
     <ClInclude Include="src\wizzard\event\MouseEvent.h">
       <Filter>wizzard\event</Filter>
     </ClInclude>
+    <ClInclude Include="src\wizzard\wzpch.h">
+      <Filter>wizzard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wizzard\event\ApplicationEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Application.cpp">
@@ -47,6 +54,9 @@
     </ClCompile>
     <ClCompile Include="src\wizzard\core\Log.cpp">
       <Filter>wizzard\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wizzard\wzpch.cpp">
+      <Filter>wizzard</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
