@@ -11,7 +11,7 @@ namespace Wizzard
 
 	void Log::init()
 	{
-		spdlog::set_pattern("%^[%T] %n: %v%$");
+		spdlog::set_pattern("%^[%T][%l][%n]: %v%$");
 		s_wizzardLogger = spdlog::stdout_color_mt("Wizzard");
 		s_wizzardLogger->set_level(spdlog::level::trace);
 
