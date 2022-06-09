@@ -23,19 +23,19 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Distribution|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
@@ -54,25 +54,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\build\Debug-windows-x86_64\Wizzard\</OutDir>
     <IntDir>..\build-int\Debug-windows-x86_64\Wizzard\</IntDir>
     <TargetName>Wizzard</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\build\Release-windows-x86_64\Wizzard\</OutDir>
     <IntDir>..\build-int\Release-windows-x86_64\Wizzard\</IntDir>
     <TargetName>Wizzard</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Distribution|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\build\Distribution-windows-x86_64\Wizzard\</OutDir>
     <IntDir>..\build-int\Distribution-windows-x86_64\Wizzard\</IntDir>
     <TargetName>Wizzard</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -89,10 +86,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>..\build\Debug-windows-x86_64\Wizzard\Wizzard.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\build\Debug-windows-x86_64\Wizzard\Wizzard.dll\ (xcopy /Q /E /Y /I ..\build\Debug-windows-x86_64\Wizzard\Wizzard.dll ..\build\Debug-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Debug-windows-x86_64\Wizzard\Wizzard.dll ..\build\Debug-windows-x86_64\Application &gt; nul)</Command>
+      <Command>IF EXIST ..\build\Debug-windows-x86_64\Wizzard\Wizzard.lib\ (xcopy /Q /E /Y /I ..\build\Debug-windows-x86_64\Wizzard\Wizzard.lib ..\build\Debug-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Debug-windows-x86_64\Wizzard\Wizzard.lib ..\build\Debug-windows-x86_64\Application &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -114,10 +110,9 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>..\build\Release-windows-x86_64\Wizzard\Wizzard.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\build\Release-windows-x86_64\Wizzard\Wizzard.dll\ (xcopy /Q /E /Y /I ..\build\Release-windows-x86_64\Wizzard\Wizzard.dll ..\build\Release-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Release-windows-x86_64\Wizzard\Wizzard.dll ..\build\Release-windows-x86_64\Application &gt; nul)</Command>
+      <Command>IF EXIST ..\build\Release-windows-x86_64\Wizzard\Wizzard.lib\ (xcopy /Q /E /Y /I ..\build\Release-windows-x86_64\Wizzard\Wizzard.lib ..\build\Release-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Release-windows-x86_64\Wizzard\Wizzard.lib ..\build\Release-windows-x86_64\Application &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Distribution|x64'">
@@ -139,10 +134,9 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>..\build\Distribution-windows-x86_64\Wizzard\Wizzard.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.dll\ (xcopy /Q /E /Y /I ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.dll ..\build\Distribution-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.dll ..\build\Distribution-windows-x86_64\Application &gt; nul)</Command>
+      <Command>IF EXIST ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.lib\ (xcopy /Q /E /Y /I ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.lib ..\build\Distribution-windows-x86_64\Application &gt; nul) ELSE (xcopy /Q /Y /I ..\build\Distribution-windows-x86_64\Wizzard\Wizzard.lib ..\build\Distribution-windows-x86_64\Application &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,16 +147,19 @@
     <ClInclude Include="src\wizzard\core\KeyCode.h" />
     <ClInclude Include="src\wizzard\core\Log.h" />
     <ClInclude Include="src\wizzard\core\MouseCode.h" />
+    <ClInclude Include="src\wizzard\core\Window.h" />
     <ClInclude Include="src\wizzard\event\ApplicationEvent.h" />
     <ClInclude Include="src\wizzard\event\Event.h" />
     <ClInclude Include="src\wizzard\event\EventHandler.h" />
     <ClInclude Include="src\wizzard\event\KeyEvent.h" />
     <ClInclude Include="src\wizzard\event\MouseEvent.h" />
+    <ClInclude Include="src\wizzard\platform\windows\WindowsWindow.h" />
     <ClInclude Include="src\wizzard\wzpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Application.cpp" />
     <ClCompile Include="src\wizzard\core\Log.cpp" />
+    <ClCompile Include="src\wizzard\platform\windows\WindowsWindow.cpp" />
     <ClCompile Include="src\wizzard\wzpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

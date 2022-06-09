@@ -8,7 +8,7 @@
 
 namespace Wizzard
 {
-	class WIZZARD_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 		KeyCode getKeyCode() const { return keyCode; }

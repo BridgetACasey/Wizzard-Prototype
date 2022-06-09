@@ -10,6 +10,12 @@
     <Filter Include="wizzard\event">
       <UniqueIdentifier>{018271C0-6D42-EDF6-367D-3674A2FC31D3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wizzard\platform">
+      <UniqueIdentifier>{04BF3A1A-F0B7-596C-19EA-3EF105423978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wizzard\platform\windows">
+      <UniqueIdentifier>{5EC5D083-4AEA-1F04-7335-05945FB91E22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Wizzard.h" />
@@ -31,6 +37,9 @@
     <ClInclude Include="src\wizzard\core\MouseCode.h">
       <Filter>wizzard\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\wizzard\event\ApplicationEvent.h">
+      <Filter>wizzard\event</Filter>
+    </ClInclude>
     <ClInclude Include="src\wizzard\event\Event.h">
       <Filter>wizzard\event</Filter>
     </ClInclude>
@@ -43,10 +52,13 @@
     <ClInclude Include="src\wizzard\event\MouseEvent.h">
       <Filter>wizzard\event</Filter>
     </ClInclude>
+    <ClInclude Include="src\wizzard\platform\windows\WindowsWindow.h">
+      <Filter>wizzard\platform\windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\wizzard\wzpch.h">
       <Filter>wizzard</Filter>
     </ClInclude>
-    <ClInclude Include="src\wizzard\event\ApplicationEvent.h" />
+    <ClInclude Include="src\wizzard\core\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Application.cpp">
@@ -54,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="src\wizzard\core\Log.cpp">
       <Filter>wizzard\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wizzard\platform\windows\WindowsWindow.cpp">
+      <Filter>wizzard\platform\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\wizzard\wzpch.cpp">
       <Filter>wizzard</Filter>

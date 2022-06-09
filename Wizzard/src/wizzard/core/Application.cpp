@@ -10,12 +10,12 @@ namespace Wizzard
 {
 	Application::Application()
 	{
-
+		window = std::unique_ptr<Window>(Window::Create());
 	}
 
 	Application::~Application()
 	{
-
+		
 	}
 
 	void Application::run()
@@ -24,14 +24,17 @@ namespace Wizzard
 
 		if (resizeEvent.isInCategory(EventCategoryApplication))
 		{
-			LOG_WIZZARD_TRACE(resizeEvent);
+			WIZZARD_TRACE(resizeEvent);
 		}
 		
 		if (resizeEvent.isInCategory(EventCategoryInput))
 		{
-			LOG_WIZZARD_TRACE(resizeEvent);
+			WIZZARD_TRACE(resizeEvent);
 		}
 
-		while (true);
+		while (running)
+		{
+			window->onUpdate();
+		}
 	}
 }

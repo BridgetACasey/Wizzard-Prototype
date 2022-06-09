@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include "Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
@@ -11,7 +9,7 @@
 
 namespace Wizzard
 {
-	class WIZZARD_API Log
+	class Log
 	{
 	public:
 		static void init();
@@ -26,15 +24,15 @@ namespace Wizzard
 }
 
 //Wizzard Engine logger macros
-#define LOG_WIZZARD_TRACE(...)	::Wizzard::Log::getWizzardLogger()->trace(__VA_ARGS__)
-#define LOG_WIZZARD_INFO(...)	::Wizzard::Log::getWizzardLogger()->info(__VA_ARGS__)
-#define LOG_WIZZARD_WARN(...)	::Wizzard::Log::getWizzardLogger()->warn(__VA_ARGS__)
-#define LOG_WIZZARD_ERROR(...)	::Wizzard::Log::getWizzardLogger()->error(__VA_ARGS__)
-#define LOG_WIZZARD_FATAL(...)	::Wizzard::Log::getWizzardLogger()->fatal(__VA_ARGS__)
+#define WIZZARD_TRACE(...)	::Wizzard::Log::getWizzardLogger()->trace(__VA_ARGS__)
+#define WIZZARD_INFO(...)	::Wizzard::Log::getWizzardLogger()->info(__VA_ARGS__)
+#define WIZZARD_WARN(...)	::Wizzard::Log::getWizzardLogger()->warn(__VA_ARGS__)
+#define WIZZARD_ERROR(...)	::Wizzard::Log::getWizzardLogger()->error(__VA_ARGS__)
+#define WIZZARD_FATAL(...)	::Wizzard::Log::getWizzardLogger()->fatal(__VA_ARGS__)
 
 //Application logger macros
-#define LOG_APP_TRACE(...)	::Wizzard::Log::getAppLogger()->trace(__VA_ARGS__)
-#define LOG_APP_INFO(...)	::Wizzard::Log::getAppLogger()->info(__VA_ARGS__)
-#define LOG_APP_WARN(...)	::Wizzard::Log::getAppLogger()->warn(__VA_ARGS__)
-#define LOG_APP_ERROR(...)	::Wizzard::Log::getAppLogger()->error(__VA_ARGS__)
-#define LOG_APP_FATAL(...)	::Wizzard::Log::getAppLogger()->fatal(__VA_ARGS__)
+#define APP_TRACE(...)	::Wizzard::Log::getAppLogger()->trace(__VA_ARGS__)
+#define APP_INFO(...)	::Wizzard::Log::getAppLogger()->info(__VA_ARGS__)
+#define APP_WARN(...)	::Wizzard::Log::getAppLogger()->warn(__VA_ARGS__)
+#define APP_ERROR(...)	::Wizzard::Log::getAppLogger()->error(__VA_ARGS__)
+#define APP_FATAL(...)	::Wizzard::Log::getAppLogger()->fatal(__VA_ARGS__)

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "core/Core.h"
+#include "../core/Core.h"
 #include <functional>
 #include <string>
 #include <sstream>
@@ -49,7 +49,7 @@ namespace Wizzard
 		EventCategoryMouseButton = BIT(4)
 	};
 
-	class WIZZARD_API Event
+	class Event
 	{
 	public:
 		virtual ~Event() = default;
