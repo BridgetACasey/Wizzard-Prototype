@@ -22,7 +22,10 @@ namespace Wizzard
 		void setVSync(bool enabled) override;
 		bool isVSync() const override;
 
+		static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+
 	private:
+		LRESULT CALLBACK realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 		virtual void init(const WindowProps& props);
 		virtual void shutdown();
