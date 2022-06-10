@@ -76,7 +76,7 @@ namespace Wizzard
 	{
 		MSG messages;
 
-		while (GetMessage(&messages, NULL, 0, 0) > 0)
+		if(GetMessage(&messages, NULL, 0, 0) > 0)
 		{
 			TranslateMessage(&messages);
 			DispatchMessage(&messages);

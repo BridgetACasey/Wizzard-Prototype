@@ -12,4 +12,12 @@
 #error Invalid platform detected - this software is only supported on Windows
 #endif
 
+#ifdef WIZZARD_ENABLE_ASSERTS
+#define APP_ASSERT(x, ...) {if(!(x)) {APP_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+#define WIZZARD_ASSERT(x, ...) {if(!(x), {WIZZARD_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+#else
+#define APP_ASSERT(x, ...)
+#define WIZZARD_ASSERT(x, ...)
+#endif
+
 #define BIT(x) (1 << x)

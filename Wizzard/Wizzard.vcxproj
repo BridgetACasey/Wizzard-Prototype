@@ -140,6 +140,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\wizzard\core\Layer.h" />
+    <ClInclude Include="src\wizzard\core\LayerStack.h" />
     <ClInclude Include="src\Wizzard.h" />
     <ClInclude Include="src\wizzard\core\Application.h" />
     <ClInclude Include="src\wizzard\core\Core.h" />
@@ -157,6 +159,8 @@
     <ClInclude Include="src\wizzard\wzpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\wizzard\core\Layer.cpp" />
+    <ClCompile Include="src\wizzard\core\LayerStack.cpp" />
     <ClCompile Include="src\wizzard\core\Application.cpp" />
     <ClCompile Include="src\wizzard\core\Log.cpp" />
     <ClCompile Include="src\wizzard\platform\windows\WindowsWindow.cpp" />

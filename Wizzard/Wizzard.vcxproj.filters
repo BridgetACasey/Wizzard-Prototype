@@ -59,6 +59,8 @@
       <Filter>wizzard</Filter>
     </ClInclude>
     <ClInclude Include="src\wizzard\core\Window.h" />
+    <ClInclude Include="src\wizzard\core\Layer.h" />
+    <ClInclude Include="src\wizzard\core\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wizzard\core\Application.cpp">
@@ -73,5 +75,7 @@
     <ClCompile Include="src\wizzard\wzpch.cpp">
       <Filter>wizzard</Filter>
     </ClCompile>
+    <ClCompile Include="src\wizzard\core\Layer.cpp" />
+    <ClCompile Include="src\wizzard\core\LayerStack.cpp" />
   </ItemGroup>
 </Project>
