@@ -30,7 +30,7 @@ namespace Wizzard
 
 		struct WindowData
 		{
-			std::string title;
+			wchar_t* title;
 			unsigned int width, height;
 			bool vSync;
 
