@@ -65,7 +65,7 @@ project "Wizzard"
 
 project "Application"
 	location "Application"
-	kind "WindowedApp"
+	kind "ConsoleApp"
 	language "C++"
 
 	targetdir ("build/" .. outputdir .. "/%{prj.name}")
