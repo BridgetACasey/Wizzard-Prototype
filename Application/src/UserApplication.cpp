@@ -26,7 +26,7 @@ class UserApplication : public Wizzard::Application
 public:
 	UserApplication()
 	{
-		pushLayer(new ExampleLayer());
+		//pushLayer(new ExampleLayer());
 	}
 
 	~UserApplication()

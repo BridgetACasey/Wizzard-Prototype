@@ -3,27 +3,15 @@
 #include "wzpch.h"
 #include "WindowsWindow.h"
 
+#include "../../event/ApplicationEvent.h"
+#include "../../event/MouseEvent.h"
+#include "../../event/KeyEvent.h"
+
+//Remove this after testing
+#include <core/Log.h>
+
 namespace Wizzard
 {
-	LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
-	{
-		switch (message)
-		{
-		case WM_CHAR:
-			if (wparam == VK_ESCAPE)
-			{
-				DestroyWindow(hwnd);
-			}
-
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
-
-		default:
-			return DefWindowProc(hwnd, message, wparam, lparam);
-		}
-	}
-
 	Window* Window::Create(const WindowProps& props)
 	{
 		return new WindowsWindow(props);
@@ -32,7 +20,91 @@ namespace Wizzard
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		init(props);
+	}
 
+	WindowsWindow::~WindowsWindow()
+	{
+		shutdown();
+	}
+
+	LRESULT WindowsWindow::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	{
+		WindowsWindow* me = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+		if (me)
+			return me->realWndProc(hwnd, message, wparam, lparam);
+
+		return DefWindowProc(hwnd, message, wparam, lparam);
+	}
+
+	//Setting callback events
+	LRESULT CALLBACK WindowsWindow::realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	{
+		//Using chained else-if instead of switch due to initialising event calls
+		if (message == WM_CHAR)
+		{
+			if (wparam == VK_ESCAPE)
+				DestroyWindow(hwnd);
+		}
+		else if (message == WM_DESTROY)
+		{
+			PostQuitMessage(0);
+		}
+		else if (message == WM_SIZE)
+		{
+
+		}
+		else if (message == WM_KEYDOWN)
+		{
+			WIZZARD_INFO("Pressed Key!");
+		}
+		else if (message == WM_KEYUP)
+		{
+
+		}
+		else if (message == WM_LBUTTONDOWN)
+		{
+
+		}
+		else if (message == WM_LBUTTONUP)
+		{
+
+		}
+		else if (message == WM_MBUTTONDOWN)
+		{
+
+		}
+		else if (message == WM_MBUTTONUP)
+		{
+
+		}
+		else if (message == WM_RBUTTONDOWN)
+		{
+
+		}
+		else if (message == WM_RBUTTONUP)
+		{
+
+		}
+		else if (message == WM_MOUSEMOVE)
+		{
+
+		}
+		else if (message == WM_MOUSEWHEEL)
+		{
+
+		}
+		else
+			return DefWindowProc(hwnd, message, wparam, lparam);
+	}
+
+	void WindowsWindow::init(const WindowProps& props)
+	{
+		data.title = props.title;
+		data.width = props.width;
+		data.height = props.height;
+
+		//Setting up the window
 		WNDCLASS windowClass = { 0 };
 
 		windowClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -57,19 +129,10 @@ namespace Wizzard
 			NULL,
 			NULL);
 
+		//Setting pointer to this window class so we can access the correct WndProc
+		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (long)this);
+
 		ShowWindow(windowHandle, SW_RESTORE);
-	}
-
-	WindowsWindow::~WindowsWindow()
-	{
-		shutdown();
-	}
-
-	void WindowsWindow::init(const WindowProps& props)
-	{
-		data.title = props.title;
-		data.width = props.width;
-		data.height = props.height;
 	}
 
 	void WindowsWindow::onUpdate()
