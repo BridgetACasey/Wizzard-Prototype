@@ -15,7 +15,6 @@ namespace Wizzard
 	{
 		window = std::unique_ptr<Window>(Window::Create());
 		window->setEventCallback(BIND_EVENT_FN(onEvent));
-		window->EnableWindowPtr();
 	}
 
 	Application::~Application()

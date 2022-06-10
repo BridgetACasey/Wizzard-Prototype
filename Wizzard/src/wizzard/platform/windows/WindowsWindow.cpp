@@ -39,12 +39,6 @@ namespace Wizzard
 		return DefWindowProc(hwnd, message, wparam, lparam);
 	}
 
-	void WindowsWindow::EnableWindowPtr()
-	{
-		//Setting pointer to this window class so we can access the correct WndProc
-		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (LONG_PTR)this);
-	}
-
 	//Setting callback events
 	LRESULT CALLBACK WindowsWindow::realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	{

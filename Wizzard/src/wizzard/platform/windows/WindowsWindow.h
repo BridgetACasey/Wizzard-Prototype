@@ -17,12 +17,15 @@ namespace Wizzard
 		inline unsigned int getWidth() const override { return data.width; }
 		inline unsigned int getHeight() const override { return data.height; }
 
-		inline void setEventCallback(const EventCallbackFunction& callback) override { data.eventCallback = callback; }
+		inline void setEventCallback(const EventCallbackFunction& callback) override
+		{
+			data.eventCallback = callback;
+			//Setting pointer to this window class so we can access the correct WndProc
+			SetWindowLongPtr(windowHandle, GWLP_USERDATA, (LONG_PTR)this);
+		}
 
 		void setVSync(bool enabled) override;
 		bool isVSync() const override;
-
-		void EnableWindowPtr() override;
 
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 

@@ -37,8 +37,6 @@ namespace Wizzard
 
 		virtual void* getNativeWindow() const = 0;
 
-		virtual void EnableWindowPtr() = 0;
-
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
 }
