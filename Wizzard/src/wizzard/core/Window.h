@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "../wzpch.h"
+
+#include "Core.h"
 #include "../event/Event.h"
 
 namespace Wizzard
@@ -33,6 +36,8 @@ namespace Wizzard
 		virtual bool isVSync() const = 0;
 
 		virtual void* getNativeWindow() const = 0;
+
+		virtual void EnableWindowPtr() = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};

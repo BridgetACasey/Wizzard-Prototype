@@ -9,7 +9,7 @@ namespace Wizzard
 {
 	//For future versions: attempt to buffer events into an event bus and process them during the event phase of application updating, instead of handling them instantly
 
-#define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::type; }\
+#define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::##type; }\
 	virtual EventType getEventType() const override { return getStaticType(); }\
 	virtual const char* getEventName() const override { return #type; }
 

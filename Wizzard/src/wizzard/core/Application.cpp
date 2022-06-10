@@ -14,6 +14,8 @@ namespace Wizzard
 	Application::Application()
 	{
 		window = std::unique_ptr<Window>(Window::Create());
+		window->setEventCallback(BIND_EVENT_FN(onEvent));
+		window->EnableWindowPtr();
 	}
 
 	Application::~Application()
@@ -23,18 +25,6 @@ namespace Wizzard
 
 	void Application::run()
 	{
-		WindowResizeEvent resizeEvent(1600, 900);
-
-		if (resizeEvent.isInCategory(EventCategoryApplication))
-		{
-			WIZZARD_TRACE(resizeEvent);
-		}
-		
-		if (resizeEvent.isInCategory(EventCategoryInput))
-		{
-			WIZZARD_TRACE(resizeEvent);
-		}
-
 		while (running)
 		{
 			for (Layer* layer : layerStack)

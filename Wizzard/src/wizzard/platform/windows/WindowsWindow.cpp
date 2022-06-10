@@ -32,9 +32,17 @@ namespace Wizzard
 		WindowsWindow* me = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 		if (me)
+		{
 			return me->realWndProc(hwnd, message, wparam, lparam);
+		}
 
 		return DefWindowProc(hwnd, message, wparam, lparam);
+	}
+
+	void WindowsWindow::EnableWindowPtr()
+	{
+		//Setting pointer to this window class so we can access the correct WndProc
+		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (LONG_PTR)this);
 	}
 
 	//Setting callback events
@@ -52,11 +60,13 @@ namespace Wizzard
 		}
 		else if (message == WM_SIZE)
 		{
-
+			WindowResizeEvent event(0, 0);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
 		else if (message == WM_KEYDOWN)
 		{
-			WIZZARD_INFO("Pressed Key!");
+
 		}
 		else if (message == WM_KEYUP)
 		{
@@ -105,8 +115,6 @@ namespace Wizzard
 		data.height = props.height;
 
 		//Setting up the window
-		WNDCLASS windowClass = { 0 };
-
 		windowClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 		windowClass.hInstance = NULL;
@@ -117,7 +125,7 @@ namespace Wizzard
 		if (!RegisterClass(&windowClass))
 			MessageBox(NULL, L"Could not register class", L"Error", MB_OK);
 
-		HWND windowHandle = CreateWindow(L"WIZZARD Window",
+			windowHandle = CreateWindow(L"WIZZARD Window",
 			data.title,
 			WS_OVERLAPPEDWINDOW,
 			0,
@@ -128,9 +136,6 @@ namespace Wizzard
 			NULL,
 			NULL,
 			NULL);
-
-		//Setting pointer to this window class so we can access the correct WndProc
-		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (long)this);
 
 		ShowWindow(windowHandle, SW_RESTORE);
 	}

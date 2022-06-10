@@ -22,6 +22,8 @@ namespace Wizzard
 		void setVSync(bool enabled) override;
 		bool isVSync() const override;
 
+		void EnableWindowPtr() override;
+
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 	private:
@@ -41,5 +43,10 @@ namespace Wizzard
 		};
 
 		WindowData data;
+
+		WNDCLASS windowClass = { 0 };
+		HWND windowHandle;
+
+		bool windowptr = false;
 	};
 }
