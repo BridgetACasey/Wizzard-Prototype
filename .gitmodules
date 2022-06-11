@@ -1,3 +1,3 @@
 [submodule "Wizzard/lib/spdlog"]
 	path = Wizzard/lib/spdlog
-	url = https://github.com/gabime/spdlog.git
+	url = https://github.com/BridgetACasey/spdlog.git
