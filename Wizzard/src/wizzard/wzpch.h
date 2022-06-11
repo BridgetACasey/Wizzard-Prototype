@@ -14,8 +14,5 @@
 
 #ifdef WIZZARD_PLATFORM_WINDOWS
 	#include <Windows.h>
-
-	#include <d3d11.h>
-	#include <DirectXMath.h>
-	#include <dxgi.h>
+	#include <windowsx.h>
 #endif

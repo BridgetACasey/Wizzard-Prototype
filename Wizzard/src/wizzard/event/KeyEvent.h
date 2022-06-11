@@ -31,7 +31,7 @@ namespace Wizzard
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << keyCode << " (" << repeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ") (" << repeatCount << " repeats)";
 			return ss.str();
 		}
 
@@ -48,7 +48,7 @@ namespace Wizzard
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << keyCode;
+			ss << "KeyReleasedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ")";
 			return ss.str();
 		}
 

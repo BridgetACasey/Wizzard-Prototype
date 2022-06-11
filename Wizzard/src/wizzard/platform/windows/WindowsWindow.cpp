@@ -54,49 +54,59 @@ namespace Wizzard
 		}
 		else if (message == WM_SIZE)
 		{
-			WindowResizeEvent event(0, 0);
-			WIZZARD_TRACE(event);
-			data.eventCallback(event);
+			RECT windowRect;
+
+			if (GetWindowRect(hwnd, &windowRect))
+			{
+				int width = windowRect.right - windowRect.left;
+				int height = windowRect.bottom - windowRect.top;
+
+				WindowResizeEvent event(width, height);
+				WIZZARD_TRACE(event);
+				data.eventCallback(event);
+			}
 		}
 		else if (message == WM_KEYDOWN)
 		{
-
+			KeyPressedEvent event(wparam, 0);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
 		else if (message == WM_KEYUP)
 		{
-
+			KeyReleasedEvent event(wparam);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
-		else if (message == WM_LBUTTONDOWN)
+		else if (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN)
 		{
-
+			MouseButtonPressedEvent event(wparam);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
-		else if (message == WM_LBUTTONUP)
+		else if (message == WM_LBUTTONUP || message == WM_MBUTTONUP || message == WM_RBUTTONUP)
 		{
-
-		}
-		else if (message == WM_MBUTTONDOWN)
-		{
-
-		}
-		else if (message == WM_MBUTTONUP)
-		{
-
-		}
-		else if (message == WM_RBUTTONDOWN)
-		{
-
-		}
-		else if (message == WM_RBUTTONUP)
-		{
-
+			MouseButtonReleasedEvent event(wparam);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
 		else if (message == WM_MOUSEMOVE)
 		{
+			int xPos = GET_X_LPARAM(lparam);
+			int yPos = GET_Y_LPARAM(lparam);
 
+			MouseMovedEvent event(xPos, yPos);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
 		else if (message == WM_MOUSEWHEEL)
 		{
+			int xPos = GET_X_LPARAM(lparam);
+			int yPos = GET_Y_LPARAM(lparam);
 
+			MouseScrolledEvent event(xPos, yPos);
+			WIZZARD_TRACE(event);
+			data.eventCallback(event);
 		}
 		else
 			return DefWindowProc(hwnd, message, wparam, lparam);
