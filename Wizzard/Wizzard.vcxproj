@@ -26,19 +26,19 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Distribution|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -140,6 +140,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\wizzard\platform\dx11\D3D11RendererAPI.h" />
+    <ClInclude Include="src\wizzard\imgui\ImGuiLayer.h" />
+    <ClInclude Include="src\wizzard\platform\opengl\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\wizzard\core\Layer.h" />
     <ClInclude Include="src\wizzard\core\LayerStack.h" />
     <ClInclude Include="src\Wizzard.h" />
@@ -159,6 +162,9 @@
     <ClInclude Include="src\wizzard\wzpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\wizzard\platform\dx11\D3D11RendererAPI.cpp" />
+    <ClCompile Include="src\wizzard\imgui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\wizzard\platform\opengl\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\wizzard\core\Layer.cpp" />
     <ClCompile Include="src\wizzard\core\LayerStack.cpp" />
     <ClCompile Include="src\wizzard\core\Application.cpp" />
