@@ -4,6 +4,9 @@
 
 #include "core/Window.h"
 
+//Not currently in use, will re-implement when finished with OpenGL
+
+/*
 namespace Wizzard
 {
 	class Window_WinD3D11 : public Window
@@ -49,7 +52,6 @@ namespace Wizzard
 
 		WNDCLASS windowClass = { 0 };
 		HWND windowHandle;
-
-		bool windowptr = false;
 	};
 }
+*/

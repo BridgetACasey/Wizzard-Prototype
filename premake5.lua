@@ -10,6 +10,11 @@ workspace "WizzardEngine"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Wizzard/lib/glfw/include"
+
+include "Wizzard/lib/glfw"
+
 project "Wizzard"
 	location "Wizzard"
 	kind "StaticLib"
@@ -30,7 +35,14 @@ project "Wizzard"
 	includedirs
 	{
 		"%{prj.name}/src/wizzard",
-		"%{prj.name}/lib/spdlog/include"
+		"%{prj.name}/lib/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

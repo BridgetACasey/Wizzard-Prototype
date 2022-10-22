@@ -1,13 +1,13 @@
 //@BridgetACasey
 
 #include "wzpch.h"
+/*
 #include "Window_WinD3D11.h"
 
 #include "../../event/ApplicationEvent.h"
 #include "../../event/MouseEvent.h"
 #include "../../event/KeyEvent.h"
 
-//Remove this after testing
 #include <core/Log.h>
 
 namespace Wizzard
@@ -174,3 +174,4 @@ namespace Wizzard
 		return nullptr;
 	}
 }
+*/

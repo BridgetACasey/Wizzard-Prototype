@@ -1,3 +1,6 @@
 [submodule "Wizzard/lib/spdlog"]
 	path = Wizzard/lib/spdlog
 	url = https://github.com/BridgetACasey/spdlog.git
+[submodule "Wizzard/lib/glfw"]
+	path = Wizzard/lib/glfw
+	url = https://github.com/BridgetACasey/glfw.git

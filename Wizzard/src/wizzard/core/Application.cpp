@@ -7,6 +7,9 @@
 #include "../event/EventHandler.h"
 #include "Log.h"
 
+#include <GLFW/glfw3.h>
+#include "gl/GL.h"
+
 namespace Wizzard
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -31,6 +34,8 @@ namespace Wizzard
 				layer->OnUpdate();
 			}
 
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
 			window->OnUpdate();
 		}
 	}
@@ -38,13 +43,13 @@ namespace Wizzard
 	void Application::OnEvent(Event& e)
 	{
 		EventHandler eventHandler(e);
-
+		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-
+		
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
 			(*--it)->OnEvent(e);
-
+		
 			if (e.isHandled)
 				break;
 		}
