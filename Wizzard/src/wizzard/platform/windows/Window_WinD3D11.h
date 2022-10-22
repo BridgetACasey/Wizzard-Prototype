@@ -14,10 +14,10 @@ namespace Wizzard
 
 		void OnUpdate() override;
 
-		inline unsigned int GetWidth() const override { return data.width; }
-		inline unsigned int GetHeight() const override { return data.height; }
+		unsigned int GetWidth() const override { return data.width; }
+		unsigned int GetHeight() const override { return data.height; }
 
-		inline void SetEventCallback(const EventCallbackFunction& callback) override
+		void SetEventCallback(const EventCallbackFunction& callback) override
 		{
 			data.eventCallback = callback;
 			//Setting pointer to this window class so we can access the correct WndProc
@@ -34,7 +34,7 @@ namespace Wizzard
 
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
-		virtual void* GetNativeWindow() const override;
+		void* GetNativeWindow() const override;
 
 		struct WindowData
 		{

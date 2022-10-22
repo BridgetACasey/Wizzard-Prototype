@@ -4,7 +4,6 @@
 
 #include "Event.h"
 #include "core/KeyCode.h"
-#include "core/KeyCode.h"
 
 namespace Wizzard
 {

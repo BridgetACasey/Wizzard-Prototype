@@ -15,7 +15,7 @@ namespace Wizzard
 		uint32_t width;
 		uint32_t height;
 
-		WindowProps(wchar_t* title = L"WIZZARD", uint32_t width = 1600, uint32_t height = 900)
+		WindowProps(wchar_t* title = L"WIZZARD", uint32_t width = 1920, uint32_t height = 1080)
 			: title(title), width(width), height(height){}
 	};
 
