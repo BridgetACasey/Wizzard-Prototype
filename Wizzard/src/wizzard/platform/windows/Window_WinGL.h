@@ -18,10 +18,10 @@ namespace Wizzard
 
 		void OnUpdate() override;
 
-		unsigned int GetWidth() const override { return data.width; }
-		unsigned int GetHeight() const override { return data.height; }
+		unsigned int GetWidth() const override { return windowData.width; }
+		unsigned int GetHeight() const override { return windowData.height; }
 
-		void SetEventCallback(const EventCallbackFunction& callback) override { data.eventCallback = callback; }
+		void SetEventCallback(const EventCallbackFunction& callback) override { windowData.eventCallback = callback; }
 
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
@@ -43,6 +43,6 @@ namespace Wizzard
 			EventCallbackFunction eventCallback;
 		};
 
-		WindowData data;
+		WindowData windowData;
 	};
 }

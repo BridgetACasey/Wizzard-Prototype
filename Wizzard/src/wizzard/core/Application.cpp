@@ -45,7 +45,9 @@ namespace Wizzard
 		EventHandler eventHandler(e);
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		
+
+		WIZ_TRACE("{0}", e);
+
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
 			(*--it)->OnEvent(e);
