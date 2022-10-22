@@ -1,7 +1,7 @@
 //@BridgetACasey
 
 #include "wzpch.h"
-#include "WindowsWindow.h"
+#include "WindowD3D11.h"
 
 #include "../../event/ApplicationEvent.h"
 #include "../../event/MouseEvent.h"
@@ -14,22 +14,22 @@ namespace Wizzard
 {
 	Window* Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return new WindowD3D11(props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	WindowD3D11::WindowD3D11(const WindowProps& props)
 	{
 		init(props);
 	}
 
-	WindowsWindow::~WindowsWindow()
+	WindowD3D11::~WindowD3D11()
 	{
 		shutdown();
 	}
 
-	LRESULT WindowsWindow::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	LRESULT WindowD3D11::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	{
-		WindowsWindow* me = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+		WindowD3D11* me = reinterpret_cast<WindowD3D11*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 		if (me)
 		{
@@ -40,7 +40,7 @@ namespace Wizzard
 	}
 
 	//Setting callback events
-	LRESULT CALLBACK WindowsWindow::realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	LRESULT CALLBACK WindowD3D11::realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	{
 		//Using chained else-if instead of switch due to initialising event calls
 		if (message == WM_CHAR)
@@ -112,7 +112,7 @@ namespace Wizzard
 			return DefWindowProc(hwnd, message, wparam, lparam);
 	}
 
-	void WindowsWindow::init(const WindowProps& props)
+	void WindowD3D11::init(const WindowProps& props)
 	{
 		data.title = props.title;
 		data.width = props.width;
@@ -144,7 +144,7 @@ namespace Wizzard
 		ShowWindow(windowHandle, SW_RESTORE);
 	}
 
-	void WindowsWindow::onUpdate()
+	void WindowD3D11::onUpdate()
 	{
 		MSG messages;
 
@@ -155,20 +155,20 @@ namespace Wizzard
 		}
 	}
 
-	void WindowsWindow::shutdown()
+	void WindowD3D11::shutdown()
 	{
 	}
 
-	void WindowsWindow::setVSync(bool enabled)
+	void WindowD3D11::setVSync(bool enabled)
 	{
 	}
 
-	bool WindowsWindow::isVSync() const
+	bool WindowD3D11::isVSync() const
 	{
 		return false;
 	}
 
-	void* WindowsWindow::getNativeWindow() const
+	void* WindowD3D11::getNativeWindow() const
 	{
 		return nullptr;
 	}

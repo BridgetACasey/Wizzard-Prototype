@@ -6,11 +6,11 @@
 
 namespace Wizzard
 {
-	class WindowsWindow : public Window
+	class WindowD3D11 : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+		WindowD3D11(const WindowProps& props);
+		virtual ~WindowD3D11();
 
 		void onUpdate() override;
 
