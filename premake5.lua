@@ -12,8 +12,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "Wizzard/lib/glfw/include"
+IncludeDir["Glad"] = "Wizzard/lib/glad/include"
 
 include "Wizzard/lib/glfw"
+include "Wizzard/lib/glad"
 
 project "Wizzard"
 	location "Wizzard"
@@ -36,12 +38,14 @@ project "Wizzard"
 	{
 		"%{prj.name}/src/wizzard",
 		"%{prj.name}/lib/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
@@ -53,7 +57,8 @@ project "Wizzard"
 		defines
 		{
 			"WIZZARD_PLATFORM_WINDOWS",
-			"WIZZARD_BUILD_DLL"
+			"WIZZARD_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands

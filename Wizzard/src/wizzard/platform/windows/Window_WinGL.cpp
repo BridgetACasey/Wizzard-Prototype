@@ -8,6 +8,8 @@
 #include "../../event/MouseEvent.h"
 #include "../../event/KeyEvent.h"
 
+#include <glad/glad.h>
+
 #include <core/Log.h>
 
 namespace Wizzard
@@ -70,14 +72,20 @@ namespace Wizzard
 		{
 			//To do: GLFW Terminate on system shutdown
 
-			int initSuccess = glfwInit();
-			WIZ_ASSERT(initSuccess, "Could not initialise GLFW!");
+			int glfwStatus = glfwInit();
+
+			WIZ_ASSERT(glfwStatus, "Could not initialise GLFW!");
+
 			glfwSetErrorCallback(GLFWErrorCallback);
 			glfwInitialised = true;
 		}
 
 		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(glfwWindow);
+
+		int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		WIZ_ASSERT(gladStatus, "Could not initialise Glad!");
+
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		SetVSync(true);
 

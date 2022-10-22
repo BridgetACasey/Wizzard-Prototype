@@ -7,8 +7,7 @@
 #include "../event/EventHandler.h"
 #include "Log.h"
 
-#include <GLFW/glfw3.h>
-#include "gl/GL.h"
+#include <glad/glad.h>
 
 namespace Wizzard
 {
