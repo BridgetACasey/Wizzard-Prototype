@@ -10,12 +10,12 @@ public:
 
 	}
 
-	void onUpdate() override
+	void OnUpdate() override
 	{
 		APP_INFO("ExampleLayer::Update");
 	}
 
-	void onEvent(Wizzard::Event& event) override
+	void OnEvent(Wizzard::Event& event) override
 	{
 		APP_TRACE("{0}", event);
 	}
@@ -26,7 +26,7 @@ class UserApplication : public Wizzard::Application
 public:
 	UserApplication()
 	{
-		//pushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
 	}
 
 	~UserApplication()
@@ -35,7 +35,7 @@ public:
 	}
 };
 
-Wizzard::Application* Wizzard::createApplication()
+Wizzard::Application* Wizzard::CreateApplication()
 {
 	return new UserApplication();
 }

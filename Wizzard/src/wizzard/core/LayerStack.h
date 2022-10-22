@@ -15,11 +15,11 @@ namespace Wizzard
 		LayerStack();
 		~LayerStack();
 
-		void pushLayer(Layer* layer);
-		void popLayer(Layer* layer);
+		void PushLayer(Layer* layer);
+		void PopLayer(Layer* layer);
 
-		void pushOverlay(Layer* overlay);
-		void popOverlay(Layer* overlay);
+		void PushOverlay(Layer* overlay);
+		void PopOverlay(Layer* overlay);
 
 		std::vector<Layer*>::iterator begin() { return layers.begin(); }
 		std::vector<Layer*>::iterator end() { return layers.end(); }

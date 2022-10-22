@@ -5,11 +5,11 @@
 
 namespace Wizzard
 {
-	using MouseCode = uint16_t;
+	using MouseCodeGL = uint16_t;
 
 	namespace Mouse
 	{
-		enum : MouseCode
+		enum : MouseCodeGL
 		{
 			// From glfw3.h
 			Button0 = 0,

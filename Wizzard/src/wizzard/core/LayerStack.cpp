@@ -18,12 +18,12 @@ namespace Wizzard
 		}
 	}
 
-	void LayerStack::pushLayer(Layer* layer)
+	void LayerStack::PushLayer(Layer* layer)
 	{
 		layerInsert = layers.emplace(layerInsert, layer);
 	}
 
-	void LayerStack::popLayer(Layer* layer)
+	void LayerStack::PopLayer(Layer* layer)
 	{
 		auto it = std::find(layers.begin(), layers.end(), layer);
 
@@ -34,12 +34,12 @@ namespace Wizzard
 		}
 	}
 
-	void LayerStack::pushOverlay(Layer* overlay)
+	void LayerStack::PushOverlay(Layer* overlay)
 	{
 		layers.emplace_back(overlay);
 	}
 
-	void LayerStack::popOverlay(Layer* overlay)
+	void LayerStack::PopOverlay(Layer* overlay)
 	{
 		auto it = std::find(layers.begin(), layers.end(), overlay);
 

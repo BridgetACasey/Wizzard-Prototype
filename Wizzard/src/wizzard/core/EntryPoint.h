@@ -4,17 +4,17 @@
 
 #ifdef WIZZARD_PLATFORM_WINDOWS
 
-extern Wizzard::Application* Wizzard::createApplication();
+extern Wizzard::Application* Wizzard::CreateApplication();
 
 int main(int argc, int** argv)
 {
-	Wizzard::Log::init();
+	Wizzard::Log::Init();
 
-	WIZZARD_INFO("Initialised WIZZARD Engine Log");
+	WIZ_INFO("Initialised WIZZARD Engine Log");
 
-	auto app = Wizzard::createApplication();
+	auto app = Wizzard::CreateApplication();
 
-	app->run();
+	app->Run();
 
 	delete app;
 

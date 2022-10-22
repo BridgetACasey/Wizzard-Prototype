@@ -16,15 +16,15 @@ namespace Wizzard
 		Application();
 		virtual ~Application();
 
-		void run();
+		void Run();
 
-		void onEvent(Event& e);
+		void OnEvent(Event& e);
 
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* overlay);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 
 	private:
-		bool onWindowClose(WindowCloseEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e);
 		
 		std::unique_ptr<Window> window;
 
@@ -33,5 +33,5 @@ namespace Wizzard
 		LayerStack layerStack;
 	};
 
-	Application* createApplication();	//To be defined in the client
+	Application* CreateApplication();	//To be defined in the client
 }

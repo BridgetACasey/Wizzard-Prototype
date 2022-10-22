@@ -11,24 +11,24 @@ namespace Wizzard
 	class KeyEvent : public Event
 	{
 	public:
-		KeyCode getKeyCode() const { return keyCode; }
+		KeyCodeGL getKeyCode() const { return keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
 
 	protected:
-		KeyEvent(const KeyCode keyCode) : keyCode(keyCode) {}
+		KeyEvent(const KeyCodeGL keyCode) : keyCode(keyCode) {}
 
-		KeyCode keyCode;
+		KeyCodeGL keyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const KeyCode keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
+		KeyPressedEvent(const KeyCodeGL keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
 
 		uint16_t getRepeatCount() const { return repeatCount; }
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyPressedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ") (" << repeatCount << " repeats)";
@@ -43,9 +43,9 @@ namespace Wizzard
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
+		KeyReleasedEvent(const KeyCodeGL keycode) : KeyEvent(keycode) {}
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyReleasedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ")";
@@ -58,9 +58,9 @@ namespace Wizzard
 	class KeyTypedEvent : public KeyEvent
 	{
 	public:
-		KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
+		KeyTypedEvent(const KeyCodeGL keycode) : KeyEvent(keycode) {}
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyTypedEvent: " << keyCode;

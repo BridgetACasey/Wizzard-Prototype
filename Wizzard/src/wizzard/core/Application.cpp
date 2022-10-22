@@ -14,7 +14,7 @@ namespace Wizzard
 	Application::Application()
 	{
 		window = std::unique_ptr<Window>(Window::Create());
-		window->setEventCallback(BIND_EVENT_FN(onEvent));
+		window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	}
 
 	Application::~Application()
@@ -22,45 +22,45 @@ namespace Wizzard
 		
 	}
 
-	void Application::run()
+	void Application::Run()
 	{
 		while (running)
 		{
 			for (Layer* layer : layerStack)
 			{
-				layer->onUpdate();
+				layer->OnUpdate();
 			}
 
-			window->onUpdate();
+			window->OnUpdate();
 		}
 	}
 
-	void Application::onEvent(Event& e)
+	void Application::OnEvent(Event& e)
 	{
 		EventHandler eventHandler(e);
 
-		eventHandler.dispatchEvent<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
-			(*--it)->onEvent(e);
+			(*--it)->OnEvent(e);
 
 			if (e.isHandled)
 				break;
 		}
 	}
 
-	void Application::pushLayer(Layer* layer)
+	void Application::PushLayer(Layer* layer)
 	{
-		layerStack.pushLayer(layer);
+		layerStack.PushLayer(layer);
 	}
 
-	void Application::pushOverlay(Layer* overlay)
+	void Application::PushOverlay(Layer* overlay)
 	{
-		layerStack.pushOverlay(overlay);
+		layerStack.PushOverlay(overlay);
 	}
 
-	bool Application::onWindowClose(WindowCloseEvent& e)
+	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		running = false;
 		return true;

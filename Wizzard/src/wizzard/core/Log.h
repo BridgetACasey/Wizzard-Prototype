@@ -12,27 +12,27 @@ namespace Wizzard
 	class Log
 	{
 	public:
-		static void init();
+		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger>& getWizzardLogger() { return s_wizzardLogger; }
-		inline static std::shared_ptr<spdlog::logger>& getAppLogger() { return s_appLogger; }
+		static std::shared_ptr<spdlog::logger>& GetWizzardLogger() { return wizzardLogger; }
+		static std::shared_ptr<spdlog::logger>& GetAppLogger() { return appLogger; }
 
 	private:
-		static std::shared_ptr<spdlog::logger> s_wizzardLogger;
-		static std::shared_ptr<spdlog::logger> s_appLogger;
+		static std::shared_ptr<spdlog::logger> wizzardLogger;
+		static std::shared_ptr<spdlog::logger> appLogger;
 	};
 }
 
 //Wizzard Engine logger macros
-#define WIZZARD_TRACE(...)	::Wizzard::Log::getWizzardLogger()->trace(__VA_ARGS__)
-#define WIZZARD_INFO(...)	::Wizzard::Log::getWizzardLogger()->info(__VA_ARGS__)
-#define WIZZARD_WARN(...)	::Wizzard::Log::getWizzardLogger()->warn(__VA_ARGS__)
-#define WIZZARD_ERROR(...)	::Wizzard::Log::getWizzardLogger()->error(__VA_ARGS__)
-#define WIZZARD_FATAL(...)	::Wizzard::Log::getWizzardLogger()->fatal(__VA_ARGS__)
+#define WIZ_TRACE(...)	::Wizzard::Log::GetWizzardLogger()->trace(__VA_ARGS__)
+#define WIZ_INFO(...)	::Wizzard::Log::GetWizzardLogger()->info(__VA_ARGS__)
+#define WIZ_WARN(...)	::Wizzard::Log::GetWizzardLogger()->warn(__VA_ARGS__)
+#define WIZ_ERROR(...)	::Wizzard::Log::GetWizzardLogger()->error(__VA_ARGS__)
+#define WIZ_FATAL(...)	::Wizzard::Log::GetWizzardLogger()->fatal(__VA_ARGS__)
 
 //Application logger macros
-#define APP_TRACE(...)	::Wizzard::Log::getAppLogger()->trace(__VA_ARGS__)
-#define APP_INFO(...)	::Wizzard::Log::getAppLogger()->info(__VA_ARGS__)
-#define APP_WARN(...)	::Wizzard::Log::getAppLogger()->warn(__VA_ARGS__)
-#define APP_ERROR(...)	::Wizzard::Log::getAppLogger()->error(__VA_ARGS__)
-#define APP_FATAL(...)	::Wizzard::Log::getAppLogger()->fatal(__VA_ARGS__)
+#define APP_TRACE(...)	::Wizzard::Log::GetAppLogger()->trace(__VA_ARGS__)
+#define APP_INFO(...)	::Wizzard::Log::GetAppLogger()->info(__VA_ARGS__)
+#define APP_WARN(...)	::Wizzard::Log::GetAppLogger()->warn(__VA_ARGS__)
+#define APP_ERROR(...)	::Wizzard::Log::GetAppLogger()->error(__VA_ARGS__)
+#define APP_FATAL(...)	::Wizzard::Log::GetAppLogger()->fatal(__VA_ARGS__)

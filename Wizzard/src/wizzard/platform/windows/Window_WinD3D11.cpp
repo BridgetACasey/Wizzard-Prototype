@@ -1,7 +1,7 @@
 //@BridgetACasey
 
 #include "wzpch.h"
-#include "WindowD3D11.h"
+#include "Window_WinD3D11.h"
 
 #include "../../event/ApplicationEvent.h"
 #include "../../event/MouseEvent.h"
@@ -14,33 +14,34 @@ namespace Wizzard
 {
 	Window* Window::Create(const WindowProps& props)
 	{
-		return new WindowD3D11(props);
+		return new Window_WinD3D11(props);
 	}
 
-	WindowD3D11::WindowD3D11(const WindowProps& props)
+	Window_WinD3D11::Window_WinD3D11(const WindowProps& props)
 	{
-		init(props);
+		Init(props);
 	}
 
-	WindowD3D11::~WindowD3D11()
+	Window_WinD3D11::~Window_WinD3D11()
 	{
-		shutdown();
+		Shutdown();
 	}
 
-	LRESULT WindowD3D11::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	//Structuring WndProc like this allows project to generate a graphical window without getting rid of the console
+	LRESULT Window_WinD3D11::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	{
-		WindowD3D11* me = reinterpret_cast<WindowD3D11*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+		Window_WinD3D11* me = reinterpret_cast<Window_WinD3D11*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 		if (me)
 		{
-			return me->realWndProc(hwnd, message, wparam, lparam);
+			return me->RealWndProc(hwnd, message, wparam, lparam);
 		}
 
 		return DefWindowProc(hwnd, message, wparam, lparam);
 	}
 
 	//Setting callback events
-	LRESULT CALLBACK WindowD3D11::realWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+	LRESULT CALLBACK Window_WinD3D11::RealWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	{
 		//Using chained else-if instead of switch due to initialising event calls
 		if (message == WM_CHAR)
@@ -62,32 +63,32 @@ namespace Wizzard
 				int height = windowRect.bottom - windowRect.top;
 
 				WindowResizeEvent event(width, height);
-				WIZZARD_TRACE(event);
+				WIZ_TRACE(event);
 				data.eventCallback(event);
 			}
 		}
 		else if (message == WM_KEYDOWN)
 		{
 			KeyPressedEvent event(wparam, 0);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else if (message == WM_KEYUP)
 		{
 			KeyReleasedEvent event(wparam);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else if (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN)
 		{
 			MouseButtonPressedEvent event(wparam);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else if (message == WM_LBUTTONUP || message == WM_MBUTTONUP || message == WM_RBUTTONUP)
 		{
 			MouseButtonReleasedEvent event(wparam);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else if (message == WM_MOUSEMOVE)
@@ -96,7 +97,7 @@ namespace Wizzard
 			int yPos = GET_Y_LPARAM(lparam);
 
 			MouseMovedEvent event(xPos, yPos);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else if (message == WM_MOUSEWHEEL)
@@ -105,14 +106,14 @@ namespace Wizzard
 			int yPos = GET_Y_LPARAM(lparam);
 
 			MouseScrolledEvent event(xPos, yPos);
-			WIZZARD_TRACE(event);
+			WIZ_TRACE(event);
 			data.eventCallback(event);
 		}
 		else
 			return DefWindowProc(hwnd, message, wparam, lparam);
 	}
 
-	void WindowD3D11::init(const WindowProps& props)
+	void Window_WinD3D11::Init(const WindowProps& props)
 	{
 		data.title = props.title;
 		data.width = props.width;
@@ -144,7 +145,7 @@ namespace Wizzard
 		ShowWindow(windowHandle, SW_RESTORE);
 	}
 
-	void WindowD3D11::onUpdate()
+	void Window_WinD3D11::OnUpdate()
 	{
 		MSG messages;
 
@@ -155,20 +156,20 @@ namespace Wizzard
 		}
 	}
 
-	void WindowD3D11::shutdown()
+	void Window_WinD3D11::Shutdown()
 	{
 	}
 
-	void WindowD3D11::setVSync(bool enabled)
+	void Window_WinD3D11::SetVSync(bool enabled)
 	{
 	}
 
-	bool WindowD3D11::isVSync() const
+	bool Window_WinD3D11::IsVSync() const
 	{
 		return false;
 	}
 
-	void* WindowD3D11::getNativeWindow() const
+	void* Window_WinD3D11::GetNativeWindow() const
 	{
 		return nullptr;
 	}

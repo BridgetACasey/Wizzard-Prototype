@@ -6,11 +6,11 @@
 
 namespace Wizzard
 {
-	using KeyCode = uint16_t;
+	using KeyCodeGL = uint16_t;
 
 	namespace Key
 	{
-		enum : KeyCode
+		enum : KeyCodeGL
 		{
 			// From glfw3.h
 			Space = 32,

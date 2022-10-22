@@ -13,12 +13,12 @@ namespace Wizzard
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer();
 
-		virtual void onAttach() {}
-		virtual void onDetach() {}
-		virtual void onUpdate() {}
-		virtual void onEvent(Event& event) {}
+		virtual void OnAttach() {}
+		virtual void OnDetach() {}
+		virtual void OnUpdate() {}
+		virtual void OnEvent(Event& event) {}
 
-		inline const std::string& getName() const { return debugName; }
+		const std::string& GetName() const { return debugName; }
 
 	protected:
 		std::string debugName;

@@ -9,11 +9,11 @@ namespace Wizzard
 {
 	//For future versions: attempt to buffer events into an event bus and process them during the event phase of application updating, instead of handling them instantly
 
-#define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::##type; }\
-	virtual EventType getEventType() const override { return getStaticType(); }\
-	virtual const char* getEventName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
+	virtual EventType GetEventType() const override { return GetStaticType(); }\
+	virtual const char* GetEventName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int getEventCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual int GetEventCategoryFlags() const override { return category; }
 
 	enum class EventType
 	{
@@ -52,14 +52,14 @@ namespace Wizzard
 	public:
 		virtual ~Event() = default;
 
-		virtual EventType getEventType() const = 0;
-		virtual const char* getEventName() const = 0;
-		virtual int getEventCategoryFlags() const = 0;
-		virtual std::string toString() const { return getEventName(); }
+		virtual EventType GetEventType() const = 0;
+		virtual const char* GetEventName() const = 0;
+		virtual int GetEventCategoryFlags() const = 0;
+		virtual std::string ToString() const { return GetEventName(); }
 
-		inline bool isInCategory(EventCategory category)
+		inline bool IsInCategory(EventCategory category)
 		{
-			return getEventCategoryFlags() & category;
+			return GetEventCategoryFlags() & category;
 		}
 
 		bool isHandled = false;
@@ -67,6 +67,6 @@ namespace Wizzard
 
 	inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
-		return os << e.toString();
+		return os << e.ToString();
 	}
 }

@@ -15,9 +15,9 @@ namespace Wizzard
 		EventHandler(Event& event) : event(event) {}
 
 		template<typename T>
-		bool dispatchEvent(EventFn<T> func)
+		bool HandleEvent(EventFn<T> func)
 		{
-			if (event.getEventType() == T::getStaticType())
+			if (event.GetEventType() == T::GetStaticType())
 			{
 				event.isHandled = func(*(T*)&event);
 				return true;

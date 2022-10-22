@@ -12,10 +12,10 @@ namespace Wizzard
 	public:
 		MouseMovedEvent(const float x, const float y) : mouseX(x), mouseY(y) {}
 
-		float getX() const { return mouseX; }
-		float getY() const { return mouseY; }
+		float GetX() const { return mouseX; }
+		float GetY() const { return mouseY; }
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseMovedEvent: " << mouseX << ", " << mouseY;
@@ -34,13 +34,13 @@ namespace Wizzard
 	public:
 		MouseScrolledEvent(const float xOffset, const float yOffset) : xOffset(xOffset), yOffset(yOffset) {}
 
-		float getXOffset() const { return xOffset; }
-		float getYOffset() const { return yOffset; }
+		float GetXOffset() const { return xOffset; }
+		float GetYOffset() const { return yOffset; }
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << getXOffset() << ", " << getYOffset();
+			ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
 			return ss.str();
 		}
 
@@ -54,22 +54,22 @@ namespace Wizzard
 	class MouseButtonEvent : public Event
 	{
 	public:
-		MouseCode GetMouseButton() const { return button; }
+		MouseCodeGL GetMouseButton() const { return button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 
 	protected:
-		MouseButtonEvent(const MouseCode button) : button(button) {}
+		MouseButtonEvent(const MouseCodeGL button) : button(button) {}
 
-		MouseCode button;
+		MouseCodeGL button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+		MouseButtonPressedEvent(const MouseCodeGL button) : MouseButtonEvent(button) {}
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonPressedEvent: " << button;
@@ -82,9 +82,9 @@ namespace Wizzard
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+		MouseButtonReleasedEvent(const MouseCodeGL button) : MouseButtonEvent(button) {}
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonReleasedEvent: " << button;
