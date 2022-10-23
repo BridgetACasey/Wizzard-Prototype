@@ -14,6 +14,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Wizzard/lib/glfw/include"
 IncludeDir["Glad"] = "Wizzard/lib/glad/include"
 IncludeDir["ImGui"] = "Wizzard/lib/imgui"
+IncludeDir["GLM"] = "Wizzard/lib/glm"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
@@ -33,7 +34,9 @@ project "Wizzard"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/lib/glm/glm/**.hpp",
+		"%{prj.name}/lib/glm/glm/**.inl"
 	}
 
 	includedirs
@@ -43,7 +46,8 @@ project "Wizzard"
 		"%{prj.name}/lib/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLM}"
 	}
 
 	links
@@ -102,7 +106,8 @@ project "Application"
 	includedirs
 	{
 		"Wizzard/src",
-		"Wizzard/lib/spdlog/include"
+		"Wizzard/lib/spdlog/include",
+		"%{IncludeDir.GLM}"
 	}
 
 	links
