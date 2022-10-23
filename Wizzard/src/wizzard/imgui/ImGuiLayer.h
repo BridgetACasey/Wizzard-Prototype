@@ -17,20 +17,26 @@ namespace Wizzard
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		void OnAttach();
-		void OnDetach();
-		void OnUpdate();
-		void OnEvent(Event& event);
-	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& mouseEvent);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& mouseEvent);
-		bool OnMouseMovedEvent(MouseMovedEvent& mouseEvent);
-		bool OnMouseScrolledEvent(MouseScrolledEvent& mouseEvent);
+		void OnAttach() override;
+		void OnDetach() override;
+		void OnImGuiRender() override;
 
-		bool OnKeyPressedEvent(KeyPressedEvent& keyEvent);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& keyEvent);
-		bool OnKeyTypedEvent(KeyTypedEvent& keyEvent);
-		bool OnWindowResizeEvent(WindowResizeEvent& keyEvent);
+		void OnUpdate() override;
+		void OnEvent(Event& event) override;
+
+		void Begin();
+		void End();
+
+	private:
+		//bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& mouseEvent);
+		//bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& mouseEvent);
+		//bool OnMouseMovedEvent(MouseMovedEvent& mouseEvent);
+		//bool OnMouseScrolledEvent(MouseScrolledEvent& mouseEvent);
+		//
+		//bool OnKeyPressedEvent(KeyPressedEvent& keyEvent);
+		//bool OnKeyReleasedEvent(KeyReleasedEvent& keyEvent);
+		//bool OnKeyTypedEvent(KeyTypedEvent& keyEvent);
+		//bool OnWindowResizeEvent(WindowResizeEvent& keyEvent);
 
 		float time = 0.0f;
 	};

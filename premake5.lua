@@ -24,6 +24,8 @@ project "Wizzard"
 	location "Wizzard"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("build/" .. outputdir .. "/%{prj.name}")
 	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
@@ -38,6 +40,12 @@ project "Wizzard"
 		"%{prj.name}/lib/glm/glm/**.hpp",
 		"%{prj.name}/lib/glm/glm/**.inl"
 	}
+
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 
 	includedirs
 	{
@@ -60,7 +68,7 @@ project "Wizzard"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
@@ -70,22 +78,17 @@ project "Wizzard"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../build/" .. outputdir .. "/Application")
-		}
-
 	filter "configurations:Debug"
 		defines "WIZZARD_DEBUG"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "WIZZARD_RELEASE"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Distribution"
 		defines "WIZZARD_DISTRIBUTION"
-		optimize "On"
+		optimize "on"
 
 
 
@@ -93,6 +96,8 @@ project "Application"
 	location "Application"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("build/" .. outputdir .. "/%{prj.name}")
 	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
@@ -107,6 +112,7 @@ project "Application"
 	{
 		"Wizzard/src",
 		"Wizzard/lib/spdlog/include",
+		"Wizzard/lib",
 		"%{IncludeDir.GLM}"
 	}
 
@@ -116,8 +122,6 @@ project "Application"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -127,12 +131,12 @@ project "Application"
 
 	filter "configurations:Debug"
 		defines "WIZZARD_DEBUG"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "WIZZARD_RELEASE"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Distribution"
 		defines "WIZZARD_DISTRIBUTION"
-		optimize "On"
+		optimize "on"

@@ -8,7 +8,7 @@
 #include "wizzard/core/Input.h"
 #include "wizzard/core/KeyCode.h"
 #include "wizzard/core/MouseCode.h"
-#include "wizzard/imgui/ImGuiLayer.h"
+//#include "wizzard/imgui/ImGuiLayer.h"
 
 //Program entry point
 #include "wizzard/core/EntryPoint.h"

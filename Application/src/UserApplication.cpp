@@ -2,6 +2,8 @@
 
 #include <Wizzard.h>
 
+//#include "imgui/imgui.h"
+
 class ExampleLayer : public Wizzard::Layer
 {
 public:
@@ -17,6 +19,13 @@ public:
 			WIZ_TRACE("Tab key is pressed (poll)!");
 	}
 
+	virtual void OnImGuiRender() override
+	{
+		//ImGui::Begin("Test");
+		//ImGui::Text("Hello World");
+		//ImGui::End();
+	}
+
 	void OnEvent(Wizzard::Event& event) override
 	{
 		APP_TRACE("{0}", event);
@@ -29,7 +38,7 @@ public:
 	UserApplication()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Wizzard::ImGuiLayer());
+		//PushOverlay(new Wizzard::ImGuiLayer());
 	}
 
 	~UserApplication()

@@ -4,9 +4,9 @@
 
 #include "Window_WinGL.h"
 
-#include "../../event/ApplicationEvent.h"
-#include "../../event/MouseEvent.h"
-#include "../../event/KeyEvent.h"
+#include "wizzard/event/ApplicationEvent.h"
+#include "wizzard/event/MouseEvent.h"
+#include "wizzard/event/KeyEvent.h"
 
 #include <glad/glad.h>
 
@@ -79,6 +79,11 @@ namespace Wizzard
 			glfwSetErrorCallback(GLFWErrorCallback);
 			glfwInitialised = true;
 		}
+
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(glfwWindow);

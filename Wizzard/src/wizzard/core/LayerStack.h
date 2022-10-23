@@ -26,6 +26,6 @@ namespace Wizzard
 
 	private:
 		std::vector<Layer*> layers;
-		std::vector<Layer*>::iterator layerInsert;
+		unsigned int layerInsertionIndex = 0;
 	};
 }

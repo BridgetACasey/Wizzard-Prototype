@@ -7,7 +7,6 @@ namespace Wizzard
 {
 	LayerStack::LayerStack()
 	{
-		layerInsert = layers.begin();
 	}
 
 	LayerStack::~LayerStack()
@@ -20,7 +19,8 @@ namespace Wizzard
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		layerInsert = layers.emplace(layerInsert, layer);
+		layers.emplace(layers.begin() + layerInsertionIndex, layer);
+		layerInsertionIndex++;
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -30,7 +30,7 @@ namespace Wizzard
 		if (it != layers.end())
 		{
 			layers.erase(it);
-			layerInsert--;
+			layerInsertionIndex--;
 		}
 	}
 
