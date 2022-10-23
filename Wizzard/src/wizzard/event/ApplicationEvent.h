@@ -9,8 +9,8 @@ namespace Wizzard
 	public:
 		WindowResizeEvent(unsigned int w, unsigned int h) : width(w), height(h) {}
 
-		inline unsigned int getWidth() const { return width; }
-		inline unsigned int getHeight() const { return height; }
+		inline unsigned int GetWidth() const { return width; }
+		inline unsigned int GetHeight() const { return height; }
 
 		std::string ToString() const override
 		{

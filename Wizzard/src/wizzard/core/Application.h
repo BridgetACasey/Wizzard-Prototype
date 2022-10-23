@@ -5,8 +5,8 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
-#include "../event/Event.h"
-#include "../event/ApplicationEvent.h"
+#include "wizzard/event/Event.h"
+#include "wizzard/event/ApplicationEvent.h"
 
 namespace Wizzard
 {

@@ -1,6 +1,7 @@
 //@BridgetACasey
 
 #pragma once
+
 #include <cstdint>
 
 namespace Wizzard

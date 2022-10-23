@@ -38,6 +38,7 @@ project "Wizzard"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/src/wizzard",
 		"%{prj.name}/lib/spdlog/include",
 		"%{IncludeDir.GLFW}",

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Event.h"
-#include "core/KeyCode.h"
+#include "wizzard/core/KeyCode.h"
 
 namespace Wizzard
 {
 	class KeyEvent : public Event
 	{
 	public:
-		KeyCodeGL getKeyCode() const { return keyCode; }
+		KeyCodeGL GetKeyCode() const { return keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
 
@@ -25,7 +25,7 @@ namespace Wizzard
 	public:
 		KeyPressedEvent(const KeyCodeGL keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
 
-		uint16_t getRepeatCount() const { return repeatCount; }
+		uint16_t GetRepeatCount() const { return repeatCount; }
 
 		std::string ToString() const override
 		{
@@ -35,6 +35,7 @@ namespace Wizzard
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
+
 	private:
 		uint16_t repeatCount;
 	};

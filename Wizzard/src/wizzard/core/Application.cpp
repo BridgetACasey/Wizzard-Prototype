@@ -3,8 +3,8 @@
 #include "wzpch.h"
 
 #include "Application.h"
-#include "../event/ApplicationEvent.h"
-#include "../event/EventHandler.h"
+#include "wizzard/event/ApplicationEvent.h"
+#include "wizzard/event/EventHandler.h"
 #include "Log.h"
 
 #include <glad/glad.h>
@@ -33,7 +33,7 @@ namespace Wizzard
 	{
 		while (running)
 		{
-			glClearColor(1, 0, 1, 1);
+			glClearColor(0.5, 0.5, 0.5, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (Layer* layer : layerStack)

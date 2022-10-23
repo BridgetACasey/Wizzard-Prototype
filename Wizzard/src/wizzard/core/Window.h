@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "../wzpch.h"
+#include "wizzard/wzpch.h"
 
 #include "Core.h"
-#include "../event/Event.h"
+#include "wizzard/event/Event.h"
 
 namespace Wizzard
 {

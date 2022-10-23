@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "core/Window.h"
+#include "wizzard/core/Window.h"
 
 #include <GLFW/glfw3.h>
 

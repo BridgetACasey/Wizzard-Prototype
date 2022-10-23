@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../wzpch.h"
+#include "wizzard/wzpch.h"
 #include "Event.h"
 
 namespace Wizzard

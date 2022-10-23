@@ -2,7 +2,12 @@
 
 #pragma once
 
-#include "../core/Layer.h"
+#include "wizzard/core/Layer.h"
+
+#include "wizzard/event/ApplicationEvent.h"
+#include "wizzard/event/KeyEvent.h"
+#include "wizzard/event/MouseEvent.h"
+#include "wizzard/event/EventHandler.h"
 
 namespace Wizzard
 {
@@ -17,6 +22,16 @@ namespace Wizzard
 		void OnUpdate();
 		void OnEvent(Event& event);
 	private:
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& mouseEvent);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& mouseEvent);
+		bool OnMouseMovedEvent(MouseMovedEvent& mouseEvent);
+		bool OnMouseScrolledEvent(MouseScrolledEvent& mouseEvent);
+
+		bool OnKeyPressedEvent(KeyPressedEvent& keyEvent);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& keyEvent);
+		bool OnKeyTypedEvent(KeyTypedEvent& keyEvent);
+		bool OnWindowResizeEvent(WindowResizeEvent& keyEvent);
+
 		float time = 0.0f;
 	};
 }

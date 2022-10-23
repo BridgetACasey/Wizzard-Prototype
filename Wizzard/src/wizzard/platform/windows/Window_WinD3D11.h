@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "core/Window.h"
+#include "wizzard/core/Window.h"
 
 //Not currently in use, will re-implement when finished with OpenGL
 

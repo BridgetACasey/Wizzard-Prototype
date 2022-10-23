@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "../wzpch.h"
-#include "../core/Core.h"
+#include "wizzard/wzpch.h"
+#include "wizzard/core/Core.h"
 
 namespace Wizzard
 {
