@@ -9,6 +9,8 @@
 
 #include <glad/glad.h>
 
+#include "Input.h"
+
 namespace Wizzard
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -40,6 +42,10 @@ namespace Wizzard
 			{
 				layer->OnUpdate();
 			}
+
+			//Testing input polling
+			//auto [x, y] = Input::GetMousePosition();
+			//WIZ_TRACE("{0}, {1}", x, y);
 
 			window->OnUpdate();
 		}

@@ -12,6 +12,10 @@
 #error Invalid platform detected - this software is only supported on Windows
 #endif
 
+#ifdef WIZ_DEBUG
+#define WIZ_ENABLE_ASSERTS
+#endif
+
 #ifdef WIZZARD_ENABLE_ASSERTS
 #define APP_ASSERT(x, ...) {if(!(x)) {APP_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
 #define WIZ_ASSERT(x, ...) {if(!(x), {WIZ_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}

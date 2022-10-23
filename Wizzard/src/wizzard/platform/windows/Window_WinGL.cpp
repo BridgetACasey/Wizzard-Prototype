@@ -185,9 +185,4 @@ namespace Wizzard
 	{
 		glfwDestroyWindow(glfwWindow);
 	}
-
-	void* Window_WinGL::GetNativeWindow() const
-	{
-		return nullptr;
-	}
 }

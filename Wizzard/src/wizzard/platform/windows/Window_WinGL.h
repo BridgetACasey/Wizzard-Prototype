@@ -1,7 +1,5 @@
 //@BridgetACasey
 
-//A window rendered with Modern OpenGL. To be implemented later.
-
 #pragma once
 
 #include "wizzard/core/Window.h"
@@ -32,7 +30,7 @@ namespace Wizzard
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
-		void* GetNativeWindow() const override;
+		void* GetNativeWindow() const override { return glfwWindow; }
 
 		struct WindowData
 		{
