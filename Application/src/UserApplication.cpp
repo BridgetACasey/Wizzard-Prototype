@@ -12,7 +12,7 @@ public:
 
 	void OnUpdate() override
 	{
-		APP_INFO("ExampleLayer::Update");
+		//APP_INFO("ExampleLayer::Update");
 	}
 
 	void OnEvent(Wizzard::Event& event) override
@@ -26,7 +26,8 @@ class UserApplication : public Wizzard::Application
 public:
 	UserApplication()
 	{
-		//PushLayer(new ExampleLayer());
+		PushLayer(new ExampleLayer());
+		PushOverlay(new Wizzard::ImGuiLayer());
 	}
 
 	~UserApplication()

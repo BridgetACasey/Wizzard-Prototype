@@ -4,3 +4,6 @@
 [submodule "Wizzard/lib/glfw"]
 	path = Wizzard/lib/glfw
 	url = https://github.com/BridgetACasey/glfw.git
+[submodule "Wizzard/lib/imgui"]
+	path = Wizzard/lib/imgui
+	url = https://github.com/BridgetACasey/imgui.git
