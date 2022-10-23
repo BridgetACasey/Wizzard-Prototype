@@ -67,8 +67,6 @@ project "Wizzard"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "on"
 		systemversion "latest"
 
 		defines
