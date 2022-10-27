@@ -10,7 +10,6 @@
 
 #include <glad/glad.h>
 
-#include <core/Log.h>
 
 namespace Wizzard
 {
@@ -184,5 +183,8 @@ namespace Wizzard
 	void Window_WinGL::Shutdown()
 	{
 		glfwDestroyWindow(glfwWindow);
+
+		if(glfwInitialised)
+		glfwTerminate();
 	}
 }

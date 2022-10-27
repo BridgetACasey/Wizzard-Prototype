@@ -5,7 +5,6 @@
 #include "Application.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/EventHandler.h"
-#include "Log.h"
 
 #include <glad/glad.h>
 
@@ -23,7 +22,7 @@ namespace Wizzard
 		appInstance = this;
 
 		window = std::unique_ptr<Window>(Window::Create());
-		window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
@@ -41,14 +40,13 @@ namespace Wizzard
 			glClearColor(0.5, 0.5, 0.5, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			imguiLayer->Begin();
-
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate();
 			}
 
-			imguiLayer->End();
+			//for (Layer* layer : layerStack)
+				imguiLayer->OnImGuiRender();
 
 			//Testing input polling
 			//auto [x, y] = Input::GetMousePosition();
@@ -62,7 +60,7 @@ namespace Wizzard
 	{
 		EventHandler eventHandler(event);
 		
-		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{

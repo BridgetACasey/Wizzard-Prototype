@@ -3,15 +3,15 @@
 #include "wzpch.h"
 #include "ImGuiLayer.h"
 
+#include "imgui.h"
+#include "examples/imgui_impl_glfw.h"
+#include "examples/imgui_impl_opengl3.h"
+
+#include "core/Application.h"
+
 //TEMPORARY INCLUDE
 #include "GLFW/glfw3.h"
 #include <glad/glad.h>
-
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-
-#include "core/Application.h"
 
 namespace Wizzard
 {
@@ -52,9 +52,9 @@ namespace Wizzard
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init();
-		//ImGui_ImplOpenGL3_Init("#version 410");
+		//ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(window, false);
+		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -128,8 +128,10 @@ namespace Wizzard
 
 	void ImGuiLayer::OnImGuiRender()
 	{
+		Begin();
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
+		End();
 	}
 
 	//bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& mouseEvent)

@@ -15,8 +15,8 @@ public:
 	void OnUpdate() override
 	{
 		//APP_INFO("ExampleLayer::Update");
-		if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Tab))
-			WIZ_TRACE("Tab key is pressed (poll)!");
+		//if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Tab))
+		//	WIZ_TRACE("Tab key is pressed (poll)!");
 	}
 
 	virtual void OnImGuiRender() override
