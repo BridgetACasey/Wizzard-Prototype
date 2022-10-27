@@ -21,6 +21,10 @@ namespace Wizzard
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
 		WIZ_ASSERT(status, "Failed to initialise Glad!");
+
+		WIZ_INFO("Vendor: {0}", glGetString(GL_VENDOR));
+		WIZ_INFO("Renderer: {0}", glGetString(GL_RENDERER));
+		WIZ_INFO("Version: {0}", glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::SwapBuffers()

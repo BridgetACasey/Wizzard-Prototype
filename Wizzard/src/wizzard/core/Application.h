@@ -5,6 +5,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
+#include "wizzard/rendering/Shader.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/imgui/ImGuiLayer.h"
@@ -40,6 +41,9 @@ namespace Wizzard
 		static Application* appInstance;
 
 		ImGuiLayer* imguiLayer;
+
+		unsigned int vertexArray, vertexBuffer, indexBuffer;
+		std::unique_ptr<Shader> shader;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
