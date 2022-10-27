@@ -25,8 +25,8 @@ namespace Wizzard
 		window = std::unique_ptr<Window>(Window::Create());
 		window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		//imguiLayer = new ImGuiLayer();
-		//PushOverlay(imguiLayer);
+		imguiLayer = new ImGuiLayer();
+		PushOverlay(imguiLayer);
 	}
 
 	Application::~Application()
@@ -41,14 +41,14 @@ namespace Wizzard
 			glClearColor(0.5, 0.5, 0.5, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			//imguiLayer->Begin();
+			imguiLayer->Begin();
 
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate();
 			}
 
-			//imguiLayer->End();
+			imguiLayer->End();
 
 			//Testing input polling
 			//auto [x, y] = Input::GetMousePosition();

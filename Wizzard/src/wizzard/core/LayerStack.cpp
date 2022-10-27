@@ -21,6 +21,7 @@ namespace Wizzard
 	{
 		layers.emplace(layers.begin() + layerInsertionIndex, layer);
 		layerInsertionIndex++;
+		layer->OnAttach();
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -31,12 +32,14 @@ namespace Wizzard
 		{
 			layers.erase(it);
 			layerInsertionIndex--;
+			layer->OnDetach();
 		}
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
 		layers.emplace_back(overlay);
+		overlay->OnAttach();
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay)
@@ -46,6 +49,7 @@ namespace Wizzard
 		if (it != layers.end())
 		{
 			layers.erase(it);
+			overlay->OnDetach();
 		}
 	}
 }

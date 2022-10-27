@@ -18,7 +18,7 @@ IncludeDir["GLM"] = "Wizzard/lib/glm"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
---include "Wizzard/lib/imgui"
+include "Wizzard/lib/imgui"
 
 project "Wizzard"
 	location "Wizzard"
@@ -54,16 +54,16 @@ project "Wizzard"
 		"%{prj.name}/lib/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		--"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}"
 	}
 
 	links
 	{
+		"opengl32.lib",
 		"GLFW",
 		"Glad",
-		--"ImGui",
-		"opengl32.lib"
+		"ImGui"
 	}
 
 	filter "system:windows"

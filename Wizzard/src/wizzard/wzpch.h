@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "wizzard/core/Log.h"
+
 #ifdef WIZZARD_PLATFORM_WINDOWS
 	#include <Windows.h>
 	#include <windowsx.h>

@@ -7,7 +7,7 @@
 #include "LayerStack.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/ApplicationEvent.h"
-//#include "wizzard/imgui/ImGuiLayer.h"
+#include "wizzard/imgui/ImGuiLayer.h"
 
 namespace Wizzard
 {
@@ -39,7 +39,7 @@ namespace Wizzard
 
 		static Application* appInstance;
 
-		//ImGuiLayer* imguiLayer;
+		ImGuiLayer* imguiLayer;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
