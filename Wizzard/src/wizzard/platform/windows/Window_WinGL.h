@@ -3,6 +3,7 @@
 #pragma once
 
 #include "wizzard/core/Window.h"
+#include "wizzard/rendering/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -26,6 +27,7 @@ namespace Wizzard
 
 	private:
 		GLFWwindow* glfwWindow;
+		GraphicsContext* graphicsContext;
 
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();

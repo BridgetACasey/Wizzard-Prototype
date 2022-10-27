@@ -10,6 +10,7 @@
 
 #include <glad/glad.h>
 
+#include "platform/opengl/OpenGLContext.h"
 
 namespace Wizzard
 {
@@ -38,7 +39,7 @@ namespace Wizzard
 	void Window_WinGL::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(glfwWindow);
+		graphicsContext->SwapBuffers();
 	}
 
 	void Window_WinGL::SetVSync(bool enabled)
@@ -80,10 +81,9 @@ namespace Wizzard
 		}
 
 		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(glfwWindow);
 
-		int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		WIZ_ASSERT(gladStatus, "Could not initialise Glad!");
+		graphicsContext = new OpenGLContext(glfwWindow);
+		graphicsContext->Init();
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		SetVSync(true);
