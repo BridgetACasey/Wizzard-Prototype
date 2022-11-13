@@ -129,8 +129,16 @@ namespace Wizzard
 	void ImGuiLayer::OnImGuiRender()
 	{
 		Begin();
+
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
+
+		ImGui::Button("List##List");
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		{
+			ImGui::SetTooltip("Test tooltip message");
+		}
+
 		End();
 	}
 
