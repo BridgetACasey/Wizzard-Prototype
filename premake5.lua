@@ -15,10 +15,12 @@ IncludeDir["GLFW"] = "Wizzard/lib/glfw/include"
 IncludeDir["Glad"] = "Wizzard/lib/glad/include"
 IncludeDir["ImGui"] = "Wizzard/lib/imgui"
 IncludeDir["GLM"] = "Wizzard/lib/glm"
+IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
 include "Wizzard/lib/imgui"
+include "Wizzard/lib/tolk"
 
 project "Wizzard"
 	location "Wizzard"
@@ -43,7 +45,8 @@ project "Wizzard"
 
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"_EXPORTING"
 	}
 
 
@@ -55,7 +58,8 @@ project "Wizzard"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLM}"
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.Tolk}"
 	}
 
 	links
@@ -63,7 +67,8 @@ project "Wizzard"
 		"opengl32.lib",
 		"GLFW",
 		"Glad",
-		"ImGui"
+		"ImGui",
+		"Tolk"
 	}
 
 	filter "system:windows"
@@ -111,7 +116,8 @@ project "Application"
 		"Wizzard/src",
 		"Wizzard/lib/spdlog/include",
 		"Wizzard/lib",
-		"%{IncludeDir.GLM}"
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.Tolk}"
 	}
 
 	links

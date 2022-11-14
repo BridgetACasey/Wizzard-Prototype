@@ -10,3 +10,6 @@
 [submodule "Wizzard/lib/glm"]
 	path = Wizzard/lib/glm
 	url = https://github.com/BridgetACasey/glm.git
+[submodule "Wizzard/lib/tolk"]
+	path = Wizzard/lib/tolk
+	url = https://github.com/BridgetACasey/tolk.git
