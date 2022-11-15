@@ -133,6 +133,11 @@ project "Application"
 			"WIZZARD_PLATFORM_WINDOWS"
 		}
 
+		postbuildcommands
+		{
+			"{COPY} ../Wizzard/lib/tolk/libs/x64/**.dll %{cfg.targetdir}"
+		}
+
 	filter "configurations:Debug"
 		defines "WIZZARD_DEBUG"
 		symbols "on"

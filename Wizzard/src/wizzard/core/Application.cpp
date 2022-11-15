@@ -10,8 +10,6 @@
 
 #include "Tolk.h"
 
-using namespace std;
-
 namespace Wizzard
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -87,39 +85,28 @@ namespace Wizzard
 
 	void Application::Run()
 	{
-		wcout << L"Tolk -- C++ Console App Example" << endl;
-
-		wcout << L"Initializing Tolk..." << endl;
-		// Tolk will also initialize COM
-		// if it has not been initialized on the calling thread
+		// Tolk will also initialise COM if it has not been initialized on the calling thread
 		Tolk_Load();
 
-		wcout << L"Querying for the active screen reader driver..." << endl;
-		const wchar_t* name = Tolk_DetectScreenReader();
-		if (name) {
-			wcout << L"The active screen reader driver is: " << name << endl;
-		}
-		else {
-			wcout << L"None of the supported screen readers is running" << endl;
-		}
+		if(Tolk_IsLoaded())
+		{
+			WIZ_INFO("Initialised Tolk Screen Reader Abstraction Library...");
 
-		if (Tolk_HasSpeech()) {
-			wcout << L"This screen reader driver supports speech" << endl;
-		}
-		if (Tolk_HasBraille()) {
-			wcout << L"This screen reader driver supports braille" << endl;
-		}
+			const wchar_t* screenreaderName = Tolk_DetectScreenReader();
 
-		wcout << L"Let's output some text..." << endl;
-		if (!Tolk_Output(L"Hello, World!")) {
-			wcout << L"Failed to output text" << endl;
+			if (screenreaderName)
+				WIZ_INFO("The current active screen reader driver is: {0}", (char*)screenreaderName);
+			else
+				WIZ_WARN("None of the supported screen readers were detected!");
+
+			if (Tolk_HasSpeech())
+				WIZ_INFO("This screen reader driver supports speech");
+
+			if (Tolk_HasBraille())
+				WIZ_INFO("This screen reader driver supports braille");
 		}
-
-		wcout << L"Finalizing Tolk..." << endl;
-		// Tolk will also try to uninitialize COM
-		Tolk_Unload();
-
-		wcout << L"Done!" << endl;
+		else
+			WIZ_WARN("Failed to initialise Tolk Screen Reader Abstraction Library!");
 
 		while (running)
 		{
@@ -140,6 +127,9 @@ namespace Wizzard
 
 			window->OnUpdate();
 		}
+
+		WIZ_INFO("Unloading Tolk Screen Reader Abstraction Library...");
+		Tolk_Unload();
 	}
 
 	void Application::OnEvent(Event& event)

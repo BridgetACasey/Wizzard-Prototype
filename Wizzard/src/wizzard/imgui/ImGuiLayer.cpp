@@ -9,6 +9,8 @@
 
 #include "core/Application.h"
 
+#include "Tolk.h"
+
 //TEMPORARY INCLUDE
 #include "GLFW/glfw3.h"
 #include <glad/glad.h>
@@ -137,6 +139,7 @@ namespace Wizzard
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		{
 			ImGui::SetTooltip("Test tooltip message");
+			Tolk_Output(L"Hello I am Mr Screen Reader Man");
 		}
 
 		End();
