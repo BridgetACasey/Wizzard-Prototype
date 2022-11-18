@@ -6,22 +6,28 @@
 
 #include "Tolk.h"
 
+#include <comdef.h>
+
 namespace Wizzard
 {
 	//Probably not the best way of arranging this, to review later
 	bool ImGuiAccessibility::Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg)
 	{
+		bool success = false;
+
 		if(ImGui::Button(label, size_arg))
 		{
 			std::wstring output = (L"Selected");
 			output += description;
 
 			Tolk_Output(output.c_str(), true);
+			success = true;
 		}
 
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_None))
 		{
-			ImGui::SetTooltip((const char*)description);
+			const _bstr_t tooltipText(description);
+			ImGui::SetTooltip(tooltipText);
 
 			if (readDesc)
 			{
@@ -33,6 +39,6 @@ namespace Wizzard
 		else
 			readDesc = true;
 
-		return true;
+		return success;
 	}
 }

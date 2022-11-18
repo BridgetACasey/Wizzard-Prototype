@@ -40,6 +40,12 @@ namespace Wizzard
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
+		//Set scaling options, may do this in a different class for user preferences later
+		ImGuiAccessibility::SetButtonFontScale(1.25f);
+
+		//Apply scaling options
+		io.FontGlobalScale *= ImGuiAccessibility::GetButtonFontScale();
+
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
@@ -100,7 +106,16 @@ namespace Wizzard
 
 		static bool read = true;
 
-		ImGuiAccessibility::Button("List##List", L"List", read, ImVec2(250.0f, 125.0f));
+		ImGui::Begin("Editor Toolbar");
+
+		ImGuiAccessibility::Button("File", L"File", read, ImVec2(350.0f, 125.0f));
+		ImGuiAccessibility::Button("Edit", L"Edit", read, ImVec2(350.0f, 125.0f));
+		ImGuiAccessibility::Button("Objects", L"Objects", read, ImVec2(350.0f, 125.0f));
+		ImGuiAccessibility::Button("Console", L"Console", read, ImVec2(350.0f, 125.0f));
+		ImGuiAccessibility::Button("Settings", L"Settings", read, ImVec2(350.0f, 125.0f));
+		ImGuiAccessibility::Button("Exit", L"Exit", read, ImVec2(350.0f, 125.0f));
+
+		ImGui::End();
 
 		End();
 	}
