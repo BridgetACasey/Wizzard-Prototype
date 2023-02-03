@@ -16,11 +16,13 @@ IncludeDir["Glad"] = "Wizzard/lib/glad/include"
 IncludeDir["ImGui"] = "Wizzard/lib/imgui"
 IncludeDir["GLM"] = "Wizzard/lib/glm"
 IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
+IncludeDir["Box2D"] = "Wizzard/lib/box2d/include"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
 include "Wizzard/lib/imgui"
 include "Wizzard/lib/tolk"
+include "Wizzard/lib/box2d"
 
 project "Wizzard"
 	location "Wizzard"
@@ -59,7 +61,8 @@ project "Wizzard"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.Tolk}"
+		"%{IncludeDir.Tolk}",
+		"%{IncludeDir.Box2D}"
 	}
 
 	links
@@ -68,7 +71,8 @@ project "Wizzard"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"Tolk"
+		"Tolk",
+		"Box2D"
 	}
 
 	filter "system:windows"
@@ -117,7 +121,8 @@ project "Application"
 		"Wizzard/lib/spdlog/include",
 		"Wizzard/lib",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.Tolk}"
+		"%{IncludeDir.Tolk}",
+		"%{IncludeDir.Box2D}"
 	}
 
 	links

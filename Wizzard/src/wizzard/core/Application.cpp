@@ -10,6 +10,8 @@
 
 #include "Tolk.h"
 
+#include "physics/Physics2D.h"
+
 namespace Wizzard
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -107,6 +109,13 @@ namespace Wizzard
 		}
 		else
 			WIZ_WARN("Failed to initialise Tolk Screen Reader Abstraction Library!");
+
+		Physics2D physics;
+
+		physics.CreateBox2DWorld();
+
+		WIZ_INFO("Box2D connected to Wizzard, gravity value is: {0}", physics.gravity.y);
+		//To do: test if linked correctly to Application project as well
 
 		while (running)
 		{
