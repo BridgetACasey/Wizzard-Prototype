@@ -6,7 +6,7 @@
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/EventHandler.h"
 
-#include <glad/glad.h>
+#include "wizzard/rendering/Renderer.h"
 
 #include "Tolk.h"
 
@@ -178,16 +178,18 @@ namespace Wizzard
 
 		while (running)
 		{
-			glClearColor(0.5, 0.5, 0.5, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::Clear();
+
+			Renderer::BeginScene();
 
 			blueShader->Bind();
-			squareVA->Bind();
-			glDrawElements(GL_TRIANGLES, squareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(squareVA);
 
 			shader->Bind();
-			vertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(vertexArray);
+
+			Renderer::EndScene();
 
 			for (Layer* layer : layerStack)
 			{
