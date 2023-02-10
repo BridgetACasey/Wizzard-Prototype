@@ -5,6 +5,7 @@
 #include "imgui/imgui.h"
 
 //#include "box2d/box2d.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "wizzard/physics/Physics2D.h"
 
 class ExampleLayer : public Wizzard::Layer
@@ -45,10 +46,10 @@ public:
 
 		float squareVertices[3 * 4] =
 		{
-			-0.75f, -0.75f, 0.0f,
-			 0.75f, -0.75f, 0.0f,
-			 0.75f,  0.75f, 0.0f,
-			-0.75f,  0.75f, 0.0f
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f
 		};
 
 		std::shared_ptr<Wizzard::VertexBuffer> squareVB;
@@ -74,12 +75,13 @@ public:
 			out vec4 v_Color;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -107,13 +109,14 @@ public:
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			out vec3 v_Position;
 
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -158,7 +161,17 @@ public:
 
 		Wizzard::Renderer::BeginScene(camera);
 
-		Wizzard::Renderer::Submit(blueShader, squareVA);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+		for (int y = 0; y < 20; y++)
+		{
+			for (int x = 0; x < 20; x++)
+			{
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Wizzard::Renderer::Submit(blueShader, squareVA, transform);
+			}
+		}
 		Wizzard::Renderer::Submit(shader, vertexArray);
 
 		Wizzard::Renderer::EndScene();
