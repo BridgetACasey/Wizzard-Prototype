@@ -7,6 +7,8 @@
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#define SPDLOG_WCHAR_TO_UTF8_SUPPORT
+
 namespace Wizzard
 {
 	class Log
