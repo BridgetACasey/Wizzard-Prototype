@@ -9,6 +9,7 @@
 #include "wizzard/event/Event.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/imgui/ImGuiLayer.h"
+#include "wizzard/rendering/Buffer.h"
 
 namespace Wizzard
 {
@@ -42,7 +43,9 @@ namespace Wizzard
 
 		ImGuiLayer* imguiLayer;
 
-		unsigned int vertexArray, vertexBuffer, indexBuffer;
+		unsigned int vertexArray;
+		std::unique_ptr<VertexBuffer> vertexBuffer;
+		std::unique_ptr<IndexBuffer> indexBuffer;
 		std::unique_ptr<Shader> shader;
 	};
 
