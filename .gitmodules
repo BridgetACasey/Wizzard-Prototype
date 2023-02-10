@@ -13,3 +13,6 @@
 [submodule "Wizzard/lib/tolk"]
 	path = Wizzard/lib/tolk
 	url = https://github.com/BridgetACasey/tolk.git
+[submodule "Wizzard/lib/box2d"]
+	path = Wizzard/lib/box2d
+	url = https://github.com/BridgetACasey/box2d.git

@@ -39,6 +39,12 @@ public:
 	{
 		PushLayer(new ExampleLayer());
 		//PushOverlay(new Wizzard::ImGuiLayer());
+
+		//Wizzard::Physics2D physics;
+		//
+		//physics.CreateBox2DWorld();
+		//
+		//APP_INFO("Physic time weeeeee: {0}", physics.gravity.y);
 	}
 
 	~UserApplication()
