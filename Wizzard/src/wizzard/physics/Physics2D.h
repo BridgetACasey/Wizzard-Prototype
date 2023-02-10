@@ -4,6 +4,8 @@
 
 #include "box2d/b2_body.h"
 
+//Sample class for testing physics with Box2D
+
 namespace Wizzard
 {
 	class Physics2D

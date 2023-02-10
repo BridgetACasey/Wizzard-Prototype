@@ -20,15 +20,15 @@ public:
 		//if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Tab))
 		//	WIZ_TRACE("Tab key is pressed (poll)!");
 
-		static bool test = true;
+		//static bool test = true;
 
-		if (test)
-		{
-			Wizzard::Physics2D physics;
-			physics.CreateBox2DWorld();
-			APP_INFO("Physic time weeeeee: {0}", physics.gravity.y);
-			test = false;
-		}
+		//if (test)
+		//{
+		//	Wizzard::Physics2D physics;
+		//	physics.CreateBox2DWorld();
+		//	APP_INFO("Physic time weeeeee: {0}", physics.gravity.y);
+		//	test = false;
+		//}
 	}
 
 	virtual void OnImGuiRender() override

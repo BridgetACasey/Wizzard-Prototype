@@ -41,10 +41,13 @@ namespace Wizzard
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
 		//Set scaling options, may do this in a different class for user preferences later
-		ImGuiAccessibility::SetButtonFontScale(1.25f);
+		ImGuiAccessibility::SetButtonFontScale(3.5f);
 
 		//Apply scaling options
-		io.FontGlobalScale *= ImGuiAccessibility::GetButtonFontScale();
+		//io.FontGlobalScale *= ImGuiAccessibility::GetButtonFontScale();
+		ImFontConfig imFontConfig;
+		imFontConfig.SizePixels = 13.0f * ImGuiAccessibility::GetButtonFontScale();
+		io.Fonts->AddFontFromFileTTF("OpenSans-Bold.ttf", imFontConfig.SizePixels, &imFontConfig);
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

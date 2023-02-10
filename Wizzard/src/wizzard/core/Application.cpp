@@ -37,7 +37,8 @@ namespace Wizzard
 		glGenBuffers(1, &vertexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
-		float vertices[3 * 3] = {
+		float vertices[3 * 3] =
+		{
 			-0.5f, -0.5f, 0.0f,
 			 0.5f, -0.5f, 0.0f,
 			 0.0f,  0.5f, 0.0f
@@ -54,7 +55,8 @@ namespace Wizzard
 		unsigned int indices[3] = { 0, 1, 2 };
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		std::string vertexSrc = R"(
+		std::string vertexSrc =
+		R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -66,7 +68,8 @@ namespace Wizzard
 			}
 		)";
 
-		std::string fragmentSrc = R"(
+		std::string fragmentSrc =
+		R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
@@ -110,21 +113,21 @@ namespace Wizzard
 		else
 			WIZ_WARN("Failed to initialise Tolk Screen Reader Abstraction Library!");
 
-		Physics2D physics;
+		//Physics2D physics;
 
-		physics.CreateBox2DWorld();
+		//physics.CreateBox2DWorld();
 
-		WIZ_INFO("Box2D connected to Wizzard, gravity value is: {0}", physics.gravity.y);
-		//To do: test if linked correctly to Application project as well
+		//WIZ_INFO("Box2D connected to Wizzard, gravity value is: {0}", physics.gravity.y);
 
 		while (running)
 		{
 			glClearColor(0.5, 0.5, 0.5, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			shader->Bind();
-			glBindVertexArray(vertexArray);
-			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+			//Commenting out triangle render for now while I work on screen reader support
+			//shader->Bind();
+			//glBindVertexArray(vertexArray);
+			//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : layerStack)
 			{
