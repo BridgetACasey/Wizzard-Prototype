@@ -10,6 +10,7 @@
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/imgui/ImGuiLayer.h"
 #include "wizzard/rendering/Buffer.h"
+#include "wizzard/rendering/VertexArray.h"
 
 namespace Wizzard
 {
@@ -43,10 +44,12 @@ namespace Wizzard
 
 		ImGuiLayer* imguiLayer;
 
-		unsigned int vertexArray;
+		std::shared_ptr<VertexArray> vertexArray;
 		std::unique_ptr<VertexBuffer> vertexBuffer;
 		std::unique_ptr<IndexBuffer> indexBuffer;
 		std::unique_ptr<Shader> shader;
+		std::shared_ptr<Shader> blueShader;
+		std::shared_ptr<VertexArray> squareVA;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
