@@ -99,12 +99,14 @@ namespace Wizzard
 
 			const wchar_t* screenreaderName = Tolk_DetectScreenReader();
 
-			//Converting from wchar_t* to a format supported by spdlog, such as std::string
-			std::wstring NameWStr(screenreaderName);
-			std::string nameStr(NameWStr.begin(), NameWStr.end());
-
 			if (screenreaderName)
+			{
+				//Converting from wchar_t* to a format supported by spdlog, such as std::string
+				std::wstring NameWStr(screenreaderName);
+				std::string nameStr(NameWStr.begin(), NameWStr.end());
+
 				WIZ_INFO("The current active screen reader driver is: {0}", nameStr);
+			}
 			else
 				WIZ_WARN("None of the supported screen readers were detected!");
 
