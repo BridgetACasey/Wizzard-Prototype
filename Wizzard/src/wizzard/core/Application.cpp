@@ -162,13 +162,11 @@ namespace Wizzard
 	void Application::PushLayer(Layer* layer)
 	{
 		layerStack.PushLayer(layer);
-		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		layerStack.PushOverlay(overlay);
-		overlay->OnAttach();
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& windowCloseEvent)

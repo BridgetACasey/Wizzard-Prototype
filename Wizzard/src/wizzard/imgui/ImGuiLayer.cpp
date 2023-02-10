@@ -3,6 +3,10 @@
 #include "wzpch.h"
 #include "ImGuiLayer.h"
 
+//TEMPORARY INCLUDE
+#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -12,10 +16,6 @@
 #include "Tolk.h"
 
 #include "ImGuiAccessibility.h"
-
-//TEMPORARY INCLUDE
-#include "GLFW/glfw3.h"
-#include <glad/glad.h>
 
 namespace Wizzard
 {
@@ -39,7 +39,7 @@ namespace Wizzard
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
+		
 		//Set scaling options, may do this in a different class for user preferences later
 		ImGuiAccessibility::SetButtonFontScale(3.5f);
 
@@ -65,8 +65,7 @@ namespace Wizzard
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 		// Setup Platform/Renderer bindings
-		//ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplGlfw_InitForOpenGL(window, false);
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 

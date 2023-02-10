@@ -42,11 +42,7 @@ project "Wizzard"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/lib/glm/glm/**.hpp",
-		"%{prj.name}/lib/glm/glm/**.inl"--,
-		--"%{prj.name}/lib/imgui/backends/imgui_impl_glfw.h",
-		--"%{prj.name}/lib/imgui/backends/imgui_impl_glfw.cpp",
-		--"%{prj.name}/lib/imgui/backends/imgui_impl_opengl3.h",
-		--"%{prj.name}/lib/imgui/backends/imgui_impl_opengl3.cpp"
+		"%{prj.name}/lib/glm/glm/**.inl"
 	}
 
 	defines
@@ -78,11 +74,6 @@ project "Wizzard"
 		"Tolk",
 		"Box2D"
 	}
-
-	--flags
-	--{
-	--	"NoPCH"
-	--}
 
 	filter "system:windows"
 		systemversion "latest"
