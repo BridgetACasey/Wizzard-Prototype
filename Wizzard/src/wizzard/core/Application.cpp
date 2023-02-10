@@ -18,7 +18,7 @@ namespace Wizzard
 
 	Application* Application::appInstance = nullptr;
 
-	Application::Application()
+	Application::Application() : camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		WIZ_ASSERT(!appInstance, "Application already exists!");
 		appInstance = this;
@@ -88,11 +88,13 @@ namespace Wizzard
 			out vec3 v_Position;
 			out vec4 v_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0);	
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
 			}
 		)";
 
@@ -118,7 +120,11 @@ namespace Wizzard
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
+
 			void main()
 			{
 				v_Position = a_Position;
@@ -130,7 +136,9 @@ namespace Wizzard
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
+
 			in vec3 v_Position;
+
 			void main()
 			{
 				color = vec4(0.2, 0.3, 0.8, 1.0);
@@ -178,16 +186,16 @@ namespace Wizzard
 
 		while (running)
 		{
-			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 			RenderCommand::Clear();
 
-			Renderer::BeginScene();
+			camera.SetPosition({ 0.5f, 0.5f, 0.0f });
+			camera.SetRotation(45.0f);
 
-			blueShader->Bind();
-			Renderer::Submit(squareVA);
+			Renderer::BeginScene(camera);
 
-			shader->Bind();
-			Renderer::Submit(vertexArray);
+			Renderer::Submit(blueShader, squareVA);
+			Renderer::Submit(shader, vertexArray);
 
 			Renderer::EndScene();
 

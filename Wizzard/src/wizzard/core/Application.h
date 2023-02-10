@@ -11,6 +11,7 @@
 #include "wizzard/imgui/ImGuiLayer.h"
 #include "wizzard/rendering/Buffer.h"
 #include "wizzard/rendering/VertexArray.h"
+#include "wizzard/rendering/OrthographicCamera.h"
 
 namespace Wizzard
 {
@@ -47,9 +48,11 @@ namespace Wizzard
 		std::shared_ptr<VertexArray> vertexArray;
 		std::unique_ptr<VertexBuffer> vertexBuffer;
 		std::unique_ptr<IndexBuffer> indexBuffer;
-		std::unique_ptr<Shader> shader;
+		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Shader> blueShader;
 		std::shared_ptr<VertexArray> squareVA;
+
+		OrthographicCamera camera;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
