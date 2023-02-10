@@ -5,13 +5,10 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
-#include "wizzard/rendering/Shader.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/imgui/ImGuiLayer.h"
-#include "wizzard/rendering/Buffer.h"
-#include "wizzard/rendering/VertexArray.h"
-#include "wizzard/rendering/OrthographicCamera.h"
+#include "Timestep.h"
 
 namespace Wizzard
 {
@@ -45,14 +42,7 @@ namespace Wizzard
 
 		ImGuiLayer* imguiLayer;
 
-		std::shared_ptr<VertexArray> vertexArray;
-		std::unique_ptr<VertexBuffer> vertexBuffer;
-		std::unique_ptr<IndexBuffer> indexBuffer;
-		std::shared_ptr<Shader> shader;
-		std::shared_ptr<Shader> blueShader;
-		std::shared_ptr<VertexArray> squareVA;
-
-		OrthographicCamera camera;
+		float lastFrameTime = 0.0f;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
