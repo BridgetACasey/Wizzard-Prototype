@@ -13,8 +13,6 @@
 
 #include "core/Application.h"
 
-#include "Tolk.h"
-
 #include "ImGuiAccessibility.h"
 
 namespace Wizzard
@@ -39,12 +37,11 @@ namespace Wizzard
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-		
+
 		//Set scaling options, may do this in a different class for user preferences later
-		ImGuiAccessibility::SetButtonFontScale(3.5f);
+		ImGuiAccessibility::SetButtonFontScale(6.0f);
 
 		//Apply scaling options
-		//io.FontGlobalScale *= ImGuiAccessibility::GetButtonFontScale();
 		ImFontConfig imFontConfig;
 		imFontConfig.SizePixels = 13.0f * ImGuiAccessibility::GetButtonFontScale();
 		io.Fonts->AddFontFromFileTTF("OpenSans-Bold.ttf", imFontConfig.SizePixels, &imFontConfig);
@@ -59,6 +56,9 @@ namespace Wizzard
 		{
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+			style.Colors[ImGuiCol_Button] = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
+			style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+			style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.6f, 0.6f, 0.6f, 1.0f);
 		}
 
 		Application& app = Application::Get();
@@ -106,18 +106,107 @@ namespace Wizzard
 	{
 		Begin();
 
+		//TEMP CODE FOR TESTING & DEMO PURPOSES ONLY
+		//UI will not be handled like this in final application
+		//It's also a bit buggy when clicking on menu items/dropdowns but acceptable for demo only
+
 		static bool read = true;
 
-		ImGui::Begin("Editor Toolbar");
+		//Temporary value for opening menus
+		static bool openFileMenu = false;
+		static bool openEditMenu = false;
+		static bool openObjectMenu = false;
+		static bool openConsoleMenu = false;
+		static bool openSettingsMenu = false;
+		static bool openExitMenu = false;
 
-		ImGuiAccessibility::Button("File", L"File", read, ImVec2(350.0f, 125.0f));
-		ImGuiAccessibility::Button("Edit", L"Edit", read, ImVec2(350.0f, 125.0f));
-		ImGuiAccessibility::Button("Objects", L"Objects", read, ImVec2(350.0f, 125.0f));
-		ImGuiAccessibility::Button("Console", L"Console", read, ImVec2(350.0f, 125.0f));
-		ImGuiAccessibility::Button("Settings", L"Settings", read, ImVec2(350.0f, 125.0f));
-		ImGuiAccessibility::Button("Exit", L"Exit", read, ImVec2(350.0f, 125.0f));
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGuiAccessibility::Button("File", L"File Tab", read, ImVec2(311.0f, 80.5f)))
+				openFileMenu = !openFileMenu;
 
-		ImGui::End();
+			if (ImGuiAccessibility::Button("Edit", L"Edit Tab", read, ImVec2(311.0f, 80.5f)))
+				openEditMenu = !openEditMenu;
+
+			if (ImGuiAccessibility::Button("Object", L"Object Tab", read, ImVec2(311.0f, 80.5f)))
+				openObjectMenu = !openObjectMenu;
+
+			if (ImGuiAccessibility::Button("Console", L"Console Tab", read, ImVec2(311.0f, 80.5f)))
+				openConsoleMenu = !openConsoleMenu;
+
+			if (ImGuiAccessibility::Button("Settings", L"Settings Tab", read, ImVec2(311.0f, 80.5f)))
+				openSettingsMenu = !openSettingsMenu;
+
+			if (ImGuiAccessibility::Button("Exit", L"Exit Tab", read, ImVec2(311.0f, 80.5f)))
+				openExitMenu = !openExitMenu;
+
+			ImGui::EndMainMenuBar();
+		}
+
+		if (openFileMenu)
+		{
+			if (ImGui::Begin("File Menu"))
+			{
+				ImGui::TextWrapped("Project functions like saving go here!");
+				ImGui::End();
+			}
+		}
+
+		if (openEditMenu)
+		{
+			if (ImGui::Begin("Edit Menu"))
+			{
+				ImGui::TextWrapped("Editing functions found here!");
+				ImGui::End();
+			}
+		}
+
+		if (openObjectMenu)
+		{
+			if (ImGui::Begin("Object Menu"))
+			{
+				ImGui::TextWrapped("Scene hierarchy data found here!");
+				ImGui::End();
+			}
+		}
+
+		if (openConsoleMenu)
+		{
+			if (ImGui::Begin("Console Menu"))
+			{
+				ImGui::TextWrapped("Debug information goes here!");
+				ImGui::End();
+			}
+		}
+
+		if (openSettingsMenu)
+		{
+			if (ImGui::Begin("Settings Menu"))
+			{
+				ImGui::TextWrapped("User preferences go here!");
+				ImGui::End();
+			}
+		}
+
+		if (openExitMenu)
+		{
+			if (ImGui::Begin("Exit Menu"))
+			{
+				ImGui::Text("Quit application?");
+
+				if (ImGuiAccessibility::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
+				{
+					Application::Get().Close();
+				}
+
+				ImGui::SameLine();
+
+				if (ImGuiAccessibility::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
+					openExitMenu = false;
+
+				ImGui::End();
+			}
+		}
 
 		End();
 	}

@@ -10,8 +10,6 @@ int main(int argc, int** argv)
 {
 	Wizzard::Log::Init();
 
-	WIZ_INFO("Initialised WIZZARD Engine Log");
-
 	auto app = Wizzard::CreateApplication();
 
 	app->Run();

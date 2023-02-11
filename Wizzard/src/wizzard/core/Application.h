@@ -19,6 +19,7 @@ namespace Wizzard
 		virtual ~Application();
 
 		void Run();
+		void Close();
 
 		void OnEvent(Event& event);
 
@@ -28,6 +29,10 @@ namespace Wizzard
 		Window& GetWindow() { return *window; }
 
 		static Application& Get() { return *appInstance; }
+
+	protected:
+		virtual void OnApplicationInit();
+		virtual void OnApplicationShutdown();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& windowCloseEvent);
