@@ -1,6 +1,7 @@
 //@BridgetACasey
 
 #include <Wizzard.h>
+#include <wizzard/core/EntryPoint.h>
 
 #include "imgui/imgui.h"
 
@@ -13,12 +14,14 @@
 #include "wizzard/rendering/Texture.h"
 #include "wizzard/core/OrthographicCameraController.h"
 
+#include "SceneApp2D.h"
+
 class ExampleLayer : public Wizzard::Layer
 {
 public:
 	ExampleLayer() : Layer("Example"), orthoCamController(1920.0f / 1080.0f)
 	{
-		vertexArray.reset(Wizzard::VertexArray::Create());
+		vertexArray = Wizzard::VertexArray::Create();
 
 		float vertices[3 * 7] =
 		{
@@ -45,7 +48,7 @@ public:
 		indexBuff.reset(Wizzard::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		vertexArray->SetIndexBuffer(indexBuff);
 
-		squareVA.reset(Wizzard::VertexArray::Create());
+		squareVA = Wizzard::VertexArray::Create();
 
 		float squareVertices[5 * 4] =
 		{
@@ -214,7 +217,8 @@ class UserApplication : public Wizzard::Application
 public:
 	UserApplication()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new SceneApp2D());
 	}
 
 	~UserApplication()

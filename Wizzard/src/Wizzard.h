@@ -20,6 +20,3 @@
 #include "wizzard/rendering/VertexArray.h"
 #include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/OrthographicCamera.h"
-
-//Program entry point
-#include "wizzard/core/EntryPoint.h"
