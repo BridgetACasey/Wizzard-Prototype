@@ -17,6 +17,7 @@
 #include "wizzard/rendering/Buffer.h"
 #include "wizzard/rendering/Shader.h"
 #include "wizzard/rendering/VertexArray.h"
+#include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/OrthographicCamera.h"
 
 //Program entry point

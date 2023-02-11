@@ -10,6 +10,7 @@
 #include "wizzard/physics/Physics2D.h"
 
 #include "wizzard/platform/opengl/OpenGLShader.h"
+#include "wizzard/rendering/Texture.h"
 
 class ExampleLayer : public Wizzard::Layer
 {
@@ -45,18 +46,19 @@ public:
 
 		squareVA.reset(Wizzard::VertexArray::Create());
 
-		float squareVertices[3 * 4] =
+		float squareVertices[5 * 4] =
 		{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		Wizzard::Ref<Wizzard::VertexBuffer> squareVB;
 		squareVB.reset(Wizzard::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout({
-			{Wizzard::ShaderDataType::Float3, "a_Position" }
+			{Wizzard::ShaderDataType::Float3, "a_Position"},
+			{Wizzard::ShaderDataType::Float2, "a_TexCoord"}
 			});
 		squareVA->AddVertexBuffer(squareVB);
 
@@ -136,6 +138,42 @@ public:
 		)";
 
 		flatShader.reset(Wizzard::Shader::Create(flatVertexSrc, flatFragmentSrc));
+
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+			out vec2 v_TexCoord;
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+			}
+		)";
+
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+			in vec2 v_TexCoord;
+			
+			uniform sampler2D u_Texture;
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		textureShader.reset(Wizzard::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+
+		texture = Wizzard::Texture2D::Create("res/textures/potatolizard.png");
+		logoTexture = Wizzard::Texture2D::Create("res/textures/eso-launch-all-icon.png");
+
+		std::dynamic_pointer_cast<Wizzard::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Wizzard::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Wizzard::Timestep timeStep) override
@@ -177,7 +215,11 @@ public:
 				Wizzard::Renderer::Submit(flatShader, squareVA, transform);
 			}
 		}
-		Wizzard::Renderer::Submit(shader, vertexArray);
+
+		texture->Bind();
+		Wizzard::Renderer::Submit(textureShader, squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		logoTexture->Bind();
+		Wizzard::Renderer::Submit(textureShader, squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		Wizzard::Renderer::EndScene();
 	}
@@ -198,8 +240,9 @@ private:
 	Wizzard::Ref<Wizzard::Shader> shader;
 	Wizzard::Ref<Wizzard::VertexArray> vertexArray;
 
-	Wizzard::Ref<Wizzard::Shader> flatShader;
+	Wizzard::Ref<Wizzard::Shader> flatShader, textureShader;
 	Wizzard::Ref<Wizzard::VertexArray> squareVA;
+	Wizzard::Ref<Wizzard::Texture2D> texture, logoTexture;
 
 	Wizzard::OrthographicCamera camera;
 	glm::vec3 cameraPosition;

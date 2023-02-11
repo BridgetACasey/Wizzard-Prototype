@@ -16,6 +16,7 @@ IncludeDir["Glad"] = "Wizzard/lib/glad/include"
 IncludeDir["ImGui"] = "Wizzard/lib/imgui"
 IncludeDir["GLM"] = "Wizzard/lib/glm"
 IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
+IncludeDir["stb_image"] = "Wizzard/lib/stb_image"
 IncludeDir["Box2D"] = "Wizzard/lib/box2d/include"
 
 include "Wizzard/lib/glfw"
@@ -41,6 +42,8 @@ project "Wizzard"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/lib/stb_image/**.cpp",
+		"%{prj.name}/lib/stb_image/**.cpp",
 		"%{prj.name}/lib/glm/glm/**.hpp",
 		"%{prj.name}/lib/glm/glm/**.inl"
 	}
@@ -62,6 +65,7 @@ project "Wizzard"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
+		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.Box2D}"
 	}
 

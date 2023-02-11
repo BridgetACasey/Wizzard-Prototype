@@ -28,6 +28,8 @@ namespace Wizzard
 		window = std::unique_ptr<Window>(Window::Create());
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
+		Renderer::Init();
+
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
 	}
