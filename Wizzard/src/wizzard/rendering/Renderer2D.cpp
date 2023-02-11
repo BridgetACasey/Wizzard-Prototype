@@ -14,8 +14,8 @@ namespace Wizzard
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> quadVertexArray;
-		Ref<Shader> flatColorShader;
 		Ref<Shader> textureShader;
+		Ref<Texture2D> whiteTexture;
 	};
 
 	static Renderer2DStorage* data;
@@ -46,7 +46,10 @@ namespace Wizzard
 		squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		data->quadVertexArray->SetIndexBuffer(squareIB);
 
-		data->flatColorShader = Shader::Create("res/shaders/FlatColorShader.glsl");
+		data->whiteTexture = Texture2D::Create(1, 1);
+		uint32_t whiteTextureData = 0xffffffff;
+		data->whiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+
 		data->textureShader = Shader::Create("res/shaders/TextureShader.glsl");
 		data->textureShader->Bind();
 		data->textureShader->SetInt("u_Texture", 0);
@@ -59,9 +62,6 @@ namespace Wizzard
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		data->flatColorShader->Bind();
-		data->flatColorShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		
 		data->textureShader->Bind();
 		data->textureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
@@ -77,11 +77,11 @@ namespace Wizzard
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
-		data->flatColorShader->Bind();
-		data->flatColorShader->SetFloat4("u_Color", color);
+		data->textureShader->SetFloat4("u_Color", color);
+		data->whiteTexture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		data->flatColorShader->SetMat4("u_Transform", transform);
+		data->textureShader->SetMat4("u_Transform", transform);
 
 		data->quadVertexArray->Bind();
 		RenderCommand::DrawIndexed(data->quadVertexArray);
@@ -94,12 +94,11 @@ namespace Wizzard
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
-		data->textureShader->Bind();
+		data->textureShader->SetFloat4("u_Color", glm::vec4(1.0f));
+		texture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		data->textureShader->SetMat4("u_Transform", transform);
-
-		texture->Bind();
 
 		data->quadVertexArray->Bind();
 		RenderCommand::DrawIndexed(data->quadVertexArray);
