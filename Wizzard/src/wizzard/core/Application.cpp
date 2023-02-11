@@ -30,8 +30,6 @@ namespace Wizzard
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
-
-		
 	}
 
 	Application::~Application()

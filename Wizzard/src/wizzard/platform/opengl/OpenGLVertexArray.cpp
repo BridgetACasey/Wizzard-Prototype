@@ -49,7 +49,7 @@ namespace Wizzard
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		WIZ_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -72,7 +72,7 @@ namespace Wizzard
 		vertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& buffer)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 	{
 		glBindVertexArray(rendererID);
 		buffer->Bind();

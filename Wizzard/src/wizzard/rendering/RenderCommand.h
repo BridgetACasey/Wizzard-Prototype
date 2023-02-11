@@ -19,7 +19,7 @@ namespace Wizzard
 			rendererAPI->Clear();
 		}
 
-		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			rendererAPI->DrawIndexed(vertexArray);
 		}

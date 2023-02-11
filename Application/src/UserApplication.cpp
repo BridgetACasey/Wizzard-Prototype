@@ -25,10 +25,10 @@ public:
 			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		std::shared_ptr<Wizzard::VertexBuffer> vertexBuffer;
+		Wizzard::Ref<Wizzard::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Wizzard::VertexBuffer::Create(vertices, sizeof(vertices)));
 
-		std::shared_ptr<Wizzard::VertexBuffer> vertexBuff;
+		Wizzard::Ref<Wizzard::VertexBuffer> vertexBuff;
 		vertexBuff.reset(Wizzard::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Wizzard::BufferLayout layout =
 		{
@@ -39,7 +39,7 @@ public:
 		vertexArray->AddVertexBuffer(vertexBuff);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<Wizzard::IndexBuffer> indexBuff;
+		Wizzard::Ref<Wizzard::IndexBuffer> indexBuff;
 		indexBuff.reset(Wizzard::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		vertexArray->SetIndexBuffer(indexBuff);
 
@@ -53,7 +53,7 @@ public:
 			-0.5f,  0.5f, 0.0f
 		};
 
-		std::shared_ptr<Wizzard::VertexBuffer> squareVB;
+		Wizzard::Ref<Wizzard::VertexBuffer> squareVB;
 		squareVB.reset(Wizzard::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout({
 			{Wizzard::ShaderDataType::Float3, "a_Position" }
@@ -61,7 +61,7 @@ public:
 		squareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		std::shared_ptr<Wizzard::IndexBuffer> squareIB;
+		Wizzard::Ref<Wizzard::IndexBuffer> squareIB;
 		squareIB.reset(Wizzard::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		squareVA->SetIndexBuffer(squareIB);
 
@@ -195,11 +195,11 @@ public:
 	}
 
 private:
-	std::shared_ptr<Wizzard::Shader> shader;
-	std::shared_ptr<Wizzard::VertexArray> vertexArray;
+	Wizzard::Ref<Wizzard::Shader> shader;
+	Wizzard::Ref<Wizzard::VertexArray> vertexArray;
 
-	std::shared_ptr<Wizzard::Shader> flatShader;
-	std::shared_ptr<Wizzard::VertexArray> squareVA;
+	Wizzard::Ref<Wizzard::Shader> flatShader;
+	Wizzard::Ref<Wizzard::VertexArray> squareVA;
 
 	Wizzard::OrthographicCamera camera;
 	glm::vec3 cameraPosition;
