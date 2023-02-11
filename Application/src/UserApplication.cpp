@@ -6,15 +6,16 @@
 
 //#include "box2d/box2d.h"
 #include "glm/ext/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "wizzard/physics/Physics2D.h"
+
+#include "wizzard/platform/opengl/OpenGLShader.h"
 
 class ExampleLayer : public Wizzard::Layer
 {
 public:
 	ExampleLayer() : Layer("Example"), camera(-1.6f, 1.6f, -0.9f, 0.9f), cameraPosition(0.0f)
 	{
-		/////
-
 		vertexArray.reset(Wizzard::VertexArray::Create());
 
 		float vertices[3 * 7] =
@@ -101,9 +102,9 @@ public:
 			}
 		)";
 
-		shader.reset(new Wizzard::Shader(vertexSrc, fragmentSrc));
+		shader.reset(Wizzard::Shader::Create(vertexSrc, fragmentSrc));
 
-		std::string blueShaderVertexSrc = R"(
+		std::string flatVertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -120,20 +121,21 @@ public:
 			}
 		)";
 
-		std::string blueShaderFragmentSrc = R"(
+		std::string flatFragmentSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
+			uniform vec3 u_Color;
 
 			void main()
 			{
-				color = vec4(0.2, 0.3, 0.8, 1.0);
+				color = vec4(u_Color, 1.0);
 			}
 		)";
 
-		blueShader.reset(new Wizzard::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+		flatShader.reset(Wizzard::Shader::Create(flatVertexSrc, flatFragmentSrc));
 	}
 
 	void OnUpdate(Wizzard::Timestep timeStep) override
@@ -163,13 +165,16 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+		std::dynamic_pointer_cast<Wizzard::OpenGLShader>(flatShader)->Bind();
+		std::dynamic_pointer_cast<Wizzard::OpenGLShader>(flatShader)->UploadUniformFloat3("u_Color", squareColor);
+
 		for (int y = 0; y < 20; y++)
 		{
 			for (int x = 0; x < 20; x++)
 			{
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Wizzard::Renderer::Submit(blueShader, squareVA, transform);
+				Wizzard::Renderer::Submit(flatShader, squareVA, transform);
 			}
 		}
 		Wizzard::Renderer::Submit(shader, vertexArray);
@@ -179,9 +184,9 @@ public:
 
 	void OnImGuiRender() override
 	{
-		//ImGui::Begin("Test");
-		//ImGui::Text("Hello World");
-		//ImGui::End();
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(squareColor));
+		ImGui::End();
 	}
 
 	void OnEvent(Wizzard::Event& event) override
@@ -193,7 +198,7 @@ private:
 	std::shared_ptr<Wizzard::Shader> shader;
 	std::shared_ptr<Wizzard::VertexArray> vertexArray;
 
-	std::shared_ptr<Wizzard::Shader> blueShader;
+	std::shared_ptr<Wizzard::Shader> flatShader;
 	std::shared_ptr<Wizzard::VertexArray> squareVA;
 
 	Wizzard::OrthographicCamera camera;
@@ -202,6 +207,8 @@ private:
 
 	float cameraRotation = 0.0f;
 	float cameraRotationSpeed = 180.0f;
+
+	glm::vec3 squareColor = { 0.2f, 0.3f, 0.8f };
 };
 
 class UserApplication : public Wizzard::Application
@@ -210,7 +217,6 @@ public:
 	UserApplication()
 	{
 		PushLayer(new ExampleLayer());
-		//PushOverlay(new Wizzard::ImGuiLayer());
 	}
 
 	~UserApplication()
