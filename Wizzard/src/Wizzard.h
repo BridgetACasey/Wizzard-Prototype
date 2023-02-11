@@ -10,6 +10,7 @@
 #include "wizzard/core/KeyCode.h"
 #include "wizzard/core/MouseCode.h"
 #include "wizzard/imgui/ImGuiLayer.h"
+#include "wizzard/core/OrthographicCameraController.h"
 
 //Renderer
 #include "wizzard/rendering/Renderer.h"

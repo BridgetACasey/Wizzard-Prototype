@@ -11,11 +11,12 @@
 
 #include "wizzard/platform/opengl/OpenGLShader.h"
 #include "wizzard/rendering/Texture.h"
+#include "wizzard/core/OrthographicCameraController.h"
 
 class ExampleLayer : public Wizzard::Layer
 {
 public:
-	ExampleLayer() : Layer("Example"), camera(-1.6f, 1.6f, -0.9f, 0.9f), cameraPosition(0.0f)
+	ExampleLayer() : Layer("Example"), orthoCamController(1920.0f / 1080.0f)
 	{
 		vertexArray.reset(Wizzard::VertexArray::Create());
 
@@ -150,28 +151,12 @@ public:
 
 	void OnUpdate(Wizzard::Timestep timeStep) override
 	{
-		if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Left))
-			cameraPosition.x -= cameraMoveSpeed * timeStep;
-		else if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Right))
-			cameraPosition.x += cameraMoveSpeed * timeStep;
-
-		if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Up))
-			cameraPosition.y += cameraMoveSpeed * timeStep;
-		else if (Wizzard::Input::IsKeyPressed(Wizzard::Key::Down))
-			cameraPosition.y -= cameraMoveSpeed * timeStep;
-
-		if (Wizzard::Input::IsKeyPressed(Wizzard::Key::A))
-			cameraRotation += cameraRotationSpeed * timeStep;
-		if (Wizzard::Input::IsKeyPressed(Wizzard::Key::D))
-			cameraRotation -= cameraRotationSpeed * timeStep;
+		orthoCamController.OnUpdate(timeStep);
 
 		Wizzard::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		Wizzard::RenderCommand::Clear();
 
-		camera.SetPosition(cameraPosition);
-		camera.SetRotation(cameraRotation);
-
-		Wizzard::Renderer::BeginScene(camera);
+		Wizzard::Renderer::BeginScene(orthoCamController.GetCamera());
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -207,7 +192,7 @@ public:
 
 	void OnEvent(Wizzard::Event& event) override
 	{
-		//APP_TRACE("{0}", event);
+		orthoCamController.OnEvent(event);
 	}
 
 private:
@@ -219,12 +204,7 @@ private:
 	Wizzard::Ref<Wizzard::VertexArray> squareVA;
 	Wizzard::Ref<Wizzard::Texture2D> texture, logoTexture;
 
-	Wizzard::OrthographicCamera camera;
-	glm::vec3 cameraPosition;
-	float cameraMoveSpeed = 5.0f;
-
-	float cameraRotation = 0.0f;
-	float cameraRotationSpeed = 180.0f;
+	Wizzard::OrthographicCameraController orthoCamController;
 
 	glm::vec3 squareColor = { 0.2f, 0.3f, 0.8f };
 };
