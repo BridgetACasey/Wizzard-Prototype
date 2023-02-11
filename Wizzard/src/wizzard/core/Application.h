@@ -36,10 +36,12 @@ namespace Wizzard
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& windowCloseEvent);
+		bool OnWindowResize(WindowResizeEvent& windowResizeEvent);
 		
 		std::unique_ptr<Window> window;
 
 		bool running = true;
+		bool minimized = false;
 
 		LayerStack layerStack;
 

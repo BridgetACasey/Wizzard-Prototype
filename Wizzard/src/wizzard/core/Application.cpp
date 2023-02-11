@@ -49,9 +49,12 @@ namespace Wizzard
 			Timestep timeStep = time - lastFrameTime;
 			lastFrameTime = time;
 
-			for (Layer* layer : layerStack)
+			if (!minimized)
 			{
-				layer->OnUpdate(timeStep);
+				for (Layer* layer : layerStack)
+				{
+					layer->OnUpdate(timeStep);
+				}
 			}
 
 			imguiLayer->OnImGuiRender();
@@ -72,6 +75,7 @@ namespace Wizzard
 		EventHandler eventHandler(event);
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		eventHandler.HandleEvent<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
@@ -141,6 +145,21 @@ namespace Wizzard
 	bool Application::OnWindowClose(WindowCloseEvent& windowCloseEvent)
 	{
 		running = false;
+
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& windowResizeEvent)
+	{
+		if (windowResizeEvent.GetWidth() == 0 || windowResizeEvent.GetHeight() == 0)
+		{
+			minimized = true;
+			return false;
+		}
+
+		minimized = false;
+		Renderer::OnWindowResize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+		return false;
 	}
 }

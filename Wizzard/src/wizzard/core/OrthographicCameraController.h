@@ -19,6 +19,9 @@ namespace Wizzard
 
 		OrthographicCamera& GetCamera() { return camera; }
 
+		float GetZoomLevel() const { return zoomLevel; }
+		void SetZoomLevel(float level) { zoomLevel = level; }
+
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& event);
 		bool OnWindowResized(WindowResizeEvent& event);
