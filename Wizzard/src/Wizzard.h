@@ -14,6 +14,7 @@
 
 //Renderer
 #include "wizzard/rendering/Renderer.h"
+#include "wizzard/rendering/Renderer2D.h"
 #include "wizzard/rendering/RenderCommand.h"
 #include "wizzard/rendering/Buffer.h"
 #include "wizzard/rendering/Shader.h"

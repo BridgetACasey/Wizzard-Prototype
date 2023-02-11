@@ -24,5 +24,7 @@ private:
 	Wizzard::Ref<Wizzard::VertexArray> squareVA;
 	Wizzard::Ref<Wizzard::Shader> flatShader;
 
+	Wizzard::Ref<Wizzard::Texture2D> lizardTexture;
+
 	glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };
