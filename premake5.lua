@@ -18,12 +18,14 @@ IncludeDir["GLM"] = "Wizzard/lib/glm"
 IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
 IncludeDir["stb_image"] = "Wizzard/lib/stb_image"
 IncludeDir["Box2D"] = "Wizzard/lib/box2d/include"
+IncludeDir["OpenALSoft"] = "Wizzard/lib/openal-soft"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
 include "Wizzard/lib/imgui"
 include "Wizzard/lib/tolk"
 include "Wizzard/lib/box2d"
+include "Wizzard/lib/openal-soft"
 
 project "Wizzard"
 	location "Wizzard"
@@ -42,7 +44,7 @@ project "Wizzard"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/lib/stb_image/**.cpp",
+		"%{prj.name}/lib/stb_image/**.h",
 		"%{prj.name}/lib/stb_image/**.cpp",
 		"%{prj.name}/lib/glm/glm/**.hpp",
 		"%{prj.name}/lib/glm/glm/**.inl"
@@ -51,6 +53,7 @@ project "Wizzard"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
+		"AL_LIBTYPE_STATIC",
 		"_EXPORTING"
 	}
 
@@ -66,7 +69,11 @@ project "Wizzard"
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.Box2D}"
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.OpenALSoft}",
+		"Wizzard/lib/openal-soft/include",
+		"Wizzard/lib/openal-soft/common",
+		"Wizzard/lib/openal-soft/common/example"
 	}
 
 	links
@@ -76,7 +83,8 @@ project "Wizzard"
 		"Glad",
 		"ImGui",
 		"Tolk",
-		"Box2D"
+		"Box2D",
+		"OpenALSoft"
 	}
 
 	filter "system:windows"

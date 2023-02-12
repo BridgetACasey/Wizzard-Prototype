@@ -2,6 +2,7 @@
 
 #pragma once
 
+//Core
 #include "wizzard/core/Application.h"
 #include "wizzard/core/Layer.h"
 #include "wizzard/core/Log.h"
@@ -21,3 +22,7 @@
 #include "wizzard/rendering/VertexArray.h"
 #include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/OrthographicCamera.h"
+
+//Audio
+#include "wizzard/audio/Audio.h"
+#include "wizzard/audio/AudioSource.h"

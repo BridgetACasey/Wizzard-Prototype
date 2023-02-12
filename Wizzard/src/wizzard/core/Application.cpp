@@ -10,6 +10,8 @@
 
 #include "wizzard/rendering/Renderer.h"
 
+#include "wizzard/audio/Audio.h"
+
 #include "Tolk.h"
 
 #include "physics/Physics2D.h"
@@ -29,6 +31,7 @@ namespace Wizzard
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
+		//Audio::Init();
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);

@@ -16,3 +16,6 @@
 [submodule "Wizzard/lib/box2d"]
 	path = Wizzard/lib/box2d
 	url = https://github.com/BridgetACasey/box2d.git
+[submodule "Wizzard/lib/openal-soft"]
+	path = Wizzard/lib/openal-soft
+	url = https://github.com/BridgetACasey/openal-soft.git
