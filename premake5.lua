@@ -59,6 +59,7 @@ project "Wizzard"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		"AL_LIBTYPE_STATIC",
+		"RESTRICT=__restrict",
 		"_EXPORTING"
 	}
 
@@ -78,10 +79,10 @@ project "Wizzard"
 		"%{IncludeDir.OpenALSoft}",
 		"Wizzard/lib/openal-soft/include",
 		"Wizzard/lib/openal-soft/include/AL",
+		"Wizzard/lib/openal-soft/common",
 		"Wizzard/lib/openal-soft/core",
 		"Wizzard/lib/openal-soft/al",
 		"Wizzard/lib/openal-soft/alc",
-		"Wizzard/lib/openal-soft/common",
 		"Wizzard/lib/openal-soft/examples/common"
 	}
 

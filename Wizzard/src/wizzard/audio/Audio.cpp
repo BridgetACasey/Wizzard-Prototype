@@ -10,59 +10,61 @@
 #include "examples/common/alhelpers.h"
 
 #include "AudioSource.h"
+#include "alc/context.h"
+#include "alc/device.h"
 
 namespace Wizzard
 {
-	static ALCdevice* s_AudioDevice = nullptr;
-	//static mp3dec_t s_Mp3d;
-
-	static uint8_t* s_AudioScratchBuffer;
-	static uint32_t s_AudioScratchBufferSize = 10 * 1024 * 1024; // 10mb initially
-
-	static bool s_DebugLog = true;
-
 	// Currently supported file formats
 	enum class AudioFileFormat
 	{
-		None = 0,
-		Ogg,
-		MP3
+		NONE = 0,
+		MP3,
+		OGG
 	};
 
-	static void PrintAudioDeviceInfo()
+	struct AudioData
 	{
-		//if (s_DebugLog)
-		//{
-		//	WIZ_INFO("Audio Device Info:");
-		//	WIZ_INFO("Name: " << s_AudioDevice->DeviceName);
-		//	WIZ_INFO("Sample Rate: " << s_AudioDevice->Frequency);
-		//	WIZ_INFO("Max Sources: " << s_AudioDevice->SourcesMax);
-		//	WIZ_INFO("Mono: " << s_AudioDevice->NumMonoSources);
-		//	WIZ_INFO("Stereo: " << s_AudioDevice->NumStereoSources);
-		//}
-	}
+		ALCcontext* context;
+		ALCdevice* device;
+	};
+
+	//TODO:: Make this accessible through Audio header and in the rest of the project
+	static AudioData* audioData = new AudioData();
+
+	static bool debugLogging = true;
 
 	void Audio::Init()
 	{
-		//if (InitAL(s_AudioDevice, nullptr) != 0)
 		if (InitAL(nullptr, nullptr) != 0)
-			WIZ_ERROR("Audio device error!");
+			WIZ_ERROR("Audio device error! Could not initialise OpenAL!");
 		else
+		{
+			audioData->context = alcGetCurrentContext();
+			audioData->device = alcGetContextsDevice(audioData->context);
+
+			if (audioData->device)
+				PrintAudioDeviceInfo();
+
 			WIZ_INFO("Successfully initalised OpenAL...");
+		}
+	}
 
-		PrintAudioDeviceInfo();
+	void Audio::SetDebugLogging(bool log)
+	{
+	}
 
-		//mp3dec_init(&s_Mp3d);
-
-		s_AudioScratchBuffer = new uint8_t[s_AudioScratchBufferSize];
-
-		// Init listener
-		ALfloat listenerPos[] = { 0.0,0.0,0.0 };
-		ALfloat listenerVel[] = { 0.0,0.0,0.0 };
-		ALfloat listenerOri[] = { 0.0,0.0,-1.0, 0.0,1.0,0.0 };
-		alListenerfv(AL_POSITION, listenerPos);
-		alListenerfv(AL_VELOCITY, listenerVel);
-		alListenerfv(AL_ORIENTATION, listenerOri);
+	void Audio::PrintAudioDeviceInfo()
+	{
+		if(debugLogging)
+		{
+			WIZ_INFO("---Audio Device Information---");
+			WIZ_INFO("Name: {0}", audioData->device->DeviceName);
+			WIZ_INFO("Sample Rate: {0}", audioData->device->Frequency);
+			WIZ_INFO("Max Sources: {0}", audioData->device->SourcesMax);
+			WIZ_INFO("Mono: {0}", audioData->device->NumMonoSources);
+			WIZ_INFO("Stereo: {0}", audioData->device->NumStereoSources);
+		}
 	}
 
 	AudioSource Audio::LoadAudioSource(const std::string& filename)
@@ -71,10 +73,6 @@ namespace Wizzard
 	}
 
 	void Audio::Play(const AudioSource& source)
-	{
-	}
-
-	void Audio::SetDebugLogging(bool log)
 	{
 	}
 
