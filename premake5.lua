@@ -52,7 +52,9 @@ project "Wizzard"
 		"%{prj.name}/lib/stb_image/**.h",
 		"%{prj.name}/lib/stb_image/**.cpp",
 		"%{prj.name}/lib/glm/glm/**.hpp",
-		"%{prj.name}/lib/glm/glm/**.inl"
+		"%{prj.name}/lib/glm/glm/**.inl",
+		"%{prj.name}/lib/minimp3/minimp3.h",
+		"%{prj.name}/lib/minimp3/minimp3_ex.h"
 	}
 
 	defines
@@ -77,13 +79,14 @@ project "Wizzard"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.OpenALSoft}",
-		"Wizzard/lib/openal-soft/include",
-		"Wizzard/lib/openal-soft/include/AL",
-		"Wizzard/lib/openal-soft/common",
-		"Wizzard/lib/openal-soft/core",
-		"Wizzard/lib/openal-soft/al",
-		"Wizzard/lib/openal-soft/alc",
-		"Wizzard/lib/openal-soft/examples/common"
+		"%{prj.name}/lib/openal-soft/include",
+		"%{prj.name}/lib/openal-soft/include/AL",
+		"%{prj.name}/lib/openal-soft/common",
+		"%{prj.name}/lib/openal-soft/core",
+		"%{prj.name}/lib/openal-soft/al",
+		"%{prj.name}/lib/openal-soft/alc",
+		"%{prj.name}/lib/openal-soft/examples/common",
+		"%{prj.name}/lib/minimp3"
 	}
 
 	links

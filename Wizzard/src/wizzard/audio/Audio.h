@@ -2,10 +2,6 @@
 
 #pragma once
 
-//OpenAL forward declarations
-//struct ALCcontext;
-//struct ALCdevice;
-
 namespace Wizzard
 {
 	class AudioSource;
@@ -29,7 +25,5 @@ namespace Wizzard
 
 		//TODO: Implement support for .ogg files
 		static AudioSource LoadAudioSourceOgg(const std::string& filename);
-
-		//static AudioData* audioData;
 	};
 }

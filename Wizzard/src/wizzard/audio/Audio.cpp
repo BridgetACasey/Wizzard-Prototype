@@ -7,11 +7,18 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
+#include <thread>
+#include <filesystem>
+
 #include "examples/common/alhelpers.h"
 
 #include "AudioSource.h"
 #include "alc/context.h"
 #include "alc/device.h"
+
+#define MINIMP3_IMPLEMENTATION
+#include "minimp3.h"
+#include "minimp3_ex.h"
 
 namespace Wizzard
 {
@@ -20,7 +27,7 @@ namespace Wizzard
 	{
 		NONE = 0,
 		MP3,
-		OGG
+		OGG	//To come later
 	};
 
 	struct AudioData
@@ -34,6 +41,35 @@ namespace Wizzard
 
 	static bool debugLogging = true;
 
+	static mp3dec_t mp3d;
+
+	static uint8_t* audioScratchBuffer;
+	static uint32_t audioScratchBufferSize = 10 * 1024 * 1024; // 10mb initially
+
+	static AudioFileFormat GetFileFormat(const std::string& filename)
+	{
+		std::filesystem::path path = filename;
+		std::string extension = path.extension().string();
+
+		if (extension == ".mp3")  return AudioFileFormat::MP3;
+		if (extension == ".ogg")  return AudioFileFormat::OGG;
+
+		return AudioFileFormat::NONE;
+	}
+
+	static ALenum GetOpenALFormat(uint32_t channels)
+	{
+		// Note: sample size is always 2 bytes (16-bits) with
+		// both the .mp3 and .ogg decoders that we're using
+		switch (channels)
+		{
+		case 1:  return AL_FORMAT_MONO16;
+		case 2:  return AL_FORMAT_STEREO16;
+		}
+		// assert
+		return 0;
+	}
+
 	void Audio::Init()
 	{
 		if (InitAL(nullptr, nullptr) != 0)
@@ -45,6 +81,10 @@ namespace Wizzard
 
 			if (audioData->device)
 				PrintAudioDeviceInfo();
+
+			mp3dec_init(&mp3d);
+
+			audioScratchBuffer = new uint8_t[audioScratchBufferSize];
 
 			WIZ_INFO("Successfully initalised OpenAL...");
 		}
@@ -69,19 +109,72 @@ namespace Wizzard
 
 	AudioSource Audio::LoadAudioSource(const std::string& filename)
 	{
-		return AudioSource();
+		auto format = GetFileFormat(filename);
+		switch (format)
+		{
+		case AudioFileFormat::MP3:  return LoadAudioSourceMP3(filename);
+		case AudioFileFormat::OGG:  return LoadAudioSourceOgg(filename);
+		}
+
+		// Loading failed or unsupported file type
+		return { 0, false, 0 };
 	}
 
 	void Audio::Play(const AudioSource& source)
 	{
-	}
+		// Play the sound until it finishes
+		alSourcePlay(source.sourceHandle);
 
-	AudioSource Audio::LoadAudioSourceOgg(const std::string& filename)
-	{
-		return AudioSource();
+		// TODO: current playback time and playback finished callback
+		// eg.
+		// ALfloat offset;
+		// alGetSourcei(audioSource.sourceHandle, AL_SOURCE_STATE, &playState);
+		// ALenum playState;
+		// alGetSourcef(audioSource.sourceHandle, AL_SEC_OFFSET, &offset);
 	}
 
 	AudioSource Audio::LoadAudioSourceMP3(const std::string& filename)
+	{
+		mp3dec_file_info_t info;
+		int loadResult = mp3dec_load(&mp3d, filename.c_str(), &info, NULL, NULL);
+		uint32_t size = info.samples * sizeof(mp3d_sample_t);
+
+		auto sampleRate = info.hz;
+		auto channels = info.channels;
+		auto alFormat = GetOpenALFormat(channels);
+		float lengthSeconds = size / (info.avg_bitrate_kbps * 1024.0f);
+
+		ALuint buffer;
+		alGenBuffers(1, &buffer);
+		alBufferData(buffer, alFormat, info.buffer, size, sampleRate);
+
+		AudioSource result = { buffer, true, lengthSeconds };
+		alGenSources(1, &result.sourceHandle);
+		alSourcei(result.sourceHandle, AL_BUFFER, buffer);
+
+		if (debugLogging)
+		{
+			WIZ_INFO("File Info - {0}", filename);
+			WIZ_INFO("Channels: {0}", channels);
+			WIZ_INFO("Sample Rate: {0}", sampleRate);
+			WIZ_INFO("Size: {0} bytes", size);
+
+			auto [mins, secs] = result.GetLengthMinutesAndSeconds();
+			WIZ_INFO("  Length: {0}m {1}s", mins, secs);
+		}
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			WIZ_ERROR("Failed to setup sound source.");
+
+			if(!filename.empty())
+			WIZ_ERROR("Could not find sound source at {0}", filename);
+		}
+
+		return result;
+	}
+
+	AudioSource Audio::LoadAudioSourceOgg(const std::string& filename)
 	{
 		return AudioSource();
 	}

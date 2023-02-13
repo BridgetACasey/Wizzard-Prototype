@@ -12,9 +12,9 @@ namespace Wizzard
 		bool IsLoaded() const { return loaded; }
 
 		void SetPosition(float x, float y, float z);
-		void SetGain(float gain);
-		void SetPitch(float pitch);
-		void SetSpatial(bool spatial);
+		void SetGain(float g);
+		void SetPitch(float p);
+		void SetSpatial(bool s);
 		void SetLoop(bool loop);
 
 		std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
@@ -35,7 +35,7 @@ namespace Wizzard
 		float position[3] = { 0.0f, 0.0f, 0.0f };
 		float gain = 1.0f;
 		float pitch = 1.0f;
-		bool loop = false;
+		bool looping = false;
 
 		friend class Audio;
 	};

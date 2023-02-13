@@ -19,3 +19,6 @@
 [submodule "Wizzard/lib/openal-soft"]
 	path = Wizzard/lib/openal-soft
 	url = https://github.com/BridgetACasey/openal-soft.git
+[submodule "Wizzard/lib/minimp3"]
+	path = Wizzard/lib/minimp3
+	url = https://github.com/BridgetACasey/minimp3.git

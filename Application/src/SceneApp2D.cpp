@@ -14,6 +14,10 @@ SceneApp2D::SceneApp2D() : Layer("SceneApp2D"), orthoCamController(1920.0f / 108
 void SceneApp2D::OnAttach()
 {
 	customTexture = Wizzard::Texture2D::Create("res/textures/kate-derp.png");
+
+	auto audioSource = Wizzard::AudioSource::LoadFromFile("res/music/examplemusic.mp3", false);
+	audioSource.SetLoop(true);
+	Wizzard::Audio::Play(audioSource);
 }
 
 void SceneApp2D::OnDetach()
