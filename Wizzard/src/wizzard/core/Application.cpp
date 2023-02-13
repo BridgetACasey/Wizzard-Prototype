@@ -31,7 +31,7 @@ namespace Wizzard
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
-		//Audio::Init();
+		Audio::Init();
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
