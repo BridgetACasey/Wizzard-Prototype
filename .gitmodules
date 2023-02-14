@@ -22,3 +22,6 @@
 [submodule "Wizzard/lib/minimp3"]
 	path = Wizzard/lib/minimp3
 	url = https://github.com/BridgetACasey/minimp3.git
+[submodule "Wizzard/lib/vorbis"]
+	path = Wizzard/lib/vorbis
+	url = https://github.com/BridgetACasey/vorbis.git

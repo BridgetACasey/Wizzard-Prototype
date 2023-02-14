@@ -24,6 +24,8 @@ IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
 IncludeDir["stb_image"] = "Wizzard/lib/stb_image"
 IncludeDir["Box2D"] = "Wizzard/lib/box2d/include"
 IncludeDir["OpenALSoft"] = "Wizzard/lib/openal-soft"
+IncludeDir["LibOGG"] = "Wizzard/lib/libogg/include"
+IncludeDir["Vorbis"] = "Wizzard/lib/vorbis/include"
 
 include "Wizzard/lib/glfw"
 include "Wizzard/lib/glad"
@@ -31,6 +33,8 @@ include "Wizzard/lib/imgui"
 include "Wizzard/lib/tolk"
 include "Wizzard/lib/box2d"
 include "Wizzard/lib/openal-soft"
+include "Wizzard/lib/libogg"
+include "Wizzard/lib/vorbis"
 
 project "Wizzard"
 	location "Wizzard"
@@ -86,7 +90,9 @@ project "Wizzard"
 		"%{prj.name}/lib/openal-soft/al",
 		"%{prj.name}/lib/openal-soft/alc",
 		"%{prj.name}/lib/openal-soft/examples/common",
-		"%{prj.name}/lib/minimp3"
+		"%{prj.name}/lib/minimp3",
+		"%{IncludeDir.LibOGG}",
+		"%{IncludeDir.Vorbis}"
 	}
 
 	links
@@ -97,7 +103,8 @@ project "Wizzard"
 		"ImGui",
 		"Tolk",
 		"Box2D",
-		"OpenALSoft"
+		"OpenALSoft",
+		"Vorbis"
 	}
 
 	filter "system:windows"

@@ -7,6 +7,7 @@ namespace Wizzard
 	class AudioSource
 	{
 	public:
+		AudioSource() = default;
 		~AudioSource();
 
 		bool IsLoaded() const { return loaded; }
@@ -22,7 +23,6 @@ namespace Wizzard
 		static AudioSource LoadFromFile(const std::string& file, bool spatial = false);
 
 	private:
-		AudioSource() = default;
 		AudioSource(uint32_t handle, bool loaded, float length);
 
 		uint32_t bufferHandle = 0;
