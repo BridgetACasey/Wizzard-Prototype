@@ -11,6 +11,7 @@
 #include "wizzard/core/KeyCode.h"
 #include "wizzard/core/MouseCode.h"
 #include "wizzard/imgui/ImGuiLayer.h"
+#include "wizzard/imgui/ImGuiAccessibility.h"
 #include "wizzard/core/OrthographicCameraController.h"
 
 //Renderer
@@ -18,6 +19,7 @@
 #include "wizzard/rendering/Renderer2D.h"
 #include "wizzard/rendering/RenderCommand.h"
 #include "wizzard/rendering/Buffer.h"
+#include "wizzard/rendering/Framebuffer.h"
 #include "wizzard/rendering/Shader.h"
 #include "wizzard/rendering/VertexArray.h"
 #include "wizzard/rendering/Texture.h"

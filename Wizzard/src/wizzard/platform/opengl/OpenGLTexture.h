@@ -22,6 +22,8 @@ namespace Wizzard
 
 		virtual void SetData(void* data, uint32_t size) override;
 
+		virtual uint32_t GetRendererID() const override { return rendererID; }
+
 		virtual bool operator==(const Texture& other) const override
 		{
 			return rendererID == ((OpenGLTexture2D&)other).rendererID;

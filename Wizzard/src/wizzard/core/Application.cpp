@@ -58,13 +58,22 @@ namespace Wizzard
 
 			if (!minimized)
 			{
+				//Update all layers
 				for (Layer* layer : layerStack)
 				{
 					layer->OnUpdate(timeStep);
 				}
-			}
 
-			imguiLayer->OnImGuiRender();
+				//Render all layers' imgui elements
+				imguiLayer->Begin();
+
+				for(Layer* layer : layerStack)
+				{
+					layer->OnImGuiRender();
+				}
+
+				imguiLayer->End();
+			}
 
 			window->OnUpdate();
 		}
