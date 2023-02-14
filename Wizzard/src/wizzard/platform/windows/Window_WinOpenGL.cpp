@@ -2,7 +2,7 @@
 
 #include "wzpch.h"
 
-#include "Window_WinGL.h"
+#include "Window_WinOpenGL.h"
 
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/MouseEvent.h"
@@ -23,26 +23,26 @@ namespace Wizzard
 
 	Window * Window::Create(const WindowProps & props)
 	{
-		return new Window_WinGL(props);
+		return new Window_WinOpenGL(props);
 	}
 
-	Window_WinGL::Window_WinGL(const WindowProps& props)
+	Window_WinOpenGL::Window_WinOpenGL(const WindowProps& props)
 	{
 		Init(props);
 	}
 
-	Window_WinGL::~Window_WinGL()
+	Window_WinOpenGL::~Window_WinOpenGL()
 	{
 		Shutdown();
 	}
 
-	void Window_WinGL::OnUpdate()
+	void Window_WinOpenGL::OnUpdate()
 	{
 		glfwPollEvents();
 		graphicsContext->SwapBuffers();
 	}
 
-	void Window_WinGL::SetVSync(bool enabled)
+	void Window_WinOpenGL::SetVSync(bool enabled)
 	{
 		if (enabled)
 			glfwSwapInterval(1);
@@ -52,12 +52,12 @@ namespace Wizzard
 		windowData.vSync = enabled;
 	}
 
-	bool Window_WinGL::IsVSync() const
+	bool Window_WinOpenGL::IsVSync() const
 	{
 		return windowData.vSync;
 	}
 
-	void Window_WinGL::Init(const WindowProps & props)
+	void Window_WinOpenGL::Init(const WindowProps & props)
 	{
 		//Converting title into appropriate string format for GLFW create window function
 		std::wstring wTitle(props.title);
@@ -180,7 +180,7 @@ namespace Wizzard
 		});
 	}
 
-	void Window_WinGL::Shutdown()
+	void Window_WinOpenGL::Shutdown()
 	{
 		glfwDestroyWindow(glfwWindow);
 

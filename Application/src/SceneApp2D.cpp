@@ -15,9 +15,9 @@ void SceneApp2D::OnAttach()
 {
 	customTexture = Wizzard::Texture2D::Create("res/textures/kate-derp.png");
 
-	auto audioSource = Wizzard::AudioSource::LoadFromFile("res/music/examplemusic.mp3", false);
-	audioSource.SetLoop(true);
-	Wizzard::Audio::Play(audioSource);
+	//auto audioSource = Wizzard::AudioSource::LoadFromFile("res/music/examplemusic.mp3", false);
+	//audioSource.SetLoop(true);
+	//Wizzard::Audio::Play(audioSource);
 }
 
 void SceneApp2D::OnDetach()

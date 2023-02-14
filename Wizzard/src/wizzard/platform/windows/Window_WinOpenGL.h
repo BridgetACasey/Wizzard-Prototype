@@ -9,11 +9,11 @@
 
 namespace Wizzard
 {
-	class Window_WinGL : public Window
+	class Window_WinOpenGL : public Window
 	{
 	public:
-		Window_WinGL(const WindowProps& props);
-		virtual ~Window_WinGL();
+		Window_WinOpenGL(const WindowProps& props);
+		virtual ~Window_WinOpenGL();
 
 		void OnUpdate() override;
 
