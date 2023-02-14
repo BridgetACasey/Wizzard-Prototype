@@ -11,7 +11,7 @@
 
 namespace Wizzard
 {
-	AudioSource::AudioSource(uint32_t handle, bool loaded, float length)
+	AudioSource::AudioSource(uint32_t handle, bool loaded, float length) : bufferHandle(handle), loaded(loaded), totalDuration(length)
 	{
 	}
 
@@ -60,7 +60,7 @@ namespace Wizzard
 
 	std::pair<uint32_t, uint32_t> AudioSource::GetLengthMinutesAndSeconds() const
 	{
-		return std::pair<uint32_t, uint32_t>();
+		return { (uint32_t)(totalDuration / 60.0f), (uint32_t)totalDuration % 60 };
 	}
 
 	AudioSource AudioSource::LoadFromFile(const std::string& file, bool spatial)
