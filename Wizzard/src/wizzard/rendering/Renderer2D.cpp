@@ -22,9 +22,9 @@ namespace Wizzard
 
 	struct Renderer2DData
 	{
-		const uint32_t maxQuads = 10000;
-		const uint32_t maxVertices = maxQuads * 4;
-		const uint32_t maxIndices = maxQuads * 6;
+		static const uint32_t maxQuads = 20000;
+		static const uint32_t maxVertices = maxQuads * 4;
+		static const uint32_t maxIndices = maxQuads * 6;
 		static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
 
 		Ref<VertexArray> quadVertexArray;
@@ -40,12 +40,16 @@ namespace Wizzard
 		uint32_t TextureSlotIndex = 1; // 0 = white texture
 
 		glm::vec4 QuadVertexPositions[4];
+
+		Renderer2D::Statistics statistics;
 	};
 
 	static Renderer2DData* data;
 
 	void Renderer2D::Init()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		data = new Renderer2DData();
 
 		data->quadVertexArray = VertexArray::Create();
@@ -105,12 +109,16 @@ namespace Wizzard
 
 	void Renderer2D::Shutdown()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		delete data;
 		data->TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		data->textureShader->Bind();
 		data->textureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 		data->quadIndexCount = 0;
@@ -119,6 +127,8 @@ namespace Wizzard
 
 	void Renderer2D::EndScene()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		uint32_t dataSize = (uint8_t*)data->quadVertexBufferPtr - (uint8_t*)data->quadVertexBufferBase;
 		data->quadVertexBuffer->SetData(data->quadVertexBufferBase, dataSize);
 
@@ -127,20 +137,42 @@ namespace Wizzard
 
 	void Renderer2D::Flush()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		// Bind textures
 		for (uint32_t i = 0; i < data->TextureSlotIndex; i++)
 			data->TextureSlots[i]->Bind(i);
 
 		RenderCommand::DrawIndexed(data->quadVertexArray, data->quadIndexCount);
+		data->statistics.DrawCalls++;
+	}
+
+	void Renderer2D::FlushAndReset()
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		EndScene();
+
+		data->quadIndexCount = 0;
+		data->quadVertexBufferPtr = data->quadVertexBufferBase;
+
+		data->TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		DrawQuad({ position.x, position.y, 0.0f }, size, color);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
+		WIZ_PROFILE_FUNCTION();
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
 		const float textureIndex = 0.0f; // White Texture
 		const float tilingFactor = 1.0f;
 
@@ -175,16 +207,25 @@ namespace Wizzard
 		data->quadVertexBufferPtr++;
 
 		data->quadIndexCount += 6;
+
+		data->statistics.QuadCount++;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
@@ -234,17 +275,26 @@ namespace Wizzard
 		data->quadVertexBufferPtr++;
 
 		data->quadIndexCount += 6;
+
+		data->statistics.QuadCount++;
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		const float textureIndex = 0.0f; // White Texture
 		const float tilingFactor = 1.0f;
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -279,16 +329,25 @@ namespace Wizzard
 		data->quadVertexBufferPtr++;
 
 		data->quadIndexCount += 6;
+
+		data->statistics.QuadCount++;
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
@@ -340,5 +399,21 @@ namespace Wizzard
 		data->quadVertexBufferPtr++;
 
 		data->quadIndexCount += 6;
+
+		data->statistics.QuadCount++;
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		memset(&data->statistics, 0, sizeof(Statistics));
+	}
+
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		return data->statistics;
 	}
 }

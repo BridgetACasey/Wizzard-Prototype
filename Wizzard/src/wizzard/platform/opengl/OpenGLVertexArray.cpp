@@ -9,6 +9,8 @@ namespace Wizzard
 {
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		switch (type)
 		{
 		case ShaderDataType::Float:    return GL_FLOAT;
@@ -31,26 +33,36 @@ namespace Wizzard
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &rendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &rendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindVertexArray(rendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		WIZ_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(rendererID);
@@ -74,6 +86,8 @@ namespace Wizzard
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindVertexArray(rendererID);
 		buffer->Bind();
 

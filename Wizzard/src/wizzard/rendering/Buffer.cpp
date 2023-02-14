@@ -11,6 +11,8 @@ namespace Wizzard
 {
 	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
@@ -23,6 +25,8 @@ namespace Wizzard
 
 	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
@@ -35,6 +39,8 @@ namespace Wizzard
 
 	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;

@@ -11,10 +11,13 @@ namespace Wizzard
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
 	: aspectRatio(aspectRatio), camera(-aspectRatio * zoomLevel, aspectRatio* zoomLevel, -zoomLevel, zoomLevel), rotation(rotation)
 	{
+		WIZ_PROFILE_FUNCTION();
 	}
 
 	void OrthographicCameraController::OnUpdate(Timestep timeStep)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if (Input::IsKeyPressed(Key::A))
 			cameraPosition.x -= cameraTranslationSpeed * timeStep;
 		else if (Input::IsKeyPressed(Key::D))
@@ -42,6 +45,8 @@ namespace Wizzard
 
 	void OrthographicCameraController::OnEvent(Event& event)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		EventHandler dispatcher(event);
 		dispatcher.HandleEvent<MouseScrolledEvent>(WIZ_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
 		dispatcher.HandleEvent<WindowResizeEvent>(WIZ_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
@@ -49,6 +54,8 @@ namespace Wizzard
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		zoomLevel -= event.GetYOffset() * 0.25f;
 		zoomLevel = std::max(zoomLevel, 0.25f);
 		camera.SetProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
@@ -57,6 +64,8 @@ namespace Wizzard
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& event)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
 		camera.SetProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
 		return false;

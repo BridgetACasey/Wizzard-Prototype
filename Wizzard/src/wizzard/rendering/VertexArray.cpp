@@ -11,6 +11,8 @@ namespace Wizzard
 {
 	Ref<VertexArray> VertexArray::Create()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;

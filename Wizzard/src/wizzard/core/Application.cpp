@@ -24,6 +24,8 @@ namespace Wizzard
 
 	Application::Application()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		WIZ_ASSERT(!appInstance, "Application already exists!");
 		appInstance = this;
 
@@ -39,11 +41,13 @@ namespace Wizzard
 
 	Application::~Application()
 	{
-		
+		WIZ_PROFILE_FUNCTION();
 	}
 
 	void Application::Run()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		OnApplicationInit();
 
 		while (running)
@@ -70,11 +74,15 @@ namespace Wizzard
 
 	void Application::Close()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		running = false;
 	}
 
 	void Application::OnEvent(Event& event)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		EventHandler eventHandler(event);
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
@@ -91,6 +99,8 @@ namespace Wizzard
 
 	void Application::OnApplicationInit()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		WIZ_INFO("Initialising WIZZARD Engine application...");
 
 		// Tolk will also initialise COM if it has not been initialized on the calling thread
@@ -127,6 +137,8 @@ namespace Wizzard
 
 	void Application::OnApplicationShutdown()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		WIZ_INFO("Beginning WIZZARD Engine shutdown sequence...");
 
 		WIZ_INFO("Unloading Tolk Screen Reader Abstraction Library...");
@@ -137,16 +149,22 @@ namespace Wizzard
 
 	void Application::PushLayer(Layer* layer)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		layerStack.PushLayer(layer);
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		layerStack.PushOverlay(overlay);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& windowCloseEvent)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		running = false;
 
 		return true;
@@ -154,6 +172,8 @@ namespace Wizzard
 
 	bool Application::OnWindowResize(WindowResizeEvent& windowResizeEvent)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if (windowResizeEvent.GetWidth() == 0 || windowResizeEvent.GetHeight() == 0)
 		{
 			minimized = true;

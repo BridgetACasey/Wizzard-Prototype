@@ -12,6 +12,8 @@ namespace Wizzard
 
 	bool WindowsInput::IsKeyPressedImpl(KeyCodeGL keycode)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keycode);
@@ -21,6 +23,8 @@ namespace Wizzard
 
 	bool WindowsInput::IsMouseButtonPressedImpl(MouseCodeGL button)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, button);
@@ -30,6 +34,8 @@ namespace Wizzard
 
 	std::pair<float, float> WindowsInput::GetMousePositionImpl()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		double posX, posY;
@@ -41,13 +47,19 @@ namespace Wizzard
 
 	float WindowsInput::GetMouseXImpl()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto [x, y] = GetMousePositionImpl();
+
 		return x;
 	}
 
 	float WindowsInput::GetMouseYImpl()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto [x, y] = GetMousePositionImpl();
+
 		return y;
 	}
 }

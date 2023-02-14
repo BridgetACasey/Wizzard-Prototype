@@ -23,27 +23,37 @@ namespace Wizzard
 
 	Window * Window::Create(const WindowProps & props)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		return new Window_WinOpenGL(props);
 	}
 
 	Window_WinOpenGL::Window_WinOpenGL(const WindowProps& props)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
 	Window_WinOpenGL::~Window_WinOpenGL()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void Window_WinOpenGL::OnUpdate()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		graphicsContext->SwapBuffers();
 	}
 
 	void Window_WinOpenGL::SetVSync(bool enabled)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -54,11 +64,15 @@ namespace Wizzard
 
 	bool Window_WinOpenGL::IsVSync() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		return windowData.vSync;
 	}
 
 	void Window_WinOpenGL::Init(const WindowProps & props)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		//Converting title into appropriate string format for GLFW create window function
 		std::wstring wTitle(props.title);
 
@@ -182,6 +196,8 @@ namespace Wizzard
 
 	void Window_WinOpenGL::Shutdown()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(glfwWindow);
 
 		if(glfwInitialised)

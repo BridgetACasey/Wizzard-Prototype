@@ -24,6 +24,13 @@ void SceneApp2D::OnUpdate(Wizzard::Timestep timeStep)
 {
 	orthoCamController.OnUpdate(timeStep);
 
+	// Render
+	Wizzard::Renderer2D::ResetStats();
+	{
+		Wizzard::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		Wizzard::RenderCommand::Clear();
+	}
+
 	static float rotation = 0.0f;
 	rotation += timeStep * 50.0f;
 

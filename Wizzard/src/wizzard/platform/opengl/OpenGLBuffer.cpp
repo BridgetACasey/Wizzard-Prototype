@@ -14,6 +14,8 @@ namespace Wizzard
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
@@ -21,6 +23,8 @@ namespace Wizzard
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
@@ -28,21 +32,29 @@ namespace Wizzard
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glDeleteBuffers(1, &rendererID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
@@ -51,9 +63,10 @@ namespace Wizzard
 	// IndexBuffer //////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
-		: count(count)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count) : count(count)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
@@ -61,16 +74,22 @@ namespace Wizzard
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glDeleteBuffers(1, &rendererID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 	}
 
 	void OpenGLIndexBuffer::Unbind() const
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 }

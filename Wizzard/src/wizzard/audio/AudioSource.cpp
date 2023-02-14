@@ -13,6 +13,7 @@ namespace Wizzard
 {
 	AudioSource::AudioSource(uint32_t handle, bool loaded, float length) : bufferHandle(handle), loaded(loaded), totalDuration(length)
 	{
+		WIZ_PROFILE_FUNCTION();
 	}
 
 	AudioSource::~AudioSource()

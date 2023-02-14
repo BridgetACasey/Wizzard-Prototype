@@ -11,6 +11,8 @@ namespace Wizzard
 
 	void Log::Init()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		spdlog::set_pattern("%^[%T][%n][%l]: %v%$");
 		wizzardLogger = spdlog::stdout_color_mt("ENGINE");
 		wizzardLogger->set_level(spdlog::level::trace);

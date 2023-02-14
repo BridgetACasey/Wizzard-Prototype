@@ -9,6 +9,7 @@ namespace Wizzard
 	public:
 		Timestep(float t = 0.0f) : time(t)
 		{
+			WIZ_PROFILE_FUNCTION();
 		}
 
 		operator float() const { return time; }

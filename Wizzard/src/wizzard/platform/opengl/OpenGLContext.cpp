@@ -11,11 +11,15 @@ namespace Wizzard
 {
 	OpenGLContext::OpenGLContext(GLFWwindow* wndHandle) : windowHandle(wndHandle)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		WIZ_ASSERT(wndHandle, "Window handle is null!")
 	}
 
 	void OpenGLContext::Init()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(windowHandle);
 
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -29,6 +33,8 @@ namespace Wizzard
 
 	void OpenGLContext::SwapBuffers()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(windowHandle);
 	}
 }

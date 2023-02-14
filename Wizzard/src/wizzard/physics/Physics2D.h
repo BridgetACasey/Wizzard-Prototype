@@ -15,6 +15,8 @@ namespace Wizzard
 		
 		inline void CreateBox2DWorld()
 		{
+			WIZ_PROFILE_FUNCTION();
+
 			gravity = b2Vec2(0.0f, -9.8f);
 			//world = new b2World(gravity);
 		}

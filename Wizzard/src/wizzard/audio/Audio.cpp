@@ -51,6 +51,8 @@ namespace Wizzard
 
 	static AudioFileFormat GetFileFormat(const std::string& fileName)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		std::filesystem::path path = fileName;
 		std::string extension = path.extension().string();
 
@@ -62,6 +64,8 @@ namespace Wizzard
 
 	static ALenum GetOpenALFormat(uint32_t channels)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		// Note: sample size is always 2 bytes (16-bits) with
 		// both the .mp3 and .ogg decoders that we're using
 		switch (channels)
@@ -75,6 +79,8 @@ namespace Wizzard
 
 	void Audio::Init()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if (InitAL(nullptr, nullptr) != 0)
 			WIZ_ERROR("Audio device error! Could not initialise OpenAL!");
 		else
@@ -95,10 +101,15 @@ namespace Wizzard
 
 	void Audio::SetDebugLogging(bool log)
 	{
+		WIZ_PROFILE_FUNCTION();
+
+		debugLogging = log;
 	}
 
 	void Audio::PrintAudioDeviceInfo()
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if(debugLogging)
 		{
 			WIZ_INFO("---Audio Device Information---");
@@ -112,6 +123,8 @@ namespace Wizzard
 
 	AudioSource Audio::LoadAudioSource(const std::string& fileName)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		auto format = GetFileFormat(fileName);
 		switch (format)
 		{
@@ -125,6 +138,8 @@ namespace Wizzard
 
 	void Audio::Play(const AudioSource& audioSource)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		// Play the sound until it finishes
 		alSourcePlay(audioSource.sourceHandle);
 
@@ -138,6 +153,8 @@ namespace Wizzard
 
 	AudioSource Audio::LoadAudioSourceMP3(const std::string& fileName)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		mp3dec_file_info_t info;
 		int loadResult = mp3dec_load(&mp3d, fileName.c_str(), &info, NULL, NULL);
 		uint32_t size = info.samples * sizeof(mp3d_sample_t);
@@ -179,6 +196,8 @@ namespace Wizzard
 
 	AudioSource Audio::LoadAudioSourceOgg(const std::string& fileName)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		FILE* file = fopen(fileName.c_str(), "rb");
 
 		OggVorbis_File vorbisFile;
