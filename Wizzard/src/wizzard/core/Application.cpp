@@ -120,7 +120,7 @@ namespace Wizzard
 				WIZ_INFO("This screen reader driver supports braille");
 		}
 		else
-			WIZ_WARN("Failed to initialise Tolk Screen Reader Abstraction Library!");
+			WIZ_ERROR("Failed to initialise Tolk Screen Reader Abstraction Library!");
 
 		WIZ_INFO("WIZZARD Engine successfully initialised.");
 	}

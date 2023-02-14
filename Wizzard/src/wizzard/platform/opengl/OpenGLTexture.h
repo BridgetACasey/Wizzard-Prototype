@@ -22,6 +22,11 @@ namespace Wizzard
 
 		virtual void SetData(void* data, uint32_t size) override;
 
+		virtual bool operator==(const Texture& other) const override
+		{
+			return rendererID == ((OpenGLTexture2D&)other).rendererID;
+		}
+
 	private:
 		std::string path;
 		uint32_t width, height;

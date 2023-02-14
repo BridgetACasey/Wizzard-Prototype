@@ -29,9 +29,9 @@ namespace Wizzard
 			rendererAPI->Clear();
 		}
 
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
 		{
-			rendererAPI->DrawIndexed(vertexArray);
+			rendererAPI->DrawIndexed(vertexArray, count);
 		}
 
 	private:
