@@ -24,13 +24,18 @@ void SceneApp2D::OnUpdate(Wizzard::Timestep timeStep)
 {
 	orthoCamController.OnUpdate(timeStep);
 
+	static float rotation = 0.0f;
+	rotation += timeStep * 50.0f;
+
 	Wizzard::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 	Wizzard::RenderCommand::Clear();
 
 	Wizzard::Renderer2D::BeginScene(orthoCamController.GetCamera());
+	Wizzard::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
 	Wizzard::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 	Wizzard::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-	Wizzard::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, customTexture);
+	Wizzard::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, customTexture, 10.0f);
+	Wizzard::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, customTexture, 1.0f);
 	Wizzard::Renderer2D::EndScene();
 
 	Wizzard::Renderer::EndScene();
