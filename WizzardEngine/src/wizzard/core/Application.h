@@ -15,7 +15,7 @@ namespace Wizzard
 	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Wizzard Application");
 		virtual ~Application();
 
 		void Run();

@@ -1,2 +1,2 @@
-call Wizzard\lib\premake\premake5.exe vs2022
+call WizzardEngine\lib\premake\premake5.exe vs2022
 PAUSE

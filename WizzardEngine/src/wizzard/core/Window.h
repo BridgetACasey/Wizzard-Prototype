@@ -11,11 +11,11 @@ namespace Wizzard
 {
 	struct WindowProps
 	{
-		wchar_t* title;
+		std::string title;
 		uint32_t width;
 		uint32_t height;
 
-		WindowProps(wchar_t* title = L"WIZZARD", uint32_t width = 1920, uint32_t height = 1080)
+		WindowProps(const std::string& title = "WIZZARD", uint32_t width = 1920, uint32_t height = 1080)
 			: title(title), width(width), height(height){}
 	};
 

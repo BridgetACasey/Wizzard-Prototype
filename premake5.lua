@@ -1,5 +1,6 @@
-workspace "WizzardEngine"
+workspace "Wizzard"
 	architecture "x64"
+	startproject "LuggageEditor"
 
 	configurations
 	{
@@ -16,28 +17,28 @@ workspace "WizzardEngine"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "Wizzard/lib/glfw/include"
-IncludeDir["Glad"] = "Wizzard/lib/glad/include"
-IncludeDir["ImGui"] = "Wizzard/lib/imgui"
-IncludeDir["GLM"] = "Wizzard/lib/glm"
-IncludeDir["Tolk"] = "Wizzard/lib/tolk/src"
-IncludeDir["stb_image"] = "Wizzard/lib/stb_image"
-IncludeDir["Box2D"] = "Wizzard/lib/box2d/include"
-IncludeDir["OpenALSoft"] = "Wizzard/lib/openal-soft"
-IncludeDir["LibOGG"] = "Wizzard/lib/libogg/include"
-IncludeDir["Vorbis"] = "Wizzard/lib/vorbis/include"
+IncludeDir["GLFW"] = "WizzardEngine/lib/glfw/include"
+IncludeDir["Glad"] = "WizzardEngine/lib/glad/include"
+IncludeDir["ImGui"] = "WizzardEngine/lib/imgui"
+IncludeDir["GLM"] = "WizzardEngine/lib/glm"
+IncludeDir["Tolk"] = "WizzardEngine/lib/tolk/src"
+IncludeDir["stb_image"] = "WizzardEngine/lib/stb_image"
+IncludeDir["Box2D"] = "WizzardEngine/lib/box2d/include"
+IncludeDir["OpenALSoft"] = "WizzardEngine/lib/openal-soft"
+IncludeDir["LibOGG"] = "WizzardEngine/lib/libogg/include"
+IncludeDir["Vorbis"] = "WizzardEngine/lib/vorbis/include"
 
-include "Wizzard/lib/glfw"
-include "Wizzard/lib/glad"
-include "Wizzard/lib/imgui"
-include "Wizzard/lib/tolk"
-include "Wizzard/lib/box2d"
-include "Wizzard/lib/openal-soft"
-include "Wizzard/lib/libogg"
-include "Wizzard/lib/vorbis"
+include "WizzardEngine/lib/glfw"
+include "WizzardEngine/lib/glad"
+include "WizzardEngine/lib/imgui"
+include "WizzardEngine/lib/tolk"
+include "WizzardEngine/lib/box2d"
+include "WizzardEngine/lib/openal-soft"
+include "WizzardEngine/lib/libogg"
+include "WizzardEngine/lib/vorbis"
 
-project "Wizzard"
-	location "Wizzard"
+project "WizzardEngine"
+	location "WizzardEngine"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -47,7 +48,7 @@ project "Wizzard"
 	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "wzpch.h"
-	pchsource "Wizzard/src/wizzard/wzpch.cpp"
+	pchsource "WizzardEngine/src/wizzard/wzpch.cpp"
 
 	files
 	{
@@ -131,6 +132,58 @@ project "Wizzard"
 
 
 
+project "LuggageEditor"
+	location "LuggageEditor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("build/" .. outputdir .. "/%{prj.name}")
+	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"WizzardEngine/src",
+		"WizzardEngine/lib/spdlog/include",
+		"WizzardEngine/lib",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.Tolk}"
+	}
+
+	links
+	{
+		"WizzardEngine"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"WIZZARD_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "WIZZARD_DEBUG"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "WIZZARD_RELEASE"
+		optimize "on"
+
+	filter "configurations:Distribution"
+		defines "WIZZARD_DISTRIBUTION"
+		optimize "on"
+
+
+
 project "Application"
 	location "Application"
 	kind "ConsoleApp"
@@ -149,9 +202,9 @@ project "Application"
 
 	includedirs
 	{
-		"Wizzard/src",
-		"Wizzard/lib/spdlog/include",
-		"Wizzard/lib",
+		"WizzardEngine/src",
+		"WizzardEngine/lib/spdlog/include",
+		"WizzardEngine/lib",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
 		"%{IncludeDir.Box2D}"
@@ -159,7 +212,7 @@ project "Application"
 
 	links
 	{
-		"Wizzard"
+		"WizzardEngine"
 	}
 
 	filter "system:windows"
@@ -172,7 +225,7 @@ project "Application"
 
 		postbuildcommands
 		{
-			"{COPY} ../Wizzard/lib/tolk/libs/x64/**.dll %{cfg.targetdir}"
+			"{COPY} ../WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}"
 		}
 
 	filter "configurations:Debug"

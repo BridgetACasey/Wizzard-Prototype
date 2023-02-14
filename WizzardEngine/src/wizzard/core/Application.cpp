@@ -22,14 +22,14 @@ namespace Wizzard
 
 	Application* Application::appInstance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		WIZ_ASSERT(!appInstance, "Application already exists!");
 		appInstance = this;
 
-		window = std::unique_ptr<Window>(Window::Create());
+		window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();

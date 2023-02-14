@@ -73,10 +73,7 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		//Converting title into appropriate string format for GLFW create window function
-		std::wstring wTitle(props.title);
-
-		windowData.title = std::string(wTitle.begin(), wTitle.end());
+		windowData.title = props.title;
 		windowData.width = props.width;
 		windowData.height = props.height;
 

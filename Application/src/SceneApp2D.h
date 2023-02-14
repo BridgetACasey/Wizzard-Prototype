@@ -19,10 +19,4 @@ public:
 
 private:
 	Wizzard::OrthographicCameraController orthoCamController;
-
-	Wizzard::Ref<Wizzard::Texture2D> customTexture;
-
-	Wizzard::Ref<Wizzard::Framebuffer> frameBuffer;
-
-	glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };
