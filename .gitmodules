@@ -1,27 +1,27 @@
-[submodule "Wizzard/lib/spdlog"]
-	path = Wizzard/lib/spdlog
+[submodule "WizzardEngine/lib/spdlog"]
+	path = WizzardEngine/lib/spdlog
 	url = https://github.com/BridgetACasey/spdlog.git
-[submodule "Wizzard/lib/glfw"]
-	path = Wizzard/lib/glfw
+[submodule "WizzardEngine/lib/glfw"]
+	path = WizzardEngine/lib/glfw
 	url = https://github.com/BridgetACasey/glfw.git
-[submodule "Wizzard/lib/imgui"]
-	path = Wizzard/lib/imgui
+[submodule "WizzardEngine/lib/imgui"]
+	path = WizzardEngine/lib/imgui
 	url = https://github.com/BridgetACasey/imgui.git
-[submodule "Wizzard/lib/glm"]
-	path = Wizzard/lib/glm
+[submodule "WizzardEngine/lib/glm"]
+	path = WizzardEngine/lib/glm
 	url = https://github.com/BridgetACasey/glm.git
-[submodule "Wizzard/lib/tolk"]
-	path = Wizzard/lib/tolk
+[submodule "WizzardEngine/lib/tolk"]
+	path = WizzardEngine/lib/tolk
 	url = https://github.com/BridgetACasey/tolk.git
-[submodule "Wizzard/lib/box2d"]
-	path = Wizzard/lib/box2d
-	url = https://github.com/BridgetACasey/box2d.git
-[submodule "Wizzard/lib/openal-soft"]
-	path = Wizzard/lib/openal-soft
+[submodule "WizzardEngine/lib/openal-soft"]
+	path = WizzardEngine/lib/openal-soft
 	url = https://github.com/BridgetACasey/openal-soft.git
-[submodule "Wizzard/lib/minimp3"]
-	path = Wizzard/lib/minimp3
+[submodule "WizzardEngine/lib/minimp3"]
+	path = WizzardEngine/lib/minimp3
 	url = https://github.com/BridgetACasey/minimp3.git
-[submodule "Wizzard/lib/vorbis"]
-	path = Wizzard/lib/vorbis
+[submodule "WizzardEngine/lib/vorbis"]
+	path = WizzardEngine/lib/vorbis
 	url = https://github.com/BridgetACasey/vorbis.git
+[submodule "WizzardEngine/lib/box2d"]
+	path = WizzardEngine/lib/box2d
+	url = https://github.com/BridgetACasey/box2d.git
