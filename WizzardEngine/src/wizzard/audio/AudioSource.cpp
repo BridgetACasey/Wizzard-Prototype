@@ -18,7 +18,7 @@ namespace Wizzard
 
 	AudioSource::~AudioSource()
 	{
-		//TODO: Free OpenAL audio source
+		//TODO: Free OpenAL audio source e.g. alDeleteSources(...)
 	}
 
 	void AudioSource::SetPosition(float x, float y, float z)

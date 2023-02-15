@@ -30,7 +30,7 @@ namespace Wizzard
 	{
 		NONE = 0,
 		MP3,
-		OGG	//To come later
+		OGG
 	};
 
 	struct AudioData
@@ -70,9 +70,10 @@ namespace Wizzard
 		// both the .mp3 and .ogg decoders that we're using
 		switch (channels)
 		{
-		case 1:  return AL_FORMAT_MONO16;
-		case 2:  return AL_FORMAT_STEREO16;
+			case 1:  return AL_FORMAT_MONO16;
+			case 2:  return AL_FORMAT_STEREO16;
 		}
+
 		// assert
 		return 0;
 	}
@@ -128,8 +129,8 @@ namespace Wizzard
 		auto format = GetFileFormat(fileName);
 		switch (format)
 		{
-		case AudioFileFormat::MP3:  return LoadAudioSourceMP3(fileName);
-		case AudioFileFormat::OGG:  return LoadAudioSourceOgg(fileName);
+			case AudioFileFormat::MP3:  return LoadAudioSourceMP3(fileName);
+			case AudioFileFormat::OGG:  return LoadAudioSourceOgg(fileName);
 		}
 
 		// Loading failed or unsupported file type
@@ -149,6 +150,22 @@ namespace Wizzard
 		// alGetSourcei(audioSource.sourceHandle, AL_SOURCE_STATE, &playState);
 		// ALenum playState;
 		// alGetSourcef(audioSource.sourceHandle, AL_SEC_OFFSET, &offset);
+	}
+
+	void Audio::Pause(const AudioSource& audioSource)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		// Stop the sound if it is currently playing
+		alSourcePause(audioSource.sourceHandle);
+	}
+
+	void Audio::Stop(const AudioSource& audioSource)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		// Stop the sound if it is currently playing
+		alSourceStop(audioSource.sourceHandle);
 	}
 
 	AudioSource Audio::LoadAudioSourceMP3(const std::string& fileName)

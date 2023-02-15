@@ -27,6 +27,9 @@ namespace Wizzard
 
 		Ref<Texture2D> customTexture;
 
+		AudioSource music;
+		bool playMusic = false;
+
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};
 }

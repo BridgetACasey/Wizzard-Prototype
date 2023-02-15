@@ -10,7 +10,9 @@ namespace Wizzard
 
 	void EditorLayer::OnAttach()
 	{
-		customTexture = Texture2D::Create("res/textures/kate-derp.png");
+		customTexture = Texture2D::Create("res/textures/smiley.png");
+
+		music = AudioSource::LoadFromFile("res/music/examplemusic.mp3", false);
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1920;
@@ -25,6 +27,22 @@ namespace Wizzard
 	void EditorLayer::OnUpdate(Timestep timeStep)
 	{
 		orthoCamController.OnUpdate(timeStep);
+
+		//Temp test code for audio demo
+		if (Input::IsKeyPressed(Key::P))
+		{
+			WIZ_INFO("Play key pressed! Hopefully just once???");
+
+			playMusic = !playMusic;
+
+			if (music.IsLoaded())
+			{
+				if (playMusic)
+					Audio::Play(music);
+				else
+					Audio::Pause(music);
+			}
+		}
 
 		// Render
 		Renderer2D::ResetStats();
@@ -46,6 +64,7 @@ namespace Wizzard
 		Renderer2D::EndScene();
 
 		frameBuffer->Unbind();
+
 	}
 
 	void EditorLayer::OnImGuiRender()
