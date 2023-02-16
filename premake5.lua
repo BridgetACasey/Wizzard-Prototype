@@ -27,6 +27,8 @@ IncludeDir["Box2D"] = "WizzardEngine/lib/box2d/include"
 IncludeDir["OpenALSoft"] = "WizzardEngine/lib/openal-soft"
 IncludeDir["LibOGG"] = "WizzardEngine/lib/libogg/include"
 IncludeDir["Vorbis"] = "WizzardEngine/lib/vorbis/include"
+IncludeDir["ENTT"] = "WizzardEngine/lib/entt/src"
+IncludeDir["YAMLCPP"] = "WizzardEngine/lib/yaml-cpp/include"
 
 include "WizzardEngine/lib/glfw"
 include "WizzardEngine/lib/glad"
@@ -36,6 +38,8 @@ include "WizzardEngine/lib/box2d"
 include "WizzardEngine/lib/openal-soft"
 include "WizzardEngine/lib/libogg"
 include "WizzardEngine/lib/vorbis"
+include "WizzardEngine/lib/entt"
+include "WizzardEngine/lib/yaml-cpp"
 
 project "WizzardEngine"
 	location "WizzardEngine"
@@ -93,7 +97,9 @@ project "WizzardEngine"
 		"%{prj.name}/lib/openal-soft/examples/common",
 		"%{prj.name}/lib/minimp3",
 		"%{IncludeDir.LibOGG}",
-		"%{IncludeDir.Vorbis}"
+		"%{IncludeDir.Vorbis}",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}"
 	}
 
 	links
@@ -154,7 +160,9 @@ project "LuggageEditor"
 		"WizzardEngine/lib/spdlog/include",
 		"WizzardEngine/lib",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.Tolk}"
+		"%{IncludeDir.Tolk}",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}"
 	}
 
 	links

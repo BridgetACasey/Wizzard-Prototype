@@ -132,25 +132,27 @@ namespace Wizzard
 
 		if (ImGui::BeginMainMenuBar())
 		{
-			if (Wizzard::ImGuiAccessibility::Button("File", L"File Tab", read, ImVec2(311.0f, 80.5f)))
+			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
+
+			if (ImGuiAccessibility::Button("FILE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
 			}
 
-			if (Wizzard::ImGuiAccessibility::Button("Edit", L"Edit Tab", read, ImVec2(311.0f, 80.5f)))
+			if (ImGuiAccessibility::Button("SCENE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openEditMenu = !openEditMenu;
 
-			if (Wizzard::ImGuiAccessibility::Button("Object", L"Object Tab", read, ImVec2(311.0f, 80.5f)))
+			if (ImGuiAccessibility::Button("CREATE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openObjectMenu = !openObjectMenu;
 
-			if (Wizzard::ImGuiAccessibility::Button("Console", L"Console Tab", read, ImVec2(311.0f, 80.5f)))
+			if (ImGuiAccessibility::Button("CONSOLE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openConsoleMenu = !openConsoleMenu;
 
-			if (Wizzard::ImGuiAccessibility::Button("Settings", L"Settings Tab", read, ImVec2(311.0f, 80.5f)))
+			if (ImGuiAccessibility::Button("SETTINGS", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openSettingsMenu = !openSettingsMenu;
 
-			if (Wizzard::ImGuiAccessibility::Button("Exit", L"Exit Tab", read, ImVec2(311.0f, 80.5f)))
+			if (ImGuiAccessibility::Button("EXIT", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openExitMenu = !openExitMenu;
 
 			ImGui::EndMainMenuBar();

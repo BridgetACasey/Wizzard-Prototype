@@ -25,3 +25,9 @@
 [submodule "WizzardEngine/lib/box2d"]
 	path = WizzardEngine/lib/box2d
 	url = https://github.com/BridgetACasey/box2d.git
+[submodule "WizzardEngine/lib/entt"]
+	path = WizzardEngine/lib/entt
+	url = https://github.com/BridgetACasey/entt.git
+[submodule "WizzardEngine/lib/yaml-cpp"]
+	path = WizzardEngine/lib/yaml-cpp
+	url = https://github.com/BridgetACasey/yaml-cpp.git
