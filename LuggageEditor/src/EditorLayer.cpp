@@ -32,7 +32,7 @@ namespace Wizzard
 		//Temp test code for audio demo
 		if (Input::IsKeyPressed(Key::P))
 		{
-			WIZ_INFO("Play key pressed! Hopefully just once???");
+			//WIZ_INFO("Play key pressed! Hopefully just once???");
 
 			playMusic = !playMusic;
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Event.h"
-#include "wizzard/core/KeyCode.h"
+#include "wizzard/input/KeyCode.h"
 
 namespace Wizzard
 {

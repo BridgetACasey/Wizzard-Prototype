@@ -12,6 +12,7 @@ namespace Wizzard
 	{
 		enum : KeyCode
 		{
+			None = 0,
 			// From glfw3.h
 			Space = 32,
 			Apostrophe = 39, /* ' */

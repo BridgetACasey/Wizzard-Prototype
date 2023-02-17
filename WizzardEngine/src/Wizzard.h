@@ -9,10 +9,12 @@
 #include "wizzard/core/Application.h"
 #include "wizzard/core/Layer.h"
 #include "wizzard/core/Log.h"
-#include "wizzard/core/Input.h"
-#include "wizzard/core/KeyCode.h"
-#include "wizzard/core/MouseCode.h"
 #include "wizzard/core/OrthographicCameraController.h"
+
+//Input
+#include "wizzard/input/Input.h"
+#include "wizzard/input/KeyCode.h"
+#include "wizzard/input/MouseCode.h"
 
 //User Interface
 #include "wizzard/ui/ImGuiLayer.h"

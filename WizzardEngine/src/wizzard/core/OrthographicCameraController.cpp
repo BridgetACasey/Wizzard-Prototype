@@ -3,7 +3,7 @@
 #include "wzpch.h"
 #include "OrthographicCameraController.h"
 
-#include "Input.h"
+#include "wizzard/input/Input.h"
 #include "event/EventHandler.h"
 
 namespace Wizzard

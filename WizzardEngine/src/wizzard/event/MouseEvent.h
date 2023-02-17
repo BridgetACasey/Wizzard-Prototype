@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Event.h"
-#include "wizzard/core/MouseCode.h"
+#include "wizzard/input/MouseCode.h"
 
 namespace Wizzard
 {
@@ -54,20 +54,20 @@ namespace Wizzard
 	class MouseButtonEvent : public Event
 	{
 	public:
-		MouseCodeGL GetMouseButton() const { return button; }
+		MouseCode GetMouseButton() const { return button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 
 	protected:
-		MouseButtonEvent(const MouseCodeGL button) : button(button) {}
+		MouseButtonEvent(const MouseCode button) : button(button) {}
 
-		MouseCodeGL button;
+		MouseCode button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(const MouseCodeGL button) : MouseButtonEvent(button) {}
+		MouseButtonPressedEvent(const MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override
 		{
@@ -82,7 +82,7 @@ namespace Wizzard
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(const MouseCodeGL button) : MouseButtonEvent(button) {}
+		MouseButtonReleasedEvent(const MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override
 		{
