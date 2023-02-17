@@ -22,6 +22,13 @@
 //Accessibility
 #include "wizzard/screenreading/ImGuiScreenReading.h"
 
+//Entity Component System
+#include "wizzard/scene/Entity.h"
+#include "wizzard/scene/TagComponent.h"
+#include "wizzard/scene/TransformComponent.h"
+#include "wizzard/scene/SpriteComponent.h"
+#include "wizzard/scene/Scene.h"
+
 //Renderer
 #include "wizzard/rendering/Renderer.h"
 #include "wizzard/rendering/Renderer2D.h"

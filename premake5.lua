@@ -99,6 +99,7 @@ project "WizzardEngine"
 		"%{IncludeDir.LibOGG}",
 		"%{IncludeDir.Vorbis}",
 		"%{IncludeDir.ENTT}",
+		"%{prj.name}/lib/entt/single_include",
 		"%{IncludeDir.YAMLCPP}"
 	}
 
@@ -162,6 +163,7 @@ project "LuggageEditor"
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
 		"%{IncludeDir.ENTT}",
+		"WizzardEngine/lib/entt/single_include",
 		"%{IncludeDir.YAMLCPP}"
 	}
 
@@ -215,7 +217,8 @@ project "Application"
 		"WizzardEngine/lib",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
-		"%{IncludeDir.Box2D}"
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.ENTT}"
 	}
 
 	links
