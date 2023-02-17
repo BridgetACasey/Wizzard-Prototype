@@ -22,20 +22,20 @@ namespace Wizzard
 		std::thread::id threadID;
 	};
 
-	struct InstrumentationSession
+	struct ProfilingSession
 	{
 		std::string name;
 	};
 
-	class Instrumentor
+	class Profiler
 	{
 	private:
 		std::mutex mutex;
-		InstrumentationSession* currentSession;
+		ProfilingSession* currentSession;
 		std::ofstream outputStream;
 
 	public:
-		Instrumentor() : currentSession(nullptr)
+		Profiler() : currentSession(nullptr)
 		{
 		}
 
@@ -59,7 +59,7 @@ namespace Wizzard
 
 			if (outputStream.is_open())
 			{
-				currentSession = new InstrumentationSession({ name });
+				currentSession = new ProfilingSession({ name });
 				WriteHeader();
 			}
 			else
@@ -104,9 +104,9 @@ namespace Wizzard
 			}
 		}
 
-		static Instrumentor& Get()
+		static Profiler& Get()
 		{
-			static Instrumentor instance;
+			static Profiler instance;
 			return instance;
 		}
 
@@ -138,15 +138,15 @@ namespace Wizzard
 
 	};
 
-	class InstrumentationTimer
+	class ProfilingTimer
 	{
 	public:
-		InstrumentationTimer(const char* name) : name(name), stopped(false)
+		ProfilingTimer(const char* name) : name(name), stopped(false)
 		{
 			startTimepoint = std::chrono::steady_clock::now();
 		}
 
-		~InstrumentationTimer()
+		~ProfilingTimer()
 		{
 			if (!stopped)
 				Stop();
@@ -158,7 +158,7 @@ namespace Wizzard
 			auto highResStart = FloatingPointMicroseconds{ startTimepoint.time_since_epoch() };
 			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(startTimepoint).time_since_epoch();
 
-			Instrumentor::Get().WriteProfile({ name, highResStart, elapsedTime, std::this_thread::get_id() });
+			Profiler::Get().WriteProfile({ name, highResStart, elapsedTime, std::this_thread::get_id() });
 
 			stopped = true;
 		}
@@ -169,7 +169,7 @@ namespace Wizzard
 	};
 }
 
-#define WIZ_PROFILE 0
+#define WIZ_PROFILE 1
 #if WIZ_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
@@ -192,9 +192,9 @@ namespace Wizzard
 #define WIZ_FUNC_SIG "WIZ_FUNC_SIG unknown!"
 #endif
 
-#define WIZ_PROFILE_BEGIN_SESSION(name, filepath) ::Wizzard::Instrumentor::Get().BeginSession(name, filepath)
-#define WIZ_PROFILE_END_SESSION()				  ::Wizzard::Instrumentor::Get().EndSession()
-#define WIZ_PROFILE_SCOPE(name)					  ::Wizzard::InstrumentationTimer timer##__LINE__(name);
+#define WIZ_PROFILE_BEGIN_SESSION(name, filepath) ::Wizzard::Profiler::Get().BeginSession(name, filepath)
+#define WIZ_PROFILE_END_SESSION()				  ::Wizzard::Profiler::Get().EndSession()
+#define WIZ_PROFILE_SCOPE(name)					  ::Wizzard::ProfilingTimer timer##__LINE__(name);
 #define WIZ_PROFILE_FUNCTION() WIZ_PROFILE_SCOPE(WIZ_FUNC_SIG)
 #else
 #define WIZ_PROFILE_BEGIN_SESSION(name, filepath)

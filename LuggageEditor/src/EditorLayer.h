@@ -13,7 +13,7 @@ namespace Wizzard
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		void OnUpdate(Timestep timeStep) override;
+		void OnUpdate(TimeStep timeStep) override;
 		virtual void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
 

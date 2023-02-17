@@ -2,7 +2,7 @@
 
 #include "wzpch.h"
 
-#include "WinOpenGLWindow.h"
+#include "WinOSWindow.h"
 
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/MouseEvent.h"
@@ -25,24 +25,24 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		return new WinOpenGLWindow(props);
+		return new WinOSWindow(props);
 	}
 
-	WinOpenGLWindow::WinOpenGLWindow(const WindowProps& props)
+	WinOSWindow::WinOSWindow(const WindowProps& props)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		Init(props);
 	}
 
-	WinOpenGLWindow::~WinOpenGLWindow()
+	WinOSWindow::~WinOSWindow()
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		Shutdown();
 	}
 
-	void WinOpenGLWindow::OnUpdate()
+	void WinOSWindow::OnUpdate()
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -50,7 +50,7 @@ namespace Wizzard
 		graphicsContext->SwapBuffers();
 	}
 
-	void WinOpenGLWindow::SetVSync(bool enabled)
+	void WinOSWindow::SetVSync(bool enabled)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -62,14 +62,14 @@ namespace Wizzard
 		windowData.vSync = enabled;
 	}
 
-	bool WinOpenGLWindow::IsVSync() const
+	bool WinOSWindow::IsVSync() const
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		return windowData.vSync;
 	}
 
-	void WinOpenGLWindow::Init(const WindowProps & props)
+	void WinOSWindow::Init(const WindowProps & props)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -191,7 +191,7 @@ namespace Wizzard
 		});
 	}
 
-	void WinOpenGLWindow::Shutdown()
+	void WinOSWindow::Shutdown()
 	{
 		WIZ_PROFILE_FUNCTION();
 

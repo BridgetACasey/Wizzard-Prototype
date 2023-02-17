@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "Core.h"
+#include "wizzard/base/Base.h"
 #include "Window.h"
 #include "LayerStack.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/ApplicationEvent.h"
-#include "wizzard/imgui/ImGuiLayer.h"
-#include "Timestep.h"
+#include "wizzard/ui/ImGuiLayer.h"
+#include "wizzard/base/Timestep.h"
 
 namespace Wizzard
 {

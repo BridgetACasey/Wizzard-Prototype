@@ -10,21 +10,21 @@ namespace Wizzard
 	class KeyEvent : public Event
 	{
 	public:
-		KeyCodeGL GetKeyCode() const { return keyCode; }
+		KeyCode GetKeyCode() const { return keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
 
 	protected:
-		KeyEvent(const KeyCodeGL keyCode) : keyCode(keyCode) {}
+		KeyEvent(const KeyCode keyCode) : keyCode(keyCode) {}
 
-		KeyCodeGL keyCode;
+		KeyCode keyCode;
 	};
 
 	//TODO: Rework key events to include input option for a key being pressed only once e.g. KeyPressedEvent() and KeyHeldEvent()
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const KeyCodeGL keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
+		KeyPressedEvent(const KeyCode keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
 
 		uint16_t GetRepeatCount() const { return repeatCount; }
 
@@ -44,7 +44,7 @@ namespace Wizzard
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(const KeyCodeGL keycode) : KeyEvent(keycode) {}
+		KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
 		std::string ToString() const override
 		{
@@ -59,7 +59,7 @@ namespace Wizzard
 	class KeyTypedEvent : public KeyEvent
 	{
 	public:
-		KeyTypedEvent(const KeyCodeGL keycode) : KeyEvent(keycode) {}
+		KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
 		std::string ToString() const override
 		{

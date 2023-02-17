@@ -32,8 +32,8 @@ namespace Wizzard
 		window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer::Init();
 		Audio::Init();
+		Renderer::Init();
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
@@ -42,6 +42,9 @@ namespace Wizzard
 	Application::~Application()
 	{
 		WIZ_PROFILE_FUNCTION();
+
+		Audio::Shutdown();
+		Renderer::Shutdown();
 	}
 
 	void Application::Run()
@@ -53,7 +56,7 @@ namespace Wizzard
 		while (running)
 		{
 			float time = (float)glfwGetTime();
-			Timestep timeStep = time - lastFrameTime;
+			TimeStep timeStep = time - lastFrameTime;
 			lastFrameTime = time;
 
 			if (!minimized)

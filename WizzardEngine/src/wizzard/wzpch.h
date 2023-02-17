@@ -14,7 +14,7 @@
 #include <unordered_set>
 
 #include "wizzard/core/Log.h"
-#include "wizzard/debug/Instrumentor.h"
+#include "wizzard/debug/Profiler.h"
 
 #ifdef WIZZARD_PLATFORM_WINDOWS
 	#include <Windows.h>

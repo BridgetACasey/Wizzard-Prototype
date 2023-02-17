@@ -13,7 +13,7 @@
 
 #include "core/Application.h"
 
-#include "ImGuiAccessibility.h"
+#include "wizzard/screenreading/ImGuiScreenReading.h"
 
 namespace Wizzard
 {
@@ -43,11 +43,11 @@ namespace Wizzard
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
 		//Set scaling options, may do this in a different class for user preferences later
-		ImGuiAccessibility::SetButtonFontScale(6.0f);
+		ImGuiScreenReading::SetButtonFontScale(6.0f);
 
 		//Apply scaling options
 		ImFontConfig imFontConfig;
-		imFontConfig.SizePixels = 13.0f * ImGuiAccessibility::GetButtonFontScale();
+		imFontConfig.SizePixels = 13.0f * ImGuiScreenReading::GetButtonFontScale();
 		io.Fonts->AddFontFromFileTTF("OpenSans-Bold.ttf", imFontConfig.SizePixels, &imFontConfig);
 
 		// Setup Dear ImGui style

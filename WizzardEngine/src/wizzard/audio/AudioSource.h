@@ -10,6 +10,8 @@ namespace Wizzard
 		AudioSource() = default;
 		~AudioSource();
 
+		void FreeSource();
+
 		bool IsLoaded() const { return loaded; }
 
 		void SetPosition(float x, float y, float z);

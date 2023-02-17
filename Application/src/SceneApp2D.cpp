@@ -19,12 +19,12 @@ void SceneApp2D::OnDetach()
 {
 }
 
-void SceneApp2D::OnUpdate(Wizzard::Timestep timeStep)
+void SceneApp2D::OnUpdate(Wizzard::TimeStep timeStep)
 {
 	orthoCamController.OnUpdate(timeStep);
 
 	// Render
-	Wizzard::Renderer2D::ResetStats();
+	Wizzard::Renderer2D::ResetStatistics();
 
 	Wizzard::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 	Wizzard::RenderCommand::Clear();

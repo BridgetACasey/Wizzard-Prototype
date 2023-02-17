@@ -6,7 +6,7 @@ struct ImVec2;
 
 namespace Wizzard
 {
-	class ImGuiAccessibility
+	class ImGuiScreenReading
 	{
 	public:
 		static bool Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg);

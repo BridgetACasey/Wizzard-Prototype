@@ -12,6 +12,7 @@ namespace Wizzard
 	{
 	public:
 		static void Init();
+		static void Shutdown();
 
 		static AudioSource LoadAudioSource(const std::string& fileName);
 
@@ -25,8 +26,6 @@ namespace Wizzard
 
 	private:
 		static AudioSource LoadAudioSourceMP3(const std::string& fileName);
-
-		//TODO: Implement support for .ogg files
 		static AudioSource LoadAudioSourceOgg(const std::string& fileName);
 	};
 }

@@ -2,7 +2,7 @@
 
 #include "wzpch.h"
 
-#include "ImGuiAccessibility.h"
+#include "ImGuiScreenReading.h"
 #include "imgui.h"
 #include "Tolk.h"
 
@@ -11,7 +11,7 @@
 namespace Wizzard
 {
 	//Probably not the best way of arranging this, to review later
-	bool ImGuiAccessibility::Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg)
+	bool ImGuiScreenReading::Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg)
 	{
 		WIZ_PROFILE_FUNCTION();
 

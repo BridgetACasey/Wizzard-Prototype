@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Core.h"
-#include "Timestep.h"
+#include "wizzard/base/Base.h"
+#include "wizzard/base/Timestep.h"
 #include "wizzard/event/Event.h"
 
 namespace Wizzard
@@ -16,7 +16,7 @@ namespace Wizzard
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep timeStep) {}
+		virtual void OnUpdate(TimeStep timeStep) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

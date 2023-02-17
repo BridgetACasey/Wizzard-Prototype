@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "wizzard/core/Core.h"
+#include "wizzard/base/Base.h"
 #include "Layer.h"
 
 #include <vector>

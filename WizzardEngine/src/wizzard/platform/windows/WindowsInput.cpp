@@ -10,7 +10,7 @@ namespace Wizzard
 {
 	Input* Input::instance = new WindowsInput();
 
-	bool WindowsInput::IsKeyPressedImpl(KeyCodeGL keycode)
+	bool WindowsInput::IsKeyPressedImpl(KeyCode keycode)
 	{
 		WIZ_PROFILE_FUNCTION();
 

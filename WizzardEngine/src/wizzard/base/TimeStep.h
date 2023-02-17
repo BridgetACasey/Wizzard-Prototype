@@ -4,12 +4,11 @@
 
 namespace Wizzard
 {
-	class Timestep
+	class TimeStep
 	{
 	public:
-		Timestep(float t = 0.0f) : time(t)
+		TimeStep(float time = 0.0f) : time(time)
 		{
-			WIZ_PROFILE_FUNCTION();
 		}
 
 		operator float() const { return time; }
@@ -18,7 +17,11 @@ namespace Wizzard
 
 		float GetMilliseconds() const { return time * 1000.0f; }
 
+		float GetMicroseconds() const { return time * 1000000.0f; }
+
+		float GetNanoseconds() const { return time * 1000000000.0f; }
+
 	private:
-		float time;
+		float time;	//Time in seconds
 	};
 }

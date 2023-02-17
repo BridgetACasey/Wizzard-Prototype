@@ -100,6 +100,13 @@ namespace Wizzard
 		}
 	}
 
+	void Audio::Shutdown()
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		CloseAL();
+	}
+
 	void Audio::SetDebugLogging(bool log)
 	{
 		WIZ_PROFILE_FUNCTION();

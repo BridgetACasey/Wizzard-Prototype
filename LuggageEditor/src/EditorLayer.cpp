@@ -22,9 +22,10 @@ namespace Wizzard
 
 	void EditorLayer::OnDetach()
 	{
+		music.FreeSource();
 	}
 
-	void EditorLayer::OnUpdate(Timestep timeStep)
+	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
 		orthoCamController.OnUpdate(timeStep);
 
@@ -45,7 +46,7 @@ namespace Wizzard
 		}
 
 		// Render
-		Renderer2D::ResetStats();
+		Renderer2D::ResetStatistics();
 
 		frameBuffer->Bind();
 
@@ -134,25 +135,25 @@ namespace Wizzard
 		{
 			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
 
-			if (ImGuiAccessibility::Button("FILE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("FILE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
 			}
 
-			if (ImGuiAccessibility::Button("SCENE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("SCENE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openEditMenu = !openEditMenu;
 
-			if (ImGuiAccessibility::Button("CREATE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("CREATE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openObjectMenu = !openObjectMenu;
 
-			if (ImGuiAccessibility::Button("CONSOLE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("CONSOLE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openConsoleMenu = !openConsoleMenu;
 
-			if (ImGuiAccessibility::Button("SETTINGS", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("SETTINGS", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openSettingsMenu = !openSettingsMenu;
 
-			if (ImGuiAccessibility::Button("EXIT", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiScreenReading::Button("EXIT", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
 				openExitMenu = !openExitMenu;
 
 			ImGui::EndMainMenuBar();
@@ -191,7 +192,7 @@ namespace Wizzard
 			{
 				//ImGui::TextWrapped("Debug information goes here!");
 
-				auto stats = Wizzard::Renderer2D::GetStats();
+				auto stats = Wizzard::Renderer2D::GetStatistics();
 				ImGui::Text("Renderer2D Stats:");
 				ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 				ImGui::Text("Quads: %d", stats.QuadCount);
@@ -217,14 +218,14 @@ namespace Wizzard
 			{
 				ImGui::Text("Quit application?");
 
-				if (Wizzard::ImGuiAccessibility::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
+				if (Wizzard::ImGuiScreenReading::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
 				{
 					Wizzard::Application::Get().Close();
 				}
 
 				ImGui::SameLine();
 
-				if (Wizzard::ImGuiAccessibility::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
+				if (Wizzard::ImGuiScreenReading::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
 					openExitMenu = false;
 
 				ImGui::End();

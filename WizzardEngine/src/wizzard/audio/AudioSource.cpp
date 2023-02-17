@@ -13,12 +13,19 @@ namespace Wizzard
 {
 	AudioSource::AudioSource(uint32_t handle, bool loaded, float length) : bufferHandle(handle), loaded(loaded), totalDuration(length)
 	{
-		WIZ_PROFILE_FUNCTION();
 	}
 
 	AudioSource::~AudioSource()
 	{
-		//TODO: Free OpenAL audio source e.g. alDeleteSources(...)
+	}
+
+	void AudioSource::FreeSource()
+	{
+		if (alIsSource(sourceHandle))
+			alDeleteSources(1, &sourceHandle);
+
+		if (alIsBuffer(bufferHandle))
+			alDeleteBuffers(1, &bufferHandle);
 	}
 
 	void AudioSource::SetPosition(float x, float y, float z)

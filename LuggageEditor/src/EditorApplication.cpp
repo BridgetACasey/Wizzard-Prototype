@@ -1,7 +1,7 @@
 //@BridgetACasey
 
 #include <Wizzard.h>
-#include <wizzard/core/EntryPoint.h>
+#include <wizzard/base/EntryPoint.h>
 
 #include "EditorLayer.h"
 
@@ -17,7 +17,6 @@ namespace Wizzard
 
 		~LuggageEditor()
 		{
-
 		}
 	};
 

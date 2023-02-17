@@ -403,14 +403,14 @@ namespace Wizzard
 		data->statistics.QuadCount++;
 	}
 
-	void Renderer2D::ResetStats()
+	void Renderer2D::ResetStatistics()
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		memset(&data->statistics, 0, sizeof(Statistics));
 	}
 
-	Renderer2D::Statistics Renderer2D::GetStats()
+	Renderer2D::Statistics Renderer2D::GetStatistics()
 	{
 		WIZ_PROFILE_FUNCTION();
 

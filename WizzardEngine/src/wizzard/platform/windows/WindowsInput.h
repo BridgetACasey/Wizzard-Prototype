@@ -9,7 +9,7 @@ namespace Wizzard
 	class WindowsInput : public Input
 	{
 	protected:
-		virtual bool IsKeyPressedImpl(KeyCodeGL keycode) override;
+		virtual bool IsKeyPressedImpl(KeyCode keycode) override;
 		virtual bool IsMouseButtonPressedImpl(MouseCodeGL button) override;
 
 		virtual std::pair<float, float> GetMousePositionImpl() override;

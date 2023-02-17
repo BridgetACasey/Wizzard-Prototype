@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "wizzard/core/Core.h"
+#include "wizzard/base/Base.h"
 #include "wizzard/core/KeyCode.h"
 #include "wizzard/core/MouseCode.h"
 
@@ -11,7 +11,7 @@ namespace Wizzard
 	class Input
 	{
 	public:
-		static bool IsKeyPressed(KeyCodeGL keycode) { return instance->IsKeyPressedImpl(keycode); }
+		static bool IsKeyPressed(KeyCode keycode) { return instance->IsKeyPressedImpl(keycode); }
 
 		static bool IsMouseButtonPressed(MouseCodeGL button) { return instance->IsMouseButtonPressedImpl(button); }
 		static std::pair<float, float> GetMousePosition() { return instance->GetMousePositionImpl(); }

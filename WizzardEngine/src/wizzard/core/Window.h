@@ -4,7 +4,7 @@
 
 #include "wizzard/wzpch.h"
 
-#include "Core.h"
+#include "wizzard/base/Base.h"
 #include "wizzard/event/Event.h"
 
 namespace Wizzard

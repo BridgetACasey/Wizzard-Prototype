@@ -3,7 +3,7 @@
 #pragma once
 
 #include <string>
-#include "wizzard/core/Core.h"
+#include "wizzard/base/Base.h"
 
 namespace Wizzard
 {

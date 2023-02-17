@@ -13,7 +13,7 @@ public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 
-	void OnUpdate(Wizzard::Timestep timeStep) override;
+	void OnUpdate(Wizzard::TimeStep timeStep) override;
 	virtual void OnImGuiRender() override;
 	void OnEvent(Wizzard::Event& event) override;
 

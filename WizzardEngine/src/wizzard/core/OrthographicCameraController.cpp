@@ -14,7 +14,7 @@ namespace Wizzard
 		WIZ_PROFILE_FUNCTION();
 	}
 
-	void OrthographicCameraController::OnUpdate(Timestep timeStep)
+	void OrthographicCameraController::OnUpdate(TimeStep timeStep)
 	{
 		WIZ_PROFILE_FUNCTION();
 

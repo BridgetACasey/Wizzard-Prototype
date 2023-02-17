@@ -3,7 +3,7 @@
 #pragma once
 
 #include "wizzard/rendering/OrthographicCamera.h"
-#include "Timestep.h"
+#include "wizzard/base/Timestep.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/MouseEvent.h"
 
@@ -14,7 +14,7 @@ namespace Wizzard
 	public:
 		OrthographicCameraController(float aspectRatio, bool rotation = false);
 
-		void OnUpdate(Timestep timeStep);
+		void OnUpdate(TimeStep timeStep);
 		void OnEvent(Event& event);
 
 		OrthographicCamera& GetCamera() { return camera; }
