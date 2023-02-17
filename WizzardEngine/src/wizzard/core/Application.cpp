@@ -166,11 +166,25 @@ namespace Wizzard
 		layerStack.PushLayer(layer);
 	}
 
+	void Application::PopLayer(Layer* layer)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		layerStack.PopLayer(layer);
+	}
+
 	void Application::PushOverlay(Layer* overlay)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		layerStack.PushOverlay(overlay);
+	}
+
+	void Application::PopOverlay(Layer* overlay)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		layerStack.PopOverlay(overlay);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& windowCloseEvent)

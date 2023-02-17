@@ -12,12 +12,18 @@ namespace Wizzard
 	public:
 		LuggageEditor() : Application("Luggage Editor")
 		{
-			PushLayer(new EditorLayer());
+			editorLayer = new EditorLayer();
+
+			PushLayer(editorLayer);
 		}
 
 		~LuggageEditor()
 		{
+			PopLayer(editorLayer);
 		}
+
+	private:
+		EditorLayer* editorLayer = nullptr;
 	};
 
 	Application* CreateApplication()

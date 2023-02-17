@@ -24,7 +24,9 @@ namespace Wizzard
 		void OnEvent(Event& event);
 
 		void PushLayer(Layer* layer);
+		void PopLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+		void PopOverlay(Layer* overlay);
 
 		Window& GetWindow() { return *window; }
 
