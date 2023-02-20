@@ -126,13 +126,13 @@ namespace Wizzard
 			{
 				case GLFW_PRESS:
 				{
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event(key);
 					data.eventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent event(key, 1);
+					KeyDownEvent event(key);
 					data.eventCallback(event);
 					break;
 				}
@@ -162,6 +162,12 @@ namespace Wizzard
 			case GLFW_PRESS:
 			{
 				MouseButtonPressedEvent event(button);
+				data.eventCallback(event);
+				break;
+			}
+			case GLFW_REPEAT:
+			{
+				MouseButtonDownEvent event(button);
 				data.eventCallback(event);
 				break;
 			}

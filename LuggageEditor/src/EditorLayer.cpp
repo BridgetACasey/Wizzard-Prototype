@@ -32,7 +32,7 @@ namespace Wizzard
 		//Temp test code for audio demo
 		if (Input::IsKeyPressed(Key::P))
 		{
-			//WIZ_INFO("Play key pressed! Hopefully just once???");
+			WIZ_TRACE("Play key pressed! Hopefully just once???");
 
 			playMusic = !playMusic;
 
@@ -218,14 +218,14 @@ namespace Wizzard
 			{
 				ImGui::Text("Quit application?");
 
-				if (Wizzard::ImGuiScreenReading::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
+				if (ImGuiScreenReading::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
 				{
-					Wizzard::Application::Get().Close();
+					Application::Get().Close();
 				}
 
 				ImGui::SameLine();
 
-				if (Wizzard::ImGuiScreenReading::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
+				if (ImGuiScreenReading::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
 					openExitMenu = false;
 
 				ImGui::End();

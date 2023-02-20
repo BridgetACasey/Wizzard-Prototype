@@ -25,7 +25,9 @@ namespace Wizzard
 			ButtonLast   = Button7,
 			ButtonLeft   = Button0,
 			ButtonRight	 = Button1,
-			ButtonMiddle = Button2
+			ButtonMiddle = Button2,
+
+			TotalCodeCount = 11	//Placeholder value for total number of elements in the mouse code enum. Must be manually updated.
 		};
 	}
 }

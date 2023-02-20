@@ -27,6 +27,7 @@ namespace Wizzard
 		ApplicationUpdate,
 		ApplicationRender,
 		KeyPressed,
+		KeyDown,
 		KeyReleased,
 		KeyTyped,
 		MouseMoved,
@@ -34,6 +35,7 @@ namespace Wizzard
 		MouseEntered,
 		MouseExited,
 		MouseButtonPressed,
+		MouseButtonDown,
 		MouseButtonReleased
 	};
 

@@ -8,9 +8,9 @@
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/EventHandler.h"
 
-#include "wizzard/rendering/Renderer.h"
-
+#include "wizzard/input/Input.h"
 #include "wizzard/audio/Audio.h"
+#include "wizzard/rendering/Renderer.h"
 
 #include "Tolk.h"
 
@@ -32,6 +32,7 @@ namespace Wizzard
 		window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
+		Input::Init();
 		Audio::Init();
 		Renderer::Init();
 

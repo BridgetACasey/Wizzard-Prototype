@@ -143,7 +143,9 @@ namespace Wizzard
 			RightControl = 345,
 			RightAlt = 346,
 			RightSuper = 347,
-			Menu = 348
+			Menu = 348,
+
+			TotalCodeCount = 121	//Placeholder value for total number of elements in the key code enum. Must be manually updated.
 		};
 	}
 }

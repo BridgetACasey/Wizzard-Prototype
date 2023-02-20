@@ -20,25 +20,35 @@ namespace Wizzard
 		KeyCode keyCode;
 	};
 
-	//TODO: Rework key events to include input option for a key being pressed only once e.g. KeyPressedEvent() and KeyHeldEvent()
+	//TODO: Rework key events to include input option for a key being pressed only once e.g. KeyPressedEvent() and KeyDownEvent()
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const KeyCode keycode, const uint16_t repCount) : KeyEvent(keycode), repeatCount(repCount) {}
-
-		uint16_t GetRepeatCount() const { return repeatCount; }
+		KeyPressedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ") (" << repeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ")";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
+	};
 
-	private:
-		uint16_t repeatCount;
+	class KeyDownEvent : public KeyEvent
+	{
+	public:
+		KeyDownEvent(const KeyCode keycode) : KeyEvent(keycode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyDownEvent: " << (char)keyCode << " (ASCII Value: " << keyCode << ")";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyDown)
 	};
 
 	class KeyReleasedEvent : public KeyEvent

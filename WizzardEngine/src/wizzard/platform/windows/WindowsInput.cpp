@@ -8,21 +8,49 @@
 
 namespace Wizzard
 {
+	constexpr int TOTAL_KEY_CODES = Key::TotalCodeCount;
+	constexpr int TOTAL_MOUSE_CODES = Mouse::TotalCodeCount;
+
+	//Storing the states for each unique key and mouse button to check if it has only been pressed once
+	static std::unordered_map<int, bool> keyStates;
+	static std::unordered_map<int, bool> mouseStates;
+
+	void Input::Init()
+	{
+		for (int i = 0; i < TOTAL_KEY_CODES; i++)
+			keyStates.insert(std::pair(i, false));
+
+		for (int j = 0; j < TOTAL_MOUSE_CODES; j++)
+			mouseStates.insert(std::pair(j, false));
+	}
+
 	bool Input::IsKeyPressed(KeyCode keyCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
+		bool pressed = keyStates.at(keyCode);
 
-		return state == GLFW_PRESS;
+		//If the key was already detected as being pressed and it's still down, don't trigger again until it has been released.
+		if (pressed && state == GLFW_PRESS)
+			return false;
+
+		if(!pressed && state == GLFW_PRESS)
+		{
+			keyStates.at(keyCode) = true;
+			pressed = true;
+		}
+		else
+		{
+			keyStates.at(keyCode) = false;
+			pressed = false;
+		}
+
+		return pressed;
 	}
 
-	bool Input::IsKeyHeld(KeyCode keyCode)
+	bool Input::IsKeyDown(KeyCode keyCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
@@ -32,30 +60,45 @@ namespace Wizzard
 
 	bool Input::IsKeyReleased(KeyCode keyCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
 
-		return state == GLFW_RELEASE;
+		if (state == GLFW_RELEASE)
+			keyStates.at(keyCode) = false;
+
+		const bool pressed = keyStates.at(keyCode);
+
+		return pressed;
 	}
 
 	bool Input::IsMouseButtonPressed(MouseCode mouseCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, mouseCode);
+		bool pressed = mouseStates.at(mouseCode);
 
-		return state == GLFW_PRESS;
+		//If the mouse button was already detected as being pressed and it's still down, don't trigger again until it has been released.
+		if (pressed && state == GLFW_PRESS)
+			return false;
+
+		if (!pressed && state == GLFW_PRESS)
+		{
+			mouseStates.at(mouseCode) = true;
+			pressed = true;
+		}
+		else
+		{
+			mouseStates.at(mouseCode) = false;
+			pressed = false;
+		}
+
+		return pressed;
 	}
 
-	bool Input::IsMouseButtonHeld(MouseCode mouseCode)
+	bool Input::IsMouseButtonDown(MouseCode mouseCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, mouseCode);
@@ -65,8 +108,6 @@ namespace Wizzard
 
 	bool Input::IsMouseButtonReleased(MouseCode mouseCode)
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, mouseCode);
@@ -76,8 +117,6 @@ namespace Wizzard
 
 	std::pair<float, float> Input::GetMousePosition()
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		double posX, posY;
@@ -89,8 +128,6 @@ namespace Wizzard
 
 	float Input::GetMouseX()
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto [x, y] = GetMousePosition();
 
 		return x;
@@ -98,8 +135,6 @@ namespace Wizzard
 
 	float Input::GetMouseY()
 	{
-		WIZ_PROFILE_FUNCTION();
-
 		auto [x, y] = GetMousePosition();
 
 		return y;

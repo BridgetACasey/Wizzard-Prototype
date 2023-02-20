@@ -79,6 +79,21 @@ namespace Wizzard
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
+	class MouseButtonDownEvent : public MouseButtonEvent
+	{
+	public:
+		MouseButtonDownEvent(const MouseCode button) : MouseButtonEvent(button) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "MouseButtonDownEvent: " << button;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(MouseButtonDown)
+	};
+
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
