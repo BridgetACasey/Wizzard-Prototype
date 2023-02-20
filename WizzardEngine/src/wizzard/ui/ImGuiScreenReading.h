@@ -6,10 +6,10 @@ struct ImVec2;
 
 namespace Wizzard
 {
-	class ImGuiScreenReading
+	class ImGuiSR
 	{
 	public:
-		static bool Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg);
+		static bool Button(const char* label, const wchar_t* description, const ImVec2& size_arg);
 
 		static void SetButtonFontScale(float scale) { buttonFontScale = scale; }
 		static float GetButtonFontScale() { return buttonFontScale; }

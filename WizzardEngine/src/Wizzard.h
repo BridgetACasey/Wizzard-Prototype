@@ -18,9 +18,7 @@
 
 //User Interface
 #include "wizzard/ui/ImGuiLayer.h"
-
-//Accessibility
-#include "wizzard/screenreading/ImGuiScreenReading.h"
+#include "wizzard/ui/ImGuiScreenReading.h"
 
 //Entity Component System
 #include "wizzard/scene/Entity.h"

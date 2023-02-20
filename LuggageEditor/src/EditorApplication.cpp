@@ -10,7 +10,7 @@ namespace Wizzard
 	class LuggageEditor : public Application
 	{
 	public:
-		LuggageEditor() : Application("Luggage Editor")
+		LuggageEditor() : Application("Editor Application")
 		{
 			editorLayer = new EditorLayer();
 

@@ -35,6 +35,12 @@ namespace Wizzard
 		bool isViewportFocused = false;
 		bool isViewportHovered = false;
 
+		bool isMainMenuFocused = false;
+		bool isMainMenuHovered = false;
+
+		bool isHierarchyFocused = false;
+		bool isHierarchyHovered = false;
+
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};
 }

@@ -36,7 +36,7 @@ namespace Wizzard
 			//Temp test code for audio demo
 			if (Input::IsKeyPressed(Key::P))
 			{
-				WIZ_TRACE("Play key pressed! Hopefully just once???");
+				LUG_TRACE("Play key pressed! Hopefully just once???");
 
 				playMusic = !playMusic;
 
@@ -116,6 +116,11 @@ namespace Wizzard
 		static bool openSettingsMenu = false;
 		static bool openExitMenu = false;
 
+		if (Input::IsKeyDown(Key::Z))
+		{
+			ImGui::SetNextWindowFocus();
+		}
+
 		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
 		// all active windows docked into it will lose their parent and become undocked.
@@ -140,114 +145,117 @@ namespace Wizzard
 		{
 			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
 
-			if (ImGuiScreenReading::Button("FILE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			isMainMenuFocused = ImGui::IsWindowFocused();
+			isMainMenuHovered = ImGui::IsWindowHovered();
+
+			if (ImGuiSR::Button("FILE", L"file menu", ImVec2(windowWidth, 80.5f)))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
 			}
 
-			if (ImGuiScreenReading::Button("SCENE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("SCENE", L"scene menu", ImVec2(windowWidth, 80.5f)))
 				openEditMenu = !openEditMenu;
 
-			if (ImGuiScreenReading::Button("CREATE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("CREATE", L"create menu", ImVec2(windowWidth, 80.5f)))
 				openObjectMenu = !openObjectMenu;
 
-			if (ImGuiScreenReading::Button("CONSOLE", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("CONSOLE", L"console menu", ImVec2(windowWidth, 80.5f)))
 				openConsoleMenu = !openConsoleMenu;
 
-			if (ImGuiScreenReading::Button("SETTINGS", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("SETTINGS", L"settings menu", ImVec2(windowWidth, 80.5f)))
 				openSettingsMenu = !openSettingsMenu;
 
-			if (ImGuiScreenReading::Button("EXIT", L"sample tooltip", read, ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("EXIT", L"exit menu", ImVec2(windowWidth, 80.5f)))
 				openExitMenu = !openExitMenu;
 
 			ImGui::EndMainMenuBar();
 		}
 
-		if (openFileMenu)
-		{
-			if (ImGui::Begin("File Menu"))
+			if (Input::IsKeyDown(Key::X))
+			{
+				ImGui::SetNextWindowFocus();
+			}
+
+			ImGui::Begin("Hierarchy");
+
+			isHierarchyFocused = ImGui::IsWindowFocused();
+			isHierarchyHovered = ImGui::IsWindowHovered();
+
+			ImGuiSR::Button("Test Button", L"This is the hierarchy test button", ImVec2(150.0f, 150.0f));
+
+			if(openFileMenu)
 			{
 				ImGui::TextWrapped("Project functions like saving go here!");
-				ImGui::End();
 			}
-		}
-
-		if (openEditMenu)
-		{
-			if (ImGui::Begin("Edit Menu"))
+			else if (openEditMenu)
 			{
 				ImGui::TextWrapped("Editing functions found here!");
-				ImGui::End();
 			}
-		}
-
-		if (openObjectMenu)
-		{
-			if (ImGui::Begin("Object Menu"))
+			else if (openObjectMenu)
 			{
 				ImGui::TextWrapped("Scene hierarchy data found here!");
-				ImGui::End();
 			}
-		}
-
-		if (openConsoleMenu)
-		{
-			if (ImGui::Begin("Console Menu"))
+			else if (openConsoleMenu)
 			{
 				//ImGui::TextWrapped("Debug information goes here!");
 
-				auto stats = Wizzard::Renderer2D::GetStatistics();
+				auto stats = Renderer2D::GetStatistics();
 				ImGui::Text("Renderer2D Stats:");
 				ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 				ImGui::Text("Quads: %d", stats.QuadCount);
 				ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 				ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-				ImGui::End();
 			}
-		}
-
-		if (openSettingsMenu)
-		{
-			if (ImGui::Begin("Settings Menu"))
+			else if (openSettingsMenu)
 			{
 				ImGui::TextWrapped("User preferences go here!");
-				ImGui::End();
 			}
-		}
 
-		if (openExitMenu)
-		{
-			if (ImGui::Begin("Exit Menu"))
+			if(openExitMenu)
 			{
-				ImGui::Text("Quit application?");
-
-				if (ImGuiScreenReading::Button("Yes", L"Yes", read, ImVec2(240.0f, 80.0f)))
+				if (ImGui::Begin("Exit Menu"))
 				{
-					Application::Get().Close();
+					ImGui::Text("Quit application?");
+
+					if (ImGuiSR::Button("Yes", L"Yes", ImVec2(240.0f, 80.0f)))
+					{
+						Application::Get().Close();
+					}
+
+					ImGui::SameLine();
+
+					if (ImGuiSR::Button("No", L"No", ImVec2(240.0f, 80.0f)))
+						openExitMenu = false;
+
+					ImGui::End();
 				}
-
-				ImGui::SameLine();
-
-				if (ImGuiScreenReading::Button("No", L"No", read, ImVec2(240.0f, 80.0f)))
-					openExitMenu = false;
-
-				ImGui::End();
 			}
-		}
 
-		ImGui::Begin("Viewport");
+			ImGui::End();	//End Hierarchy
 
-		isViewportFocused = ImGui::IsWindowFocused();
-		isViewportHovered = ImGui::IsWindowHovered();
+			if (Input::IsKeyDown(Key::C))
+			{
+				ImGui::SetNextWindowFocus();
+			}
 
-		uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));
+			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar;
 
-		ImGui::End();
+			ImGui::Begin("Viewport", &dockspaceOpen, viewportFlags);
 
-		ImGui::End();
+			ImGuiSR::Button("Test Button", L"Viewport test button", ImVec2(150.0f, 150.0f));
+
+			isViewportFocused = ImGui::IsWindowFocused();
+			isViewportHovered = ImGui::IsWindowHovered();
+
+			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportFocused || !isViewportHovered);
+
+			uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
+			ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::End();	//End Viewport
+
+		ImGui::End();	//End Dockspace Demo
 	}
 
 	void EditorLayer::OnEvent(Event& event)

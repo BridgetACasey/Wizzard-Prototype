@@ -18,25 +18,32 @@ namespace Wizzard
 	enum class EventType
 	{
 		None = 0,
+
 		WindowClose,
 		WindowResize,
 		WindowFocus,
 		WindowNotFocused,
 		WindowMoved,
+
 		ApplicationTick,
 		ApplicationUpdate,
 		ApplicationRender,
+
 		KeyPressed,
 		KeyDown,
 		KeyReleased,
 		KeyTyped,
+
 		MouseMoved,
 		MouseScrolled,
 		MouseEntered,
 		MouseExited,
 		MouseButtonPressed,
 		MouseButtonDown,
-		MouseButtonReleased
+		MouseButtonReleased,
+
+		UIElementFocus,
+		UIElementSelected
 	};
 
 	enum EventCategory
@@ -46,7 +53,8 @@ namespace Wizzard
 		EventCategoryInput = BIT(1),
 		EventCategoryKeyboard = BIT(2),
 		EventCategoryMouse = BIT(3),
-		EventCategoryMouseButton = BIT(4)
+		EventCategoryMouseButton = BIT(4),
+		EventCategoryEditor = BIT(5)
 	};
 
 	class Event

@@ -7,6 +7,7 @@
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/KeyEvent.h"
 #include "wizzard/event/MouseEvent.h"
+#include "wizzard/event/UIEvent.h"
 #include "wizzard/event/EventHandler.h"
 
 namespace Wizzard
@@ -23,7 +24,10 @@ namespace Wizzard
 		void Begin();
 		void End();
 
+		void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
+
+		void BlockImGuiEvents(bool shouldBlock) { blockImGuiEvents = shouldBlock; }
 
 	private:
 		float time = 0.0f;

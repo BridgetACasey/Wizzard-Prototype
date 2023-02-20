@@ -11,7 +11,7 @@
 namespace Wizzard
 {
 	//Probably not the best way of arranging this, to review later
-	bool ImGuiScreenReading::Button(const char* label, const wchar_t* description, bool& readDesc, const ImVec2& size_arg)
+	bool ImGuiSR::Button(const char* label, const wchar_t* description, const ImVec2& size_arg)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -25,21 +25,6 @@ namespace Wizzard
 			Tolk_Output(output.c_str(), true);
 			success = true;
 		}
-
-		if (ImGui::IsItemHovered(ImGuiHoveredFlags_None))
-		{
-			const _bstr_t tooltipText(description);
-			ImGui::SetTooltip(tooltipText);
-
-			if (readDesc)
-			{
-				//	//Tolk_Output(L"Hello I am Mr Screen Reader Man");
-				Tolk_Output(description, true);
-				readDesc = false;
-			}
-		}
-		else
-			readDesc = true;
 
 		return success;
 	}

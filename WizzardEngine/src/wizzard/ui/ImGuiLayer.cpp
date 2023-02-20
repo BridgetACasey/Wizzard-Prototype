@@ -8,12 +8,17 @@
 #include <glad/glad.h>
 
 #include "imgui.h"
+#include "ImGuiCustom.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 #include "core/Application.h"
 
-#include "wizzard/screenreading/ImGuiScreenReading.h"
+#include "ImGuiScreenReading.h"
+
+static ImGuiWindow* currentWindow = nullptr;
+static ImGuiID currentActiveID;
+static ImGuiID currentHoveredID;
 
 namespace Wizzard
 {
@@ -35,19 +40,24 @@ namespace Wizzard
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
+
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
 
 		//Set scaling options, may do this in a different class for user preferences later
-		ImGuiScreenReading::SetButtonFontScale(6.0f);
+		ImGuiSR::SetButtonFontScale(6.0f);
 
 		//Apply scaling options
 		ImFontConfig imFontConfig;
-		imFontConfig.SizePixels = 13.0f * ImGuiScreenReading::GetButtonFontScale();
+		imFontConfig.SizePixels = 13.0f * ImGuiSR::GetButtonFontScale();
 		io.Fonts->AddFontFromFileTTF("OpenSans-Bold.ttf", imFontConfig.SizePixels, &imFontConfig);
 
 		// Setup Dear ImGui style
@@ -112,8 +122,27 @@ namespace Wizzard
 		}
 	}
 
+	void ImGuiLayer::OnImGuiRender()
+	{
+		ImGuiContext* context = ImGui::GetCurrentContext();
+		currentActiveID = context->ActiveId;
+		currentHoveredID = context->HoveredId;
+
+		if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
+		{
+			WIZ_TRACE("Yoooo we've swapped active thingies! Thingie: {0}", currentActiveID);
+		}
+
+		if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
+		{
+			WIZ_TRACE("Yoooo we've swapped hovered thingies! Thingie: {0}", currentHoveredID);
+		}
+	}
+
 	void ImGuiLayer::OnEvent(Event& event)
 	{
+		WIZ_PROFILE_FUNCTION();
+
 		if(blockImGuiEvents)
 		{
 			ImGuiIO& io = ImGui::GetIO();

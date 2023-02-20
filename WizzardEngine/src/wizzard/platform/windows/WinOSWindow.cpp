@@ -114,7 +114,16 @@ namespace Wizzard
 		glfwSetWindowCloseCallback(glfwWindow, [](GLFWwindow* window)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
 			WindowCloseEvent event;
+			data.eventCallback(event);
+		});
+
+		glfwSetWindowFocusCallback(glfwWindow, [](GLFWwindow* window, int focused)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			WindowFocusEvent event(focused);
 			data.eventCallback(event);
 		});
 

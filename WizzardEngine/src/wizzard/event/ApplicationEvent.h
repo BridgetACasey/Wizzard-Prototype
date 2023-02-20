@@ -35,6 +35,19 @@ namespace Wizzard
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
+	class WindowFocusEvent : public Event
+	{
+	public:
+		WindowFocusEvent(bool focused) : isFocused(focused) {}
+
+		EVENT_CLASS_TYPE(WindowFocus)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
+	private:
+		bool isFocused;
+	};
+
+
 	class AppTickEvent : public Event
 	{
 	public:

@@ -6,6 +6,7 @@
 
 #include "Application.h"
 #include "wizzard/event/ApplicationEvent.h"
+#include "wizzard/event/UIEvent.h"
 #include "wizzard/event/EventHandler.h"
 
 #include "wizzard/input/Input.h"
@@ -100,6 +101,9 @@ namespace Wizzard
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		eventHandler.HandleEvent<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
+
+		eventHandler.HandleEvent<UIElementFocusEvent>(BIND_EVENT_FN(Application::OnUIElementFocus));
+		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(Application::OnUIElementSelected));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
@@ -209,6 +213,20 @@ namespace Wizzard
 
 		minimized = false;
 		Renderer::OnWindowResize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+		return false;
+	}
+
+	bool Application::OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent)
+	{
+		WIZ_TRACE(uiElementFocusEvent);
+
+		return false;
+	}
+
+	bool Application::OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent)
+	{
+		WIZ_TRACE(uiElementSelectedEvent);
 
 		return false;
 	}
