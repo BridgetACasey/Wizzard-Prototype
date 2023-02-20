@@ -1,3 +1,5 @@
+//@BridgetACasey
+
 #include "EditorLayer.h"
 
 #include "imgui/imgui.h"
@@ -27,21 +29,24 @@ namespace Wizzard
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
-		orthoCamController.OnUpdate(timeStep);
-
-		//Temp test code for audio demo
-		if (Input::IsKeyPressed(Key::P))
+		if (isViewportFocused)
 		{
-			WIZ_TRACE("Play key pressed! Hopefully just once???");
+			orthoCamController.OnUpdate(timeStep);
 
-			playMusic = !playMusic;
-
-			if (music.IsLoaded())
+			//Temp test code for audio demo
+			if (Input::IsKeyPressed(Key::P))
 			{
-				if (playMusic)
-					Audio::Play(music);
-				else
-					Audio::Pause(music);
+				WIZ_TRACE("Play key pressed! Hopefully just once???");
+
+				playMusic = !playMusic;
+
+				if (music.IsLoaded())
+				{
+					if (playMusic)
+						Audio::Play(music);
+					else
+						Audio::Pause(music);
+				}
 			}
 		}
 
@@ -234,7 +239,8 @@ namespace Wizzard
 
 		ImGui::Begin("Viewport");
 
-		//ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+		isViewportFocused = ImGui::IsWindowFocused();
+		isViewportHovered = ImGui::IsWindowHovered();
 
 		uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
 		ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));

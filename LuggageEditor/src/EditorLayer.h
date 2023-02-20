@@ -1,3 +1,5 @@
+//@BridgetACasey
+
 #pragma once
 
 #include "Wizzard.h"
@@ -10,15 +12,15 @@ namespace Wizzard
 		EditorLayer();
 		virtual ~EditorLayer() = default;
 
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
+		void OnAttach() override;
+		void OnDetach() override;
 
 		void OnUpdate(TimeStep timeStep) override;
-		virtual void OnImGuiRender() override;
+		void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
 
 	private:
-		Wizzard::OrthographicCameraController orthoCamController;
+		OrthographicCameraController orthoCamController;
 
 		// Temp
 		Ref<VertexArray> squareVA;
@@ -29,6 +31,9 @@ namespace Wizzard
 
 		AudioSource music;
 		bool playMusic = false;
+
+		bool isViewportFocused = false;
+		bool isViewportHovered = false;
 
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};

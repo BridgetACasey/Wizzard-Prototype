@@ -111,4 +111,15 @@ namespace Wizzard
 			glfwMakeContextCurrent(backup_current_context);
 		}
 	}
+
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if(blockImGuiEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+
+			event.isHandled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.isHandled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
+	}
 }

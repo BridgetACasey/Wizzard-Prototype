@@ -23,7 +23,11 @@ namespace Wizzard
 		void Begin();
 		void End();
 
+		void OnEvent(Event& event) override;
+
 	private:
 		float time = 0.0f;
+
+		bool blockImGuiEvents = true;
 	};
 }

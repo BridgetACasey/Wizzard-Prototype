@@ -18,21 +18,21 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		if (Input::IsKeyPressed(Key::A))
+		if (Input::IsKeyDown(Key::A))
 			cameraPosition.x -= cameraTranslationSpeed * timeStep;
-		else if (Input::IsKeyPressed(Key::D))
+		else if (Input::IsKeyDown(Key::D))
 			cameraPosition.x += cameraTranslationSpeed * timeStep;
 
-		if (Input::IsKeyPressed(Key::W))
+		if (Input::IsKeyDown(Key::W))
 			cameraPosition.y += cameraTranslationSpeed * timeStep;
-		else if (Input::IsKeyPressed(Key::S))
+		else if (Input::IsKeyDown(Key::S))
 			cameraPosition.y -= cameraTranslationSpeed * timeStep;
 
 		if (rotation)
 		{
-			if (Input::IsKeyPressed(Key::Q))
+			if (Input::IsKeyDown(Key::Q))
 				cameraRotation += cameraRotationSpeed * timeStep;
-			if (Input::IsKeyPressed(Key::E))
+			if (Input::IsKeyDown(Key::E))
 				cameraRotation -= cameraRotationSpeed * timeStep;
 
 			camera.SetRotation(cameraRotation);

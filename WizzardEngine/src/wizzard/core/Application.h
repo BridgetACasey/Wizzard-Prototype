@@ -28,6 +28,8 @@ namespace Wizzard
 		void PushOverlay(Layer* overlay);
 		void PopOverlay(Layer* overlay);
 
+		ImGuiLayer* GetImGuiLayer() { return imguiLayer; }
+
 		Window& GetWindow() { return *window; }
 
 		static Application& Get() { return *appInstance; }
