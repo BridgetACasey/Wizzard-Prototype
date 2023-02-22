@@ -214,8 +214,7 @@ namespace Wizzard
 				ImGui::Separator();
 			}
 
-			ImGui::DragFloat3("Camera Transform",
-				glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().transform[3]));
+			ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().GetTransform()[3]));
 
 			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
 			{

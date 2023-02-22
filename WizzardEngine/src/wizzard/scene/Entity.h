@@ -19,7 +19,9 @@ namespace Wizzard
 		T& AddComponent(Args&&... args)
 		{
 			WIZ_ASSERT(!HasComponent<T>(), "Entity already has component!");
-			return scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
+			T& component = scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
+			scene->OnComponentAdded<T>(*this, component);
+			return component;
 		}
 
 		template<typename T>
@@ -43,6 +45,7 @@ namespace Wizzard
 		}
 
 		operator bool() const { return entityHandle != entt::null; }
+		operator entt::entity() const { return entityHandle; }
 
 	private:
 		entt::entity entityHandle{ 0 };
