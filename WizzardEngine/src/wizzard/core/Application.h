@@ -10,6 +10,8 @@
 #include "wizzard/ui/ImGuiLayer.h"
 #include "wizzard/base/Timestep.h"
 
+int main(int argc, int** argv);
+
 namespace Wizzard
 {
 	class GraphicsContext;
@@ -20,7 +22,6 @@ namespace Wizzard
 		Application(const std::string& name = "Wizzard Application");
 		virtual ~Application();
 
-		void Run();
 		void Close();
 
 		void OnEvent(Event& event);
@@ -41,6 +42,9 @@ namespace Wizzard
 		virtual void OnApplicationShutdown();
 
 	private:
+		void Run();
+		friend int::main(int argc, int** argv);
+
 		bool OnWindowClose(WindowCloseEvent& windowCloseEvent);
 		bool OnWindowResize(WindowResizeEvent& windowResizeEvent);
 

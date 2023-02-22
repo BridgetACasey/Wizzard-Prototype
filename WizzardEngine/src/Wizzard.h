@@ -25,9 +25,10 @@
 
 //Entity Component System
 #include "wizzard/scene/Entity.h"
-#include "wizzard/scene/TagComponent.h"
-#include "wizzard/scene/TransformComponent.h"
-#include "wizzard/scene/SpriteComponent.h"
+#include "wizzard/scene/component/TagComponent.h"
+#include "wizzard/scene/component/TransformComponent.h"
+#include "wizzard/scene/component/SpriteComponent.h"
+#include "wizzard/scene/component/CameraComponent.h"
 #include "wizzard/scene/Scene.h"
 
 //Audio

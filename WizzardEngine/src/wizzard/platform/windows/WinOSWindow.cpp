@@ -78,8 +78,6 @@ namespace Wizzard
 
 		if(!glfwInitialised)
 		{
-			//To do: GLFW Terminate on system shutdown
-
 			int glfwStatus = glfwInit();
 
 			WIZ_ASSERT(glfwStatus, "Could not initialise GLFW!");

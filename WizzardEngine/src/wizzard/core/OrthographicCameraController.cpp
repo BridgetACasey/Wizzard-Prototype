@@ -52,6 +52,12 @@ namespace Wizzard
 		dispatcher.HandleEvent<WindowResizeEvent>(WIZ_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		aspectRatio = width / height;
+		camera.SetProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event)
 	{
 		WIZ_PROFILE_FUNCTION();

@@ -15,10 +15,6 @@
 #include "wizzard/rendering/GraphicsContext.h"
 #include "wizzard/rendering/Renderer.h"
 
-#include "Tolk.h"
-
-#include "physics/Physics2D.h"
-
 namespace Wizzard
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -102,10 +98,10 @@ namespace Wizzard
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
-			(*--it)->OnEvent(event);
-		
 			if (event.isHandled)
 				break;
+
+			(*--it)->OnEvent(event);
 		}
 	}
 

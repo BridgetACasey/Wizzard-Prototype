@@ -17,6 +17,8 @@ namespace Wizzard
 		void OnUpdate(TimeStep timeStep);
 		void OnEvent(Event& event);
 
+		void OnResize(float width, float height);
+
 		OrthographicCamera& GetCamera() { return camera; }
 
 		float GetZoomLevel() const { return zoomLevel; }

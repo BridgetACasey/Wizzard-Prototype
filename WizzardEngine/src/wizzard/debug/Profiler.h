@@ -29,15 +29,9 @@ namespace Wizzard
 
 	class Profiler
 	{
-	private:
-		std::mutex mutex;
-		ProfilingSession* currentSession;
-		std::ofstream outputStream;
-
 	public:
-		Profiler() : currentSession(nullptr)
-		{
-		}
+		Profiler(const Profiler&) = delete;
+		Profiler(Profiler&&) = delete;
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
@@ -111,6 +105,9 @@ namespace Wizzard
 		}
 
 	private:
+		Profiler() : currentSession(nullptr) {}
+		~Profiler() { EndSession(); }
+
 		void WriteHeader()
 		{
 			outputStream << "{\"otherData\": {},\"traceEvents\":[{}";
@@ -135,6 +132,10 @@ namespace Wizzard
 				currentSession = nullptr;
 			}
 		}
+
+		std::mutex mutex;
+		ProfilingSession* currentSession;
+		std::ofstream outputStream;
 
 	};
 

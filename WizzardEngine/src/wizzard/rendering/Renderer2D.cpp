@@ -125,6 +125,19 @@ namespace Wizzard
 		data->quadVertexBufferPtr = data->quadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+
+		data->textureShader->Bind();
+		data->textureShader->SetMat4("u_ViewProjection", viewProj);
+		data->quadIndexCount = 0;
+		data->quadVertexBufferPtr = data->quadVertexBufferBase;
+		data->TextureSlotIndex = 1;
+	}
+
 	void Renderer2D::EndScene()
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -144,7 +157,7 @@ namespace Wizzard
 			data->TextureSlots[i]->Bind(i);
 
 		RenderCommand::DrawIndexed(data->quadVertexArray, data->quadIndexCount);
-		data->statistics.DrawCalls++;
+		data->statistics.drawCalls++;
 	}
 
 	void Renderer2D::FlushAndReset()
@@ -208,7 +221,7 @@ namespace Wizzard
 
 		data->quadIndexCount += 6;
 
-		data->statistics.QuadCount++;
+		data->statistics.quadCount++;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
@@ -276,7 +289,79 @@ namespace Wizzard
 
 		data->quadIndexCount += 6;
 
-		data->statistics.QuadCount++;
+		data->statistics.quadCount++;
+	}
+
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		constexpr size_t quadVertexCount = 4;
+		const float textureIndex = 0.0f; // White Texture
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		const float tilingFactor = 1.0f;
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
+		for(size_t i = 0; i < quadVertexCount; i++)
+		{
+			data->quadVertexBufferPtr->Position = transform * data->QuadVertexPositions[i];
+			data->quadVertexBufferPtr->Color = color;
+			data->quadVertexBufferPtr->TexCoord = textureCoords[i];
+			data->quadVertexBufferPtr->TexIndex = textureIndex;
+			data->quadVertexBufferPtr->TilingFactor = tilingFactor;
+			data->quadVertexBufferPtr++;
+		}
+
+		data->quadIndexCount += 6;
+
+		data->statistics.quadCount++;
+	}
+
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		constexpr size_t quadVertexCount = 4;
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+		if (data->quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
+		{
+			if (*data->TextureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			if (data->TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				FlushAndReset();
+
+			textureIndex = (float)data->TextureSlotIndex;
+			data->TextureSlots[data->TextureSlotIndex] = texture;
+			data->TextureSlotIndex++;
+		}
+
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			data->quadVertexBufferPtr->Position = transform * data->QuadVertexPositions[i];
+			data->quadVertexBufferPtr->Color = tintColor;
+			data->quadVertexBufferPtr->TexCoord = textureCoords[i];
+			data->quadVertexBufferPtr->TexIndex = textureIndex;
+			data->quadVertexBufferPtr->TilingFactor = tilingFactor;
+			data->quadVertexBufferPtr++;
+		}
+
+		data->quadIndexCount += 6;
+
+		data->statistics.quadCount++;
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
@@ -330,7 +415,7 @@ namespace Wizzard
 
 		data->quadIndexCount += 6;
 
-		data->statistics.QuadCount++;
+		data->statistics.quadCount++;
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
@@ -400,7 +485,7 @@ namespace Wizzard
 
 		data->quadIndexCount += 6;
 
-		data->statistics.QuadCount++;
+		data->statistics.quadCount++;
 	}
 
 	void Renderer2D::ResetStatistics()

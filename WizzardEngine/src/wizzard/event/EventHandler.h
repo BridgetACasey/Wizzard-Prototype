@@ -19,7 +19,7 @@ namespace Wizzard
 		{
 			if (event.GetEventType() == T::GetStaticType())
 			{
-				event.isHandled = func(*(T*)&event);
+				event.isHandled |= func(*(T*)&event);
 				return true;
 			}
 
