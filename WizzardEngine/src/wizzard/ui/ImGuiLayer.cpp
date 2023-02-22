@@ -128,15 +128,15 @@ namespace Wizzard
 		currentActiveID = context->ActiveId;
 		currentHoveredID = context->HoveredId;
 
-		if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
-		{
-			WIZ_TRACE("Yoooo we've swapped active thingies! Thingie: {0}", currentActiveID);
-		}
-
-		if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
-		{
-			WIZ_TRACE("Yoooo we've swapped hovered thingies! Thingie: {0}", currentHoveredID);
-		}
+		//if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
+		//{
+		//	WIZ_TRACE("Yoooo we've swapped active thingies! Thingie: {0}", currentActiveID);
+		//}
+		//
+		//if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
+		//{
+		//	WIZ_TRACE("Yoooo we've swapped hovered thingies! Thingie: {0}", currentHoveredID);
+		//}
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)

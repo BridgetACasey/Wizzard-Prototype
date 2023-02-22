@@ -9,157 +9,257 @@
 namespace Wizzard
 {
 	//Storing the states for each unique key and mouse button to check if it has only been pressed once
-	static std::unordered_map<KeyCode, bool> keyStates;
-	static std::unordered_map<MouseCode, bool> mouseStates;
+	static std::unordered_map<KeyCode, InputState> keyStates;
+	static std::unordered_map<MouseCode, InputState> mouseStates;
 
 	//TODO: Check the key or mouse button is a valid code before trying to fetch and modify its value, i.e., it's not None or TotalCodeCount.
 
 	bool Input::IsKeyPressed(KeyCode keyCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
+
 		bool pressed = keyStates.at(keyCode);
 
 		//If the key was already detected as being pressed and it's still down, don't trigger again until it has been released.
-		if (pressed && state == GLFW_PRESS)
-			return false;
-
-		if(!pressed && state == GLFW_PRESS)
+		if(state == GLFW_PRESS)
 		{
-			keyStates.at(keyCode) = true;
+			if (pressed == PRESSED)
+				return false;
+
+			keyStates.at(keyCode) = PRESSED;
 			pressed = true;
 		}
 		else
 		{
-			keyStates.at(keyCode) = false;
+			keyStates.at(keyCode) = RELEASED;
 			pressed = false;
 		}
 
 		return pressed;
 	}
 
-	bool Input::IsKeyUp(KeyCode keyCode)
+	bool Input::IsKeyReleased(KeyCode keyCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
 
-		return state == GLFW_RELEASE;
+		bool released = false;
+
+		if (state == GLFW_PRESS || state == GLFW_REPEAT)
+			keyStates.at(keyCode) = DOWN;
+
+		else if (state == GLFW_RELEASE && keyStates.at(keyCode) == DOWN)
+		{
+			keyStates.at(keyCode) = RELEASED;
+			released = true;
+		}
+
+		return released;
+	}
+
+	bool Input::IsKeyUp(KeyCode keyCode)
+	{
+		if (!IsQueryingInput())
+			return false;
+
+		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+		auto state = glfwGetKey(window, keyCode);
+
+		bool up = false;
+
+		if(state == GLFW_RELEASE)
+		{
+			keyStates.at(keyCode) = UP;
+			up = true;
+		}
+
+		return up;
 	}
 
 	bool Input::IsKeyDown(KeyCode keyCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keyCode);
 
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
-	}
+		bool down = false;
 
-	//TODO: Does not check if key has been recently pressed first, fix this.
-	bool Input::IsKeyReleased(KeyCode keyCode)
-	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		if(state == GLFW_PRESS || state == GLFW_REPEAT)
+		{
+			keyStates.at(keyCode) = DOWN;
+			down = true;
+		}
 
-		auto state = glfwGetKey(window, keyCode);
-
-		if (state == GLFW_RELEASE)
-			keyStates.at(keyCode) = false;
-
-		const bool pressed = keyStates.at(keyCode);
-
-		return pressed;
+		return down;
 	}
 
 	bool Input::SetKeyUp(KeyCode keyCode)
 	{
-		keyStates.at(keyCode) = false;
+		if (!IsQueryingInput())
+			return false;
+
+		keyStates.at(keyCode) = UP;
 
 		return true;
 	}
 
 	bool Input::SetKeyDown(KeyCode keyCode)
 	{
-		keyStates.at(keyCode) = true;
+		if (!IsQueryingInput())
+			return false;
+
+		keyStates.at(keyCode) = DOWN;
+
+		return true;
+	}
+
+	bool Input::SetKeyState(KeyCode keyCode, InputState state)
+	{
+		if (!IsQueryingInput())
+			return false;
+
+		keyStates.at(keyCode) = state;
 
 		return true;
 	}
 
 	InputState Input::GetKeyState(KeyCode keyCode)
 	{
-		return InputState();
+		if (!IsQueryingInput())
+			return NONE;
+
+		return keyStates.at(keyCode);
 	}
 
 	bool Input::IsMouseButtonPressed(MouseCode mouseCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, mouseCode);
 		bool pressed = mouseStates.at(mouseCode);
 
 		//If the mouse button was already detected as being pressed and it's still down, don't trigger again until it has been released.
-		if (pressed && state == GLFW_PRESS)
-			return false;
-
-		if (!pressed && state == GLFW_PRESS)
+		if (state == GLFW_PRESS)
 		{
-			mouseStates.at(mouseCode) = true;
+			if (pressed == PRESSED)
+				return false;
+
+			mouseStates.at(mouseCode) = PRESSED;
 			pressed = true;
 		}
 		else
 		{
-			mouseStates.at(mouseCode) = false;
+			mouseStates.at(mouseCode) = RELEASED;
 			pressed = false;
 		}
 
 		return pressed;
 	}
 
-	bool Input::IsMouseButtonUp(MouseCode mouseCode)
+	bool Input::IsMouseButtonReleased(MouseCode mouseCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
-		auto state = glfwGetKey(window, mouseCode);
+		auto state = glfwGetMouseButton(window, mouseCode);
 
-		return state == GLFW_RELEASE;
+		bool released = false;
+
+		if (state == GLFW_PRESS || state == GLFW_REPEAT)
+			mouseStates.at(mouseCode) = DOWN;
+
+		else if (state == GLFW_RELEASE && mouseStates.at(mouseCode) == DOWN)
+		{
+			mouseStates.at(mouseCode) = RELEASED;
+			released = true;
+		}
+
+		return released;
+	}
+
+	bool Input::IsMouseButtonUp(MouseCode mouseCode)
+	{
+		if (!IsQueryingInput())
+			return false;
+
+		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+		auto state = glfwGetMouseButton(window, mouseCode);
+
+		bool up = false;
+
+		if (state == GLFW_RELEASE)
+		{
+			mouseStates.at(mouseCode) = UP;
+			up = true;
+		}
+
+		return up;
 	}
 
 	bool Input::IsMouseButtonDown(MouseCode mouseCode)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetMouseButton(window, mouseCode);
 
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
-	}
+		bool down = false;
 
-	//TODO: Does not check if mouse button has been recently pressed first, fix this.
-	bool Input::IsMouseButtonReleased(MouseCode mouseCode)
-	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		if (state == GLFW_PRESS || state == GLFW_REPEAT)
+		{
+			mouseStates.at(mouseCode) = DOWN;
+			down = true;
+		}
 
-		auto state = glfwGetMouseButton(window, mouseCode);
-
-		return state == GLFW_RELEASE;
+		return down;
 	}
 
 	bool Input::SetMouseButtonUp(MouseCode mouseCode)
 	{
-		mouseStates.at(mouseCode) = false;
+		if (!IsQueryingInput())
+			return false;
+
+		mouseStates.at(mouseCode) = UP;
 
 		return true;
 	}
 
 	bool Input::SetMouseButtonDown(MouseCode mouseCode)
 	{
-		mouseStates.at(mouseCode) = true;
+		if (!IsQueryingInput())
+			return false;
+
+		mouseStates.at(mouseCode) = DOWN;
 
 		return true;
 	}
 
 	bool Input::SetMousePosition(float x, float y)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		glfwSetCursorPos(window, (double)x, (double)y);
@@ -169,6 +269,9 @@ namespace Wizzard
 
 	bool Input::SetMousePositionX(float x)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		double currentX, currentY;
@@ -181,6 +284,9 @@ namespace Wizzard
 
 	bool Input::SetMousePositionY(float y)
 	{
+		if (!IsQueryingInput())
+			return false;
+
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		double currentX, currentY;
@@ -191,9 +297,22 @@ namespace Wizzard
 		return true;
 	}
 
+	bool Input::SetMouseButtonState(MouseCode mouseCode, InputState state)
+	{
+		if (!IsQueryingInput())
+			return false;
+
+		mouseStates.at(mouseCode) = state;
+
+		return true;
+	}
+
 	InputState Input::GetMouseButtonState(MouseCode mouseCode)
 	{
-		return InputState();
+		if (!IsQueryingInput())
+			return NONE;
+
+		return mouseStates.at(mouseCode);
 	}
 
 	std::pair<float, float> Input::GetMousePosition()
@@ -226,157 +345,161 @@ namespace Wizzard
 		//Having to insert each key and button value manually as they are specified in their enums, so can't insert via a for loop
 
 		//Inserting key states
-		keyStates.insert(std::pair(Key::Space, false));
-		keyStates.insert(std::pair(Key::Apostrophe, false));
-		keyStates.insert(std::pair(Key::Comma, false));
-		keyStates.insert(std::pair(Key::Minus, false));
-		keyStates.insert(std::pair(Key::Period, false));
-		keyStates.insert(std::pair(Key::Slash, false));
+		keyStates.insert(std::pair(Key::Space, UP));
+		keyStates.insert(std::pair(Key::Apostrophe, UP));
+		keyStates.insert(std::pair(Key::Comma, UP));
+		keyStates.insert(std::pair(Key::Minus, UP));
+		keyStates.insert(std::pair(Key::Period, UP));
+		keyStates.insert(std::pair(Key::Slash, UP));
 
-		keyStates.insert(std::pair(Key::D0, false));
-		keyStates.insert(std::pair(Key::D1, false));
-		keyStates.insert(std::pair(Key::D2, false));
-		keyStates.insert(std::pair(Key::D3, false));
-		keyStates.insert(std::pair(Key::D4, false));
-		keyStates.insert(std::pair(Key::D5, false));
-		keyStates.insert(std::pair(Key::D6, false));
-		keyStates.insert(std::pair(Key::D7, false));
-		keyStates.insert(std::pair(Key::D8, false));
-		keyStates.insert(std::pair(Key::D9, false));
+		keyStates.insert(std::pair(Key::D0, UP));
+		keyStates.insert(std::pair(Key::D1, UP));
+		keyStates.insert(std::pair(Key::D2, UP));
+		keyStates.insert(std::pair(Key::D3, UP));
+		keyStates.insert(std::pair(Key::D4, UP));
+		keyStates.insert(std::pair(Key::D5, UP));
+		keyStates.insert(std::pair(Key::D6, UP));
+		keyStates.insert(std::pair(Key::D7, UP));
+		keyStates.insert(std::pair(Key::D8, UP));
+		keyStates.insert(std::pair(Key::D9, UP));
 
-		keyStates.insert(std::pair(Key::Semicolon, false));
-		keyStates.insert(std::pair(Key::Equal, false));
+		keyStates.insert(std::pair(Key::Semicolon, UP));
+		keyStates.insert(std::pair(Key::Equal, UP));
 
-		keyStates.insert(std::pair(Key::A, false));
-		keyStates.insert(std::pair(Key::B, false));
-		keyStates.insert(std::pair(Key::C, false));
-		keyStates.insert(std::pair(Key::D, false));
-		keyStates.insert(std::pair(Key::E, false));
-		keyStates.insert(std::pair(Key::F, false));
-		keyStates.insert(std::pair(Key::G, false));
-		keyStates.insert(std::pair(Key::H, false));
-		keyStates.insert(std::pair(Key::I, false));
-		keyStates.insert(std::pair(Key::J, false));
-		keyStates.insert(std::pair(Key::K, false));
-		keyStates.insert(std::pair(Key::L, false));
-		keyStates.insert(std::pair(Key::M, false));
-		keyStates.insert(std::pair(Key::N, false));
-		keyStates.insert(std::pair(Key::O, false));
-		keyStates.insert(std::pair(Key::P, false));
-		keyStates.insert(std::pair(Key::Q, false));
-		keyStates.insert(std::pair(Key::R, false));
-		keyStates.insert(std::pair(Key::S, false));
-		keyStates.insert(std::pair(Key::T, false));
-		keyStates.insert(std::pair(Key::U, false));
-		keyStates.insert(std::pair(Key::V, false));
-		keyStates.insert(std::pair(Key::W, false));
-		keyStates.insert(std::pair(Key::X, false));
-		keyStates.insert(std::pair(Key::Y, false));
-		keyStates.insert(std::pair(Key::Z, false));
+		keyStates.insert(std::pair(Key::A, UP));
+		keyStates.insert(std::pair(Key::B, UP));
+		keyStates.insert(std::pair(Key::C, UP));
+		keyStates.insert(std::pair(Key::D, UP));
+		keyStates.insert(std::pair(Key::E, UP));
+		keyStates.insert(std::pair(Key::F, UP));
+		keyStates.insert(std::pair(Key::G, UP));
+		keyStates.insert(std::pair(Key::H, UP));
+		keyStates.insert(std::pair(Key::I, UP));
+		keyStates.insert(std::pair(Key::J, UP));
+		keyStates.insert(std::pair(Key::K, UP));
+		keyStates.insert(std::pair(Key::L, UP));
+		keyStates.insert(std::pair(Key::M, UP));
+		keyStates.insert(std::pair(Key::N, UP));
+		keyStates.insert(std::pair(Key::O, UP));
+		keyStates.insert(std::pair(Key::P, UP));
+		keyStates.insert(std::pair(Key::Q, UP));
+		keyStates.insert(std::pair(Key::R, UP));
+		keyStates.insert(std::pair(Key::S, UP));
+		keyStates.insert(std::pair(Key::T, UP));
+		keyStates.insert(std::pair(Key::U, UP));
+		keyStates.insert(std::pair(Key::V, UP));
+		keyStates.insert(std::pair(Key::W, UP));
+		keyStates.insert(std::pair(Key::X, UP));
+		keyStates.insert(std::pair(Key::Y, UP));
+		keyStates.insert(std::pair(Key::Z, UP));
 
-		keyStates.insert(std::pair(Key::LeftBracket, false));
-		keyStates.insert(std::pair(Key::Backslash, false));
-		keyStates.insert(std::pair(Key::RightBracket, false));
-		keyStates.insert(std::pair(Key::GraveAccent, false));
+		keyStates.insert(std::pair(Key::LeftBracket, UP));
+		keyStates.insert(std::pair(Key::Backslash, UP));
+		keyStates.insert(std::pair(Key::RightBracket, UP));
+		keyStates.insert(std::pair(Key::GraveAccent, UP));
 
-		keyStates.insert(std::pair(Key::World1, false));
-		keyStates.insert(std::pair(Key::World2, false));
+		keyStates.insert(std::pair(Key::World1, UP));
+		keyStates.insert(std::pair(Key::World2, UP));
 
-		keyStates.insert(std::pair(Key::Escape, false));
-		keyStates.insert(std::pair(Key::Enter, false));
-		keyStates.insert(std::pair(Key::Tab, false));
-		keyStates.insert(std::pair(Key::Backspace, false));
-		keyStates.insert(std::pair(Key::Insert, false));
-		keyStates.insert(std::pair(Key::Delete, false));
-		keyStates.insert(std::pair(Key::Right, false));
-		keyStates.insert(std::pair(Key::Left, false));
-		keyStates.insert(std::pair(Key::Down, false));
-		keyStates.insert(std::pair(Key::Up, false));
-		keyStates.insert(std::pair(Key::PageUp, false));
-		keyStates.insert(std::pair(Key::PageDown, false));
-		keyStates.insert(std::pair(Key::Home, false));
-		keyStates.insert(std::pair(Key::End, false));
-		keyStates.insert(std::pair(Key::CapsLock, false));
-		keyStates.insert(std::pair(Key::ScrollLock, false));
-		keyStates.insert(std::pair(Key::NumLock, false));
-		keyStates.insert(std::pair(Key::PrintScreen, false));
-		keyStates.insert(std::pair(Key::Pause, false));
+		keyStates.insert(std::pair(Key::Escape, UP));
+		keyStates.insert(std::pair(Key::Enter, UP));
+		keyStates.insert(std::pair(Key::Tab, UP));
+		keyStates.insert(std::pair(Key::Backspace, UP));
+		keyStates.insert(std::pair(Key::Insert, UP));
+		keyStates.insert(std::pair(Key::Delete, UP));
+		keyStates.insert(std::pair(Key::Right, UP));
+		keyStates.insert(std::pair(Key::Left, UP));
+		keyStates.insert(std::pair(Key::Down, UP));
+		keyStates.insert(std::pair(Key::Up, UP));
+		keyStates.insert(std::pair(Key::PageUp, UP));
+		keyStates.insert(std::pair(Key::PageDown, UP));
+		keyStates.insert(std::pair(Key::Home, UP));
+		keyStates.insert(std::pair(Key::End, UP));
+		keyStates.insert(std::pair(Key::CapsLock, UP));
+		keyStates.insert(std::pair(Key::ScrollLock, UP));
+		keyStates.insert(std::pair(Key::NumLock, UP));
+		keyStates.insert(std::pair(Key::PrintScreen, UP));
+		keyStates.insert(std::pair(Key::Pause, UP));
 
-		keyStates.insert(std::pair(Key::F1, false));
-		keyStates.insert(std::pair(Key::F2, false));
-		keyStates.insert(std::pair(Key::F3, false));
-		keyStates.insert(std::pair(Key::F4, false));
-		keyStates.insert(std::pair(Key::F5, false));
-		keyStates.insert(std::pair(Key::F6, false));
-		keyStates.insert(std::pair(Key::F7, false));
-		keyStates.insert(std::pair(Key::F8, false));
-		keyStates.insert(std::pair(Key::F9, false));
-		keyStates.insert(std::pair(Key::F10, false));
-		keyStates.insert(std::pair(Key::F11, false));
-		keyStates.insert(std::pair(Key::F12, false));
-		keyStates.insert(std::pair(Key::F13, false));
-		keyStates.insert(std::pair(Key::F14, false));
-		keyStates.insert(std::pair(Key::F15, false));
-		keyStates.insert(std::pair(Key::F16, false));
-		keyStates.insert(std::pair(Key::F17, false));
-		keyStates.insert(std::pair(Key::F18, false));
-		keyStates.insert(std::pair(Key::F19, false));
-		keyStates.insert(std::pair(Key::F20, false));
-		keyStates.insert(std::pair(Key::F21, false));
-		keyStates.insert(std::pair(Key::F22, false));
-		keyStates.insert(std::pair(Key::F23, false));
-		keyStates.insert(std::pair(Key::F24, false));
-		keyStates.insert(std::pair(Key::F25, false));
+		keyStates.insert(std::pair(Key::F1, UP));
+		keyStates.insert(std::pair(Key::F2, UP));
+		keyStates.insert(std::pair(Key::F3, UP));
+		keyStates.insert(std::pair(Key::F4, UP));
+		keyStates.insert(std::pair(Key::F5, UP));
+		keyStates.insert(std::pair(Key::F6, UP));
+		keyStates.insert(std::pair(Key::F7, UP));
+		keyStates.insert(std::pair(Key::F8, UP));
+		keyStates.insert(std::pair(Key::F9, UP));
+		keyStates.insert(std::pair(Key::F10, UP));
+		keyStates.insert(std::pair(Key::F11, UP));
+		keyStates.insert(std::pair(Key::F12, UP));
+		keyStates.insert(std::pair(Key::F13, UP));
+		keyStates.insert(std::pair(Key::F14, UP));
+		keyStates.insert(std::pair(Key::F15, UP));
+		keyStates.insert(std::pair(Key::F16, UP));
+		keyStates.insert(std::pair(Key::F17, UP));
+		keyStates.insert(std::pair(Key::F18, UP));
+		keyStates.insert(std::pair(Key::F19, UP));
+		keyStates.insert(std::pair(Key::F20, UP));
+		keyStates.insert(std::pair(Key::F21, UP));
+		keyStates.insert(std::pair(Key::F22, UP));
+		keyStates.insert(std::pair(Key::F23, UP));
+		keyStates.insert(std::pair(Key::F24, UP));
+		keyStates.insert(std::pair(Key::F25, UP));
 
-		keyStates.insert(std::pair(Key::KP0, false));
-		keyStates.insert(std::pair(Key::KP1, false));
-		keyStates.insert(std::pair(Key::KP2, false));
-		keyStates.insert(std::pair(Key::KP3, false));
-		keyStates.insert(std::pair(Key::KP4, false));
-		keyStates.insert(std::pair(Key::KP5, false));
-		keyStates.insert(std::pair(Key::KP6, false));
-		keyStates.insert(std::pair(Key::KP7, false));
-		keyStates.insert(std::pair(Key::KP8, false));
-		keyStates.insert(std::pair(Key::KP9, false));
-		keyStates.insert(std::pair(Key::KPDecimal, false));
-		keyStates.insert(std::pair(Key::KPDivide, false));
-		keyStates.insert(std::pair(Key::KPMultiply, false));
-		keyStates.insert(std::pair(Key::KPSubtract, false));
-		keyStates.insert(std::pair(Key::KPAdd, false));
-		keyStates.insert(std::pair(Key::KPEnter, false));
-		keyStates.insert(std::pair(Key::KPEqual, false));
+		keyStates.insert(std::pair(Key::KP0, UP));
+		keyStates.insert(std::pair(Key::KP1, UP));
+		keyStates.insert(std::pair(Key::KP2, UP));
+		keyStates.insert(std::pair(Key::KP3, UP));
+		keyStates.insert(std::pair(Key::KP4, UP));
+		keyStates.insert(std::pair(Key::KP5, UP));
+		keyStates.insert(std::pair(Key::KP6, UP));
+		keyStates.insert(std::pair(Key::KP7, UP));
+		keyStates.insert(std::pair(Key::KP8, UP));
+		keyStates.insert(std::pair(Key::KP9, UP));
+		keyStates.insert(std::pair(Key::KPDecimal, UP));
+		keyStates.insert(std::pair(Key::KPDivide, UP));
+		keyStates.insert(std::pair(Key::KPMultiply, UP));
+		keyStates.insert(std::pair(Key::KPSubtract, UP));
+		keyStates.insert(std::pair(Key::KPAdd, UP));
+		keyStates.insert(std::pair(Key::KPEnter, UP));
+		keyStates.insert(std::pair(Key::KPEqual, UP));
 
-		keyStates.insert(std::pair(Key::LeftShift, false));
-		keyStates.insert(std::pair(Key::LeftControl, false));
-		keyStates.insert(std::pair(Key::LeftAlt, false));
-		keyStates.insert(std::pair(Key::LeftSuper, false));
-		keyStates.insert(std::pair(Key::RightShift, false));
-		keyStates.insert(std::pair(Key::RightControl, false));
-		keyStates.insert(std::pair(Key::RightAlt, false));
-		keyStates.insert(std::pair(Key::RightSuper, false));
-		keyStates.insert(std::pair(Key::Menu, false));
+		keyStates.insert(std::pair(Key::LeftShift, UP));
+		keyStates.insert(std::pair(Key::LeftControl, UP));
+		keyStates.insert(std::pair(Key::LeftAlt, UP));
+		keyStates.insert(std::pair(Key::LeftSuper, UP));
+		keyStates.insert(std::pair(Key::RightShift, UP));
+		keyStates.insert(std::pair(Key::RightControl, UP));
+		keyStates.insert(std::pair(Key::RightAlt, UP));
+		keyStates.insert(std::pair(Key::RightSuper, UP));
+		keyStates.insert(std::pair(Key::Menu, UP));
 
 		//Inserting mouse states
-		mouseStates.insert(std::pair(Mouse::Button0, false));
-		mouseStates.insert(std::pair(Mouse::Button1, false));
-		mouseStates.insert(std::pair(Mouse::Button2, false));
-		mouseStates.insert(std::pair(Mouse::Button3, false));
-		mouseStates.insert(std::pair(Mouse::Button4, false));
-		mouseStates.insert(std::pair(Mouse::Button5, false));
-		mouseStates.insert(std::pair(Mouse::Button6, false));
-		mouseStates.insert(std::pair(Mouse::Button7, false));
+		mouseStates.insert(std::pair(Mouse::Button0, UP));
+		mouseStates.insert(std::pair(Mouse::Button1, UP));
+		mouseStates.insert(std::pair(Mouse::Button2, UP));
+		mouseStates.insert(std::pair(Mouse::Button3, UP));
+		mouseStates.insert(std::pair(Mouse::Button4, UP));
+		mouseStates.insert(std::pair(Mouse::Button5, UP));
+		mouseStates.insert(std::pair(Mouse::Button6, UP));
+		mouseStates.insert(std::pair(Mouse::Button7, UP));
 
-		mouseStates.insert(std::pair(Mouse::ButtonLast, false));
-		mouseStates.insert(std::pair(Mouse::ButtonLeft, false));
-		mouseStates.insert(std::pair(Mouse::ButtonRight, false));
-		mouseStates.insert(std::pair(Mouse::ButtonMiddle, false));
+		mouseStates.insert(std::pair(Mouse::LeftButton, UP));
+		mouseStates.insert(std::pair(Mouse::RightButton, UP));
+		mouseStates.insert(std::pair(Mouse::MiddleButton, UP));
+		mouseStates.insert(std::pair(Mouse::LastButton, UP));
+
+		queryInput = true;
+		initInput = true;
 	}
 
 	void Input::Shutdown()
 	{
-		//Does not do much at the moment as input is a purely static class, but this may change in future
-
 		keyStates.clear();
 		mouseStates.clear();
+
+		queryInput = false;
+		initInput = false;
 	}
 }

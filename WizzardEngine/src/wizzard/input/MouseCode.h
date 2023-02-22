@@ -24,10 +24,10 @@ namespace Wizzard
 			Button6 = 6,
 			Button7 = 7,
 
-			ButtonLast   = Button7,
-			ButtonLeft   = Button0,
-			ButtonRight	 = Button1,
-			ButtonMiddle = Button2,
+			LeftButton   = Button0,
+			RightButton	 = Button1,
+			MiddleButton = Button2,
+			LastButton = Button7,
 
 			/*
 			 * Placeholder value for total number of elements in the mouse code enum.

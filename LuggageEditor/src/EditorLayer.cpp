@@ -34,7 +34,7 @@ namespace Wizzard
 			orthoCamController.OnUpdate(timeStep);
 
 			//Temp test code for audio demo
-			if (Input::IsKeyPressed(Key::P))
+			if (Input::IsKeyReleased(Key::P))
 			{
 				LUG_TRACE("Play key pressed! Hopefully just once???");
 
@@ -49,9 +49,23 @@ namespace Wizzard
 				}
 			}
 
-			if(Input::IsKeyPressed(Key::Tab))
+			if (Input::IsKeyDown(Key::Tab) && Input::IsKeyReleased(Key::LeftShift))
+				LUG_TRACE("Whoa man, look at you go with your combos!");
+
+			if (Input::IsKeyPressed(Key::T))
 			{
+				LUG_TRACE("Mouse go weeeeee!");
 				Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
+			}
+
+			if (Input::IsKeyDown(Key::CapsLock))
+			{
+				LUG_TRACE("Key {0} is {1}", Key::CapsLock, Input::GetKeyState(Key::CapsLock));
+			}
+
+			if(Input::IsMouseButtonDown(Mouse::LeftButton))
+			{
+				LUG_TRACE("Mouse Button {0} is {1}", Mouse::LeftButton, Input::GetMouseButtonState(Mouse::LeftButton));
 			}
 		}
 
