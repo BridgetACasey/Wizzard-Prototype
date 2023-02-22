@@ -12,6 +12,8 @@ namespace Wizzard
 	{
 		enum : MouseCode
 		{
+			None = 999,
+
 			// From glfw3.h
 			Button0 = 0,
 			Button1 = 1,
@@ -27,7 +29,12 @@ namespace Wizzard
 			ButtonRight	 = Button1,
 			ButtonMiddle = Button2,
 
-			TotalCodeCount = 11	//Placeholder value for total number of elements in the mouse code enum. Must be manually updated.
+			/*
+			 * Placeholder value for total number of elements in the mouse code enum.
+			 * Currently does not count 'NONE' value towards total, only considers valid keys.
+			 * Must be manually updated.
+			 */
+			TotalCodeCount = 11
 		};
 	}
 }

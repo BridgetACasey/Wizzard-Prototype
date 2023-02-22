@@ -12,7 +12,8 @@ namespace Wizzard
 	{
 		enum : KeyCode
 		{
-			None = 0,
+			None = 999,
+
 			// From glfw3.h
 			Space = 32,
 			Apostrophe = 39, /* ' */
@@ -145,7 +146,12 @@ namespace Wizzard
 			RightSuper = 347,
 			Menu = 348,
 
-			TotalCodeCount = 121	//Placeholder value for total number of elements in the key code enum. Must be manually updated.
+			/*
+			 * Placeholder value for total number of elements in the key code enum.
+			 * Currently does not count 'NONE' value towards total, only considers valid keys.
+			 * Must be manually updated.
+			 */
+			TotalCodeCount = 121
 		};
 	}
 }

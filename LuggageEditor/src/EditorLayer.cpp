@@ -48,6 +48,11 @@ namespace Wizzard
 						Audio::Pause(music);
 				}
 			}
+
+			if(Input::IsKeyPressed(Key::Tab))
+			{
+				Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
+			}
 		}
 
 		// Render

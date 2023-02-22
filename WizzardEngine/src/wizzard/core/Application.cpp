@@ -45,6 +45,7 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
+		Input::Shutdown();
 		Audio::Shutdown();
 		Renderer::Shutdown();
 	}
