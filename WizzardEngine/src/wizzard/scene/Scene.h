@@ -6,6 +6,8 @@
 
 #include "wizzard/base/Timestep.h"
 
+class b2World;
+
 namespace Wizzard
 {
 	class Entity;
@@ -16,10 +18,12 @@ namespace Wizzard
 		Scene();
 		~Scene();
 
+		void OnStart();
+		void OnStop();
+		void OnUpdate(TimeStep timeStep);
+
 		Entity CreateEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
-
-		void OnUpdate(TimeStep timeStep);
 
 		void OnViewportResize(uint32_t width, uint32_t height);
 
@@ -30,6 +34,8 @@ namespace Wizzard
 		entt::registry registry;
 
 		uint32_t viewportWidth = 0, viewportHeight = 0;
+
+		b2World* m_PhysicsWorld = nullptr;
 
 		friend class Entity;
 		friend class SceneSerialiser;

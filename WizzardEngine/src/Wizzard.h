@@ -29,6 +29,8 @@
 #include "wizzard/scene/component/TransformComponent.h"
 #include "wizzard/scene/component/SpriteComponent.h"
 #include "wizzard/scene/component/CameraComponent.h"
+#include "wizzard/scene/component/RigidBody2DComponent.h"
+#include "wizzard/scene/component/BoxCollider2DComponent.h"
 #include "wizzard/scene/Scene.h"
 
 //Audio
