@@ -17,6 +17,7 @@ namespace Wizzard
 			return;
 		}
 
+		//TODO: Fix exception "the RPC server is unavailable" when using SAPI with Tolk library
 		Tolk_TrySAPI(preferSAPI);	//Calling this before Tolk_Load for best performance
 
 		//Tolk will also initialise COM if it has not been initialized on the calling thread
@@ -24,7 +25,7 @@ namespace Wizzard
 
 		if (Tolk_IsLoaded())
 		{
-			WIZ_INFO("Initialised Tolk Screen Reader Abstraction Library.");
+			WIZ_TRACE("Initialised Tolk Screen Reader Abstraction Library.");
 
 			if(DetectScreenReader())
 			{

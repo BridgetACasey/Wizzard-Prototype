@@ -12,6 +12,8 @@
 
 namespace Wizzard
 {
+	class GraphicsContext;
+
 	class Application
 	{
 	public:
@@ -47,6 +49,8 @@ namespace Wizzard
 		bool OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent);
 
 		std::unique_ptr<Window> window;
+
+		GraphicsContext* graphicsContext;
 
 		bool running = true;
 		bool minimized = false;

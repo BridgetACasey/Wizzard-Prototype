@@ -10,8 +10,6 @@
 
 #include <glad/glad.h>
 
-#include "platform/opengl/OpenGLContext.h"
-
 namespace Wizzard
 {
 	static bool glfwInitialised = false;
@@ -47,7 +45,6 @@ namespace Wizzard
 		WIZ_PROFILE_FUNCTION();
 
 		glfwPollEvents();
-		graphicsContext->SwapBuffers();
 	}
 
 	void WinOSWindow::SetVSync(bool enabled)
@@ -77,7 +74,7 @@ namespace Wizzard
 		windowData.width = props.width;
 		windowData.height = props.height;
 
-		WIZ_INFO("Creating window {0} ({1}, {2})", windowData.title, windowData.width, windowData.height);
+		WIZ_TRACE("Creating window {0} ({1}, {2})", windowData.title, windowData.width, windowData.height);
 
 		if(!glfwInitialised)
 		{
@@ -93,12 +90,7 @@ namespace Wizzard
 
 		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
 
-		graphicsContext = new OpenGLContext(glfwWindow);
-		graphicsContext->Init();
-
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
-		SetVSync(true);
-
 
 		// Set GLFW window event callbacks
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* window, int width, int height)

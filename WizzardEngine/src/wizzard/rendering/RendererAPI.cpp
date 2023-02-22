@@ -5,5 +5,5 @@
 
 namespace Wizzard
 {
-	RendererAPI::API RendererAPI::rendererAPI = RendererAPI::API::OpenGL;
+	RendererAPI::API RendererAPI::rendererAPI = API::OpenGL;
 }

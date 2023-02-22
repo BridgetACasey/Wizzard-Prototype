@@ -12,6 +12,7 @@
 #include "wizzard/input/Input.h"
 #include "wizzard/screenreading/ScreenReaderSupport.h"
 #include "wizzard/audio/Audio.h"
+#include "wizzard/rendering/GraphicsContext.h"
 #include "wizzard/rendering/Renderer.h"
 
 #include "Tolk.h"
@@ -32,7 +33,6 @@ namespace Wizzard
 		appInstance = this;
 
 		window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
-		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		OnApplicationInit();
 
@@ -77,6 +77,7 @@ namespace Wizzard
 			}
 
 			window->OnUpdate();
+			graphicsContext->SwapBuffers();	//TODO: Find a better home for this instead of the run function
 		}
 	}
 
@@ -112,28 +113,34 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		WIZ_INFO("Initialising WIZZARD Engine application...");
+		WIZ_TRACE("Initialising WIZZARD Engine application...");
+
+		graphicsContext = GraphicsContext::Create();
+		graphicsContext->Init();
+
+		window->SetVSync(true);
+		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Input::Init();
 		ScreenReaderSupport::Init();
 		Audio::Init();
 		Renderer::Init();
 
-		WIZ_INFO("WIZZARD Engine successfully initialised.");
+		WIZ_TRACE("WIZZARD Engine successfully initialised.");
 	}
 
 	void Application::OnApplicationShutdown()
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		WIZ_INFO("Beginning WIZZARD Engine shutdown sequence...");
+		WIZ_TRACE("Beginning WIZZARD Engine shutdown sequence...");
 
 		Input::Shutdown();
 		ScreenReaderSupport::Shutdown();
 		Audio::Shutdown();
 		Renderer::Shutdown();
 
-		WIZ_INFO("WIZZARD Engine successfully shutdown.");
+		WIZ_TRACE("WIZZARD Engine successfully shutdown.");
 	}
 
 	void Application::PushLayer(Layer* layer)

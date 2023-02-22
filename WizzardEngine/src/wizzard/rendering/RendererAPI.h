@@ -14,7 +14,10 @@ namespace Wizzard
 		enum class API
 		{
 			None = 0,
-			OpenGL = 1
+			OpenGL,
+			Vulkan,
+			DX11,
+			DX12
 		};
 
 		virtual void Init() = 0;
