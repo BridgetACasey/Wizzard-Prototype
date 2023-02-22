@@ -16,6 +16,9 @@
 #include "wizzard/input/KeyCode.h"
 #include "wizzard/input/MouseCode.h"
 
+//Accessibility
+#include "wizzard/screenreading/ScreenReaderSupport.h"
+
 //User Interface
 #include "wizzard/ui/ImGuiLayer.h"
 #include "wizzard/ui/ImGuiScreenReading.h"
@@ -27,6 +30,10 @@
 #include "wizzard/scene/SpriteComponent.h"
 #include "wizzard/scene/Scene.h"
 
+//Audio
+#include "wizzard/audio/Audio.h"
+#include "wizzard/audio/AudioSource.h"
+
 //Renderer
 #include "wizzard/rendering/Renderer.h"
 #include "wizzard/rendering/Renderer2D.h"
@@ -37,7 +44,3 @@
 #include "wizzard/rendering/VertexArray.h"
 #include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/OrthographicCamera.h"
-
-//Audio
-#include "wizzard/audio/Audio.h"
-#include "wizzard/audio/AudioSource.h"

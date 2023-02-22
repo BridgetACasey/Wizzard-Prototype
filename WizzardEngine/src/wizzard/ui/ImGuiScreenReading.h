@@ -9,7 +9,7 @@ namespace Wizzard
 	class ImGuiSR
 	{
 	public:
-		static bool Button(const char* label, const wchar_t* description, const ImVec2& size_arg);
+		static bool Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description = "", bool preferDesc = false);
 
 		static void SetButtonFontScale(float scale) { buttonFontScale = scale; }
 		static float GetButtonFontScale() { return buttonFontScale; }

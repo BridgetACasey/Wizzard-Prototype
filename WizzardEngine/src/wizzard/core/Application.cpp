@@ -10,6 +10,7 @@
 #include "wizzard/event/EventHandler.h"
 
 #include "wizzard/input/Input.h"
+#include "wizzard/screenreading/ScreenReaderSupport.h"
 #include "wizzard/audio/Audio.h"
 #include "wizzard/rendering/Renderer.h"
 
@@ -33,9 +34,7 @@ namespace Wizzard
 		window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		Input::Init();
-		Audio::Init();
-		Renderer::Init();
+		OnApplicationInit();
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
@@ -45,16 +44,12 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		Input::Shutdown();
-		Audio::Shutdown();
-		Renderer::Shutdown();
+		OnApplicationShutdown();
 	}
 
 	void Application::Run()
 	{
 		WIZ_PROFILE_FUNCTION();
-
-		OnApplicationInit();
 
 		while (running)
 		{
@@ -83,8 +78,6 @@ namespace Wizzard
 
 			window->OnUpdate();
 		}
-
-		OnApplicationShutdown();
 	}
 
 	void Application::Close()
@@ -121,34 +114,10 @@ namespace Wizzard
 
 		WIZ_INFO("Initialising WIZZARD Engine application...");
 
-		// Tolk will also initialise COM if it has not been initialized on the calling thread
-		Tolk_Load();
-
-		if (Tolk_IsLoaded())
-		{
-			WIZ_INFO("Initialised Tolk Screen Reader Abstraction Library...");
-
-			const wchar_t* screenreaderName = Tolk_DetectScreenReader();
-
-			if (screenreaderName)
-			{
-				//Converting from wchar_t* to a format supported by spdlog, such as std::string
-				std::wstring NameWStr(screenreaderName);
-				std::string nameStr(NameWStr.begin(), NameWStr.end());
-
-				WIZ_INFO("The current active screen reader driver is: {0}", nameStr);
-			}
-			else
-				WIZ_WARN("No compatible screen readers were detected as running! Screen reader support will be disabled until application restart.");
-
-			if (Tolk_HasSpeech())
-				WIZ_INFO("This screen reader driver supports speech");
-
-			if (Tolk_HasBraille())
-				WIZ_INFO("This screen reader driver supports braille");
-		}
-		else
-			WIZ_ERROR("Failed to initialise Tolk Screen Reader Abstraction Library!");
+		Input::Init();
+		ScreenReaderSupport::Init();
+		Audio::Init();
+		Renderer::Init();
 
 		WIZ_INFO("WIZZARD Engine successfully initialised.");
 	}
@@ -159,8 +128,10 @@ namespace Wizzard
 
 		WIZ_INFO("Beginning WIZZARD Engine shutdown sequence...");
 
-		WIZ_INFO("Unloading Tolk Screen Reader Abstraction Library...");
-		Tolk_Unload();
+		Input::Shutdown();
+		ScreenReaderSupport::Shutdown();
+		Audio::Shutdown();
+		Renderer::Shutdown();
 
 		WIZ_INFO("WIZZARD Engine successfully shutdown.");
 	}

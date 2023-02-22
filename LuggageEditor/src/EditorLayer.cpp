@@ -36,7 +36,7 @@ namespace Wizzard
 			//Temp test code for audio demo
 			if (Input::IsKeyReleased(Key::P))
 			{
-				LUG_TRACE("Play key pressed! Hopefully just once???");
+				LUG_TRACE("Playing example music.");
 
 				playMusic = !playMusic;
 
@@ -49,23 +49,16 @@ namespace Wizzard
 				}
 			}
 
-			if (Input::IsKeyDown(Key::Tab) && Input::IsKeyReleased(Key::LeftShift))
-				LUG_TRACE("Whoa man, look at you go with your combos!");
-
 			if (Input::IsKeyPressed(Key::T))
 			{
 				LUG_TRACE("Mouse go weeeeee!");
 				Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
 			}
 
-			if (Input::IsKeyDown(Key::CapsLock))
+			if(Input::IsKeyPressed(Key::Z))
 			{
-				LUG_TRACE("Key {0} is {1}", Key::CapsLock, Input::GetKeyState(Key::CapsLock));
-			}
-
-			if(Input::IsMouseButtonDown(Mouse::LeftButton))
-			{
-				LUG_TRACE("Mouse Button {0} is {1}", Mouse::LeftButton, Input::GetMouseButtonState(Mouse::LeftButton));
+				LUG_TRACE("Attempting to detect screen reader at runtime.");
+				ScreenReaderSupport::DetectScreenReader();
 			}
 		}
 
@@ -123,22 +116,12 @@ namespace Wizzard
 
 		//TEMP CODE FOR TESTING & DEMO PURPOSES ONLY
 		//UI will not be handled like this in final application
-		//It's also a bit buggy when clicking on menu items/dropdowns but acceptable for demo only
-
-		static bool read = true;
-
-		//Temporary value for opening menus
 		static bool openFileMenu = false;
 		static bool openEditMenu = false;
 		static bool openObjectMenu = false;
 		static bool openConsoleMenu = false;
 		static bool openSettingsMenu = false;
 		static bool openExitMenu = false;
-
-		if (Input::IsKeyDown(Key::Z))
-		{
-			ImGui::SetNextWindowFocus();
-		}
 
 		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
@@ -167,41 +150,36 @@ namespace Wizzard
 			isMainMenuFocused = ImGui::IsWindowFocused();
 			isMainMenuHovered = ImGui::IsWindowHovered();
 
-			if (ImGuiSR::Button("FILE", L"file menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("FILE", ImVec2(windowWidth, 80.5f), "file menu"))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
 			}
 
-			if (ImGuiSR::Button("SCENE", L"scene menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("SCENE", ImVec2(windowWidth, 80.5f), "scene menu"))
 				openEditMenu = !openEditMenu;
 
-			if (ImGuiSR::Button("CREATE", L"create menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f), "create menu"))
 				openObjectMenu = !openObjectMenu;
 
-			if (ImGuiSR::Button("CONSOLE", L"console menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("CONSOLE", ImVec2(windowWidth, 80.5f), "console menu"))
 				openConsoleMenu = !openConsoleMenu;
 
-			if (ImGuiSR::Button("SETTINGS", L"settings menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("SETTINGS", ImVec2(windowWidth, 80.5f), "settings menu"))
 				openSettingsMenu = !openSettingsMenu;
 
-			if (ImGuiSR::Button("EXIT", L"exit menu", ImVec2(windowWidth, 80.5f)))
+			if (ImGuiSR::Button("EXIT", ImVec2(windowWidth, 80.5f), "exit menu"))
 				openExitMenu = !openExitMenu;
 
 			ImGui::EndMainMenuBar();
 		}
-
-			if (Input::IsKeyDown(Key::X))
-			{
-				ImGui::SetNextWindowFocus();
-			}
 
 			ImGui::Begin("Hierarchy");
 
 			isHierarchyFocused = ImGui::IsWindowFocused();
 			isHierarchyHovered = ImGui::IsWindowHovered();
 
-			ImGuiSR::Button("Test Button", L"This is the hierarchy test button", ImVec2(150.0f, 150.0f));
+			ImGuiSR::Button("Test Button", ImVec2(150.0f, 150.0f), "This is the hierarchy test button.", true);
 
 			if(openFileMenu)
 			{
@@ -217,8 +195,6 @@ namespace Wizzard
 			}
 			else if (openConsoleMenu)
 			{
-				//ImGui::TextWrapped("Debug information goes here!");
-
 				auto stats = Renderer2D::GetStatistics();
 				ImGui::Text("Renderer2D Stats:");
 				ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -237,14 +213,18 @@ namespace Wizzard
 				{
 					ImGui::Text("Quit application?");
 
-					if (ImGuiSR::Button("Yes", L"Yes", ImVec2(240.0f, 80.0f)))
+					if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f)))
 					{
-						Application::Get().Close();
+						//TODO: Fix message being cut off by exiting app before speech has finished
+						ScreenReaderSupport::OutputAll("Exiting editor application.");
+
+						if(!ScreenReaderSupport::IsSpeaking())
+							Application::Get().Close();
 					}
 
 					ImGui::SameLine();
 
-					if (ImGuiSR::Button("No", L"No", ImVec2(240.0f, 80.0f)))
+					if (ImGuiSR::Button("No", ImVec2(240.0f, 80.0f)))
 						openExitMenu = false;
 
 					ImGui::End();
@@ -253,16 +233,11 @@ namespace Wizzard
 
 			ImGui::End();	//End Hierarchy
 
-			if (Input::IsKeyDown(Key::C))
-			{
-				ImGui::SetNextWindowFocus();
-			}
-
 			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar;
 
 			ImGui::Begin("Viewport", &dockspaceOpen, viewportFlags);
 
-			ImGuiSR::Button("Test Button", L"Viewport test button", ImVec2(150.0f, 150.0f));
+			ImGuiSR::Button("Test Button", ImVec2(150.0f, 150.0f), "Hey bestie, this is the viewport test button.", true);
 
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();

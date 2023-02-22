@@ -2,30 +2,32 @@
 
 #include "wzpch.h"
 
-#include "ImGuiScreenReading.h"
-#include "imgui.h"
-#include "Tolk.h"
-
 #include <comdef.h>
+#include "imgui.h"
+
+#include "ImGuiScreenReading.h"
+#include "screenreading/ScreenReaderSupport.h"
 
 namespace Wizzard
 {
 	//Probably not the best way of arranging this, to review later
-	bool ImGuiSR::Button(const char* label, const wchar_t* description, const ImVec2& size_arg)
+	bool ImGuiSR::Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description, bool preferDesc)
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		bool success = false;
-
-		if(ImGui::Button(label, size_arg))
+		if (ImGui::Button(buttonLabel.c_str(), sizeArg))
 		{
-			std::wstring output = (L"Selected");
-			output += description;
+			if (preferDesc && !description.empty())
+				return ScreenReaderSupport::OutputAll(description);
 
-			Tolk_Output(output.c_str(), true);
-			success = true;
+			return ScreenReaderSupport::OutputAll(buttonLabel);
 		}
 
-		return success;
+		//if(ImGui::IsItemFocused())
+		//{
+		//	return ScreenReaderSupport::OutputAll(buttonLabel);
+		//}
+
+		return false;
 	}
 }
