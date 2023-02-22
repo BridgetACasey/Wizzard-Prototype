@@ -51,7 +51,7 @@ namespace Wizzard
 
 			if (Input::IsKeyPressed(Key::T))
 			{
-				LUG_TRACE("Mouse go weeeeee!");
+				LUG_TRACE("Mouse go weeeeee! {0}", Input::GetInputStateAsString(Input::GetKeyState(Key::T)));
 				Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
 			}
 

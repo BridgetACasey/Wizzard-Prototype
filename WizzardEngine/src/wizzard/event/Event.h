@@ -62,12 +62,12 @@ namespace Wizzard
 	public:
 		virtual ~Event() = default;
 
-		virtual EventType GetEventType() const = 0;
-		virtual const char* GetEventName() const = 0;
-		virtual int GetEventCategoryFlags() const = 0;
-		virtual std::string ToString() const { return GetEventName(); }
+		[[nodiscard]] virtual EventType GetEventType() const = 0;
+		[[nodiscard]] virtual const char* GetEventName() const = 0;
+		[[nodiscard]] virtual int GetEventCategoryFlags() const = 0;
+		[[nodiscard]] virtual std::string ToString() const { return GetEventName(); }
 
-		inline bool IsInCategory(EventCategory category)
+		bool IsInCategory(EventCategory category)
 		{
 			return GetEventCategoryFlags() & category;
 		}
@@ -75,8 +75,8 @@ namespace Wizzard
 		bool isHandled = false;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	inline std::ostream& operator<<(std::ostream& oStream, const Event& event)
 	{
-		return os << e.ToString();
+		return oStream << event.ToString();
 	}
 }

@@ -20,7 +20,6 @@ namespace Wizzard
 		KeyCode keyCode;
 	};
 
-	//TODO: Rework key events to include input option for a key being pressed only once e.g. KeyPressedEvent() and KeyDownEvent()
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:

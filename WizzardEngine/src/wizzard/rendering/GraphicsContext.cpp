@@ -8,8 +8,6 @@
 #include "core/Application.h"
 #include "platform/opengl/OpenGLContext.h"
 
-#include "wizzard/platform/opengl/OpenGLContext.h"
-
 namespace Wizzard
 {
 	//Currently, the only implemented graphical API is OpenGL and all other options will return nullptr
