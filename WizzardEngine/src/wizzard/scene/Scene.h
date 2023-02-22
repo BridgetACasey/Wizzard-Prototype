@@ -1,3 +1,5 @@
+//@BridgetACasey
+
 #pragma once
 
 #include "entt/entt.hpp"
@@ -30,5 +32,6 @@ namespace Wizzard
 		uint32_t viewportWidth = 0, viewportHeight = 0;
 
 		friend class Entity;
+		friend class SceneSerialiser;
 	};
 }

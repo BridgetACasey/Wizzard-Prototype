@@ -5,6 +5,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui/imgui.h"
 
+#include "wizzard/scene/SceneSerialiser.h"
+
 namespace Wizzard
 {
 	EditorLayer::EditorLayer() : Layer("Editor"), orthoCamController(1920.0f / 1080.0f)
@@ -22,18 +24,18 @@ namespace Wizzard
 		fbSpec.height = 1080;
 		frameBuffer = Framebuffer::Create(fbSpec);
 
-		m_ActiveScene = CreateRef<Scene>();
+		activeScene = CreateRef<Scene>();
 
 		// Entity
-		auto square = m_ActiveScene->CreateEntity("Green Square");
+		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
 		m_SquareEntity = square;
 
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity = activeScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>();
 
-		m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
+		m_SecondCamera = activeScene->CreateEntity("Clip-Space Entity");
 		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
 		cc.Primary = false;
 	}
@@ -53,7 +55,7 @@ namespace Wizzard
 			frameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			orthoCamController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
-			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
 		if (isViewportFocused)
@@ -87,6 +89,18 @@ namespace Wizzard
 				LUG_TRACE("Attempting to detect screen reader at runtime.");
 				ScreenReaderSupport::DetectScreenReader();
 			}
+		}
+
+		if (Input::IsKeyPressed(Key::F5))
+		{
+			SceneSerialiser serializer(activeScene);
+			serializer.Serialise("res/scenes/Example.wizzard");
+		}
+
+		if (Input::IsKeyPressed(Key::F9))
+		{
+			SceneSerialiser serializer(activeScene);
+			serializer.Deserialise("res/scenes/Example.wizzard");
 		}
 
 		// Render

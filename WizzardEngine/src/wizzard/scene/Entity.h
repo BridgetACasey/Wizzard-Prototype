@@ -34,7 +34,7 @@ namespace Wizzard
 		template<typename T>
 		bool HasComponent()
 		{
-			return scene->registry.has<T>(entityHandle);
+			return scene->registry.any_of<T>(entityHandle);
 		}
 
 		template<typename T>

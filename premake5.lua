@@ -71,7 +71,8 @@ project "WizzardEngine"
 		"_CRT_SECURE_NO_WARNINGS",
 		"AL_LIBTYPE_STATIC",
 		"RESTRICT=__restrict",
-		"_EXPORTING"
+		"_EXPORTING",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 
@@ -112,7 +113,8 @@ project "WizzardEngine"
 		"Tolk",
 		"Box2D",
 		"OpenALSoft",
-		"Vorbis"
+		"Vorbis",
+		"YAML-CPP"
 	}
 
 	filter "system:windows"
@@ -218,7 +220,8 @@ project "Application"
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
 		"%{IncludeDir.Box2D}",
-		"%{IncludeDir.ENTT}"
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}"
 	}
 
 	links

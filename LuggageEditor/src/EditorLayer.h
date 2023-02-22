@@ -22,7 +22,7 @@ namespace Wizzard
 	private:
 		OrthographicCameraController orthoCamController;
 
-		Ref<Scene> m_ActiveScene;
+		Ref<Scene> activeScene;
 		Entity m_SquareEntity;
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
