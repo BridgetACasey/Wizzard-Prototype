@@ -39,5 +39,6 @@ namespace Wizzard
 
 		friend class Entity;
 		friend class SceneSerialiser;
+		friend class SceneHierarchyPanel;
 	};
 }

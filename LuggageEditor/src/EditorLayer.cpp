@@ -40,6 +40,8 @@ namespace Wizzard
 		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
 		cc.Primary = false;
 
+		sceneHierarchyPanel.SetContext(activeScene);
+
 		activeScene->OnStart();
 	}
 
@@ -119,6 +121,8 @@ namespace Wizzard
 		rotation += timeStep * 50.0f;
 
 		activeScene->OnUpdate(timeStep);
+
+		//sceneHierarchyPanel.OnImGuiRender();
 
 		//Renderer2D::BeginScene(orthoCamController.GetCamera());
 		//Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });

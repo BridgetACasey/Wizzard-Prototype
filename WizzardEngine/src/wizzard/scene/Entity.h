@@ -46,6 +46,17 @@ namespace Wizzard
 
 		operator bool() const { return entityHandle != entt::null; }
 		operator entt::entity() const { return entityHandle; }
+		operator uint32_t() const { return (uint32_t)entityHandle; }
+
+		bool operator==(const Entity& other) const
+		{
+			return entityHandle == other.entityHandle && scene == other.scene;
+		}
+
+		bool operator!=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
 
 	private:
 		entt::entity entityHandle{ 0 };
