@@ -103,7 +103,7 @@ namespace Wizzard
 		registry.destroy(entity);
 	}
 
-	void Scene::OnUpdate(TimeStep timeStep)
+	void Scene::OnUpdateRuntime(TimeStep timeStep)
 	{
 		// Physics
 		{
@@ -161,6 +161,21 @@ namespace Wizzard
 
 			Renderer2D::EndScene();
 		}
+	}
+
+	void Scene::OnUpdateEditor(TimeStep timeStep, EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+
+		auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
+		for (auto entity : group)
+		{
+			auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+
+			Renderer2D::DrawQuad(transform.GetTransform(), sprite.color);
+		}
+
+		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)

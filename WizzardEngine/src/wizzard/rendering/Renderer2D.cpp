@@ -125,6 +125,18 @@ namespace Wizzard
 		data->quadVertexBufferPtr = data->quadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginScene(const EditorCamera& camera)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.GetViewProjection();
+
+		data->textureShader->Bind();
+		data->textureShader->SetMat4("u_ViewProjection", viewProj);
+
+		StartBatch();
+	}
+
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -170,6 +182,17 @@ namespace Wizzard
 		data->quadVertexBufferPtr = data->quadVertexBufferBase;
 
 		data->TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::StartBatch()
+	{
+		data->quadIndexCount = 0;
+		data->quadVertexBufferPtr = data->quadVertexBufferBase;
+		data->TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::NextBatch()
+	{
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)

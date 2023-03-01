@@ -5,6 +5,7 @@
 #include "entt/entt.hpp"
 
 #include "wizzard/base/Timestep.h"
+#include "wizzard/rendering/EditorCamera.h"
 
 class b2World;
 
@@ -20,7 +21,8 @@ namespace Wizzard
 
 		void OnStart();
 		void OnStop();
-		void OnUpdate(TimeStep timeStep);
+		void OnUpdateRuntime(TimeStep timeStep);
+		void OnUpdateEditor(TimeStep timeStep, EditorCamera& camera);
 
 		Entity CreateEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);

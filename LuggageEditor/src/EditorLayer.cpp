@@ -26,6 +26,8 @@ namespace Wizzard
 
 		activeScene = CreateRef<Scene>();
 
+		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
 		// Entity
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
@@ -61,35 +63,38 @@ namespace Wizzard
 			frameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			orthoCamController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		//if (isViewportFocused)
-		//{
-		//	orthoCamController.OnUpdate(timeStep);
-		//
-		//	//Temp test code for audio demo
-		//	if (Input::IsKeyReleased(Key::P))
-		//	{
-		//		LUG_TRACE("Playing example music.");
-		//
-		//		playMusic = !playMusic;
-		//
-		//		if (music.IsLoaded())
-		//		{
-		//			if (playMusic)
-		//				Audio::Play(music);
-		//			else
-		//				Audio::Pause(music);
-		//		}
-		//	}
-		//
-		//	if (Input::IsKeyPressed(Key::T))
-		//	{
-		//		LUG_TRACE("Mouse go weeeeee! {0}", Input::GetInputStateAsString(Input::GetKeyState(Key::T)));
-		//		Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
-		//	}
-		//}
+		if (isViewportFocused)
+		{
+			orthoCamController.OnUpdate(timeStep);
+
+			m_EditorCamera.OnUpdate(timeStep);
+
+			//Temp test code for audio demo
+			//if (Input::IsKeyReleased(Key::P))
+			//{
+			//	LUG_TRACE("Playing example music.");
+			//
+			//	playMusic = !playMusic;
+			//
+			//	if (music.IsLoaded())
+			//	{
+			//		if (playMusic)
+			//			Audio::Play(music);
+			//		else
+			//			Audio::Pause(music);
+			//	}
+			//}
+			//
+			//if (Input::IsKeyPressed(Key::T))
+			//{
+			//	LUG_TRACE("Mouse go weeeeee! {0}", Input::GetInputStateAsString(Input::GetKeyState(Key::T)));
+			//	Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
+			//}
+		}
 
 		if (Input::IsKeyPressed(Key::Z))
 		{
@@ -120,9 +125,7 @@ namespace Wizzard
 		static float rotation = 0.0f;
 		rotation += timeStep * 50.0f;
 
-		activeScene->OnUpdate(timeStep);
-
-		//sceneHierarchyPanel.OnImGuiRender();
+		activeScene->OnUpdateEditor(timeStep, m_EditorCamera);
 
 		//Renderer2D::BeginScene(orthoCamController.GetCamera());
 		//Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -227,6 +230,9 @@ namespace Wizzard
 
 			ImGui::Begin("Hierarchy");
 
+			if(openEditMenu)
+				sceneHierarchyPanel.OnImGuiRender();
+
 			if (m_SquareEntity)
 			{
 				ImGui::Separator();
@@ -324,6 +330,10 @@ namespace Wizzard
 			uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));
 
+			// Editor camera
+			const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+			glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+
 			ImGui::End();	//End Viewport
 
 		ImGui::End();	//End Dockspace Demo
@@ -332,5 +342,6 @@ namespace Wizzard
 	void EditorLayer::OnEvent(Event& event)
 	{
 		orthoCamController.OnEvent(event);
+		m_EditorCamera.OnEvent(event);
 	}
 }

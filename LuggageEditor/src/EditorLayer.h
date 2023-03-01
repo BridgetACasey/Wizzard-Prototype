@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Wizzard.h"
+#include "wizzard/rendering/EditorCamera.h"
 #include "ui/panel/SceneHierarchyPanel.h"
 
 namespace Wizzard
@@ -22,6 +23,7 @@ namespace Wizzard
 
 	private:
 		OrthographicCameraController orthoCamController;
+		EditorCamera m_EditorCamera;
 
 		Ref<Scene> activeScene;
 		Entity m_SquareEntity;

@@ -4,6 +4,7 @@
 
 #include "Texture.h"
 #include "Camera.h"
+#include "EditorCamera.h"
 #include "OrthographicCamera.h"
 
 namespace Wizzard
@@ -15,6 +16,7 @@ namespace Wizzard
 		static void Shutdown();
 
 		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const EditorCamera& camera);
 		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void EndScene();
 
@@ -49,5 +51,8 @@ namespace Wizzard
 
 	private:
 		static void FlushAndReset();
+
+		static void StartBatch();
+		static void NextBatch();
 	};
 }
