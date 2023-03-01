@@ -30,6 +30,8 @@ namespace Wizzard
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
 
+		int m_GizmoType = -1;
+
 		bool m_PrimaryCamera = true;
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
@@ -55,6 +57,12 @@ namespace Wizzard
 		bool isHierarchyHovered = false;
 
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+
+		enum class SceneState
+		{
+			Edit = 0, Play = 1
+		};
+		SceneState m_SceneState = SceneState::Edit;
 
 		SceneHierarchyPanel sceneHierarchyPanel;
 	};

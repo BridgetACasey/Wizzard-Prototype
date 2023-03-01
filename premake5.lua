@@ -20,6 +20,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "WizzardEngine/lib/glfw/include"
 IncludeDir["Glad"] = "WizzardEngine/lib/glad/include"
 IncludeDir["ImGui"] = "WizzardEngine/lib/imgui"
+IncludeDir["ImGuizmo"] = "WizzardEngine/lib/imguizmo"
 IncludeDir["GLM"] = "WizzardEngine/lib/glm"
 IncludeDir["Tolk"] = "WizzardEngine/lib/tolk/src"
 IncludeDir["stb_image"] = "WizzardEngine/lib/stb_image"
@@ -33,6 +34,7 @@ IncludeDir["YAMLCPP"] = "WizzardEngine/lib/yaml-cpp/include"
 include "WizzardEngine/lib/glfw"
 include "WizzardEngine/lib/glad"
 include "WizzardEngine/lib/imgui"
+include "WizzardEngine/lib/imguizmo"
 include "WizzardEngine/lib/tolk"
 include "WizzardEngine/lib/box2d"
 include "WizzardEngine/lib/openal-soft"
@@ -84,6 +86,7 @@ project "WizzardEngine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.Tolk}",
 		"%{IncludeDir.stb_image}",
@@ -110,6 +113,7 @@ project "WizzardEngine"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"ImGuizmo",
 		"Tolk",
 		"Box2D",
 		"OpenALSoft",

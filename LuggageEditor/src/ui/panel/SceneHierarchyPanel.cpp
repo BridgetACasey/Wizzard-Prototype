@@ -30,6 +30,11 @@ namespace Wizzard
 		ImGui::End();
 	}
 
+	void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
+	{
+		m_SelectionContext = entity;
+	}
+
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 	{
 		auto& tag = entity.GetComponent<TagComponent>().tag;
@@ -50,7 +55,5 @@ namespace Wizzard
 				ImGui::TreePop();
 			ImGui::TreePop();
 		}
-
 	}
-
 }

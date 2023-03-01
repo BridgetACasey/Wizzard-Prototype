@@ -3,8 +3,11 @@
 #include "EditorLayer.h"
 
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "imgui/imgui.h"
+#include "imguizmo/ImGuizmo.h"
 
+#include "wizzard/base/Maths.h"
 #include "wizzard/scene/SceneSerialiser.h"
 
 namespace Wizzard
@@ -67,35 +70,6 @@ namespace Wizzard
 			activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		if (isViewportFocused)
-		{
-			orthoCamController.OnUpdate(timeStep);
-
-			m_EditorCamera.OnUpdate(timeStep);
-
-			//Temp test code for audio demo
-			//if (Input::IsKeyReleased(Key::P))
-			//{
-			//	LUG_TRACE("Playing example music.");
-			//
-			//	playMusic = !playMusic;
-			//
-			//	if (music.IsLoaded())
-			//	{
-			//		if (playMusic)
-			//			Audio::Play(music);
-			//		else
-			//			Audio::Pause(music);
-			//	}
-			//}
-			//
-			//if (Input::IsKeyPressed(Key::T))
-			//{
-			//	LUG_TRACE("Mouse go weeeeee! {0}", Input::GetInputStateAsString(Input::GetKeyState(Key::T)));
-			//	Input::SetMousePosition(Input::GetMousePositionX() + 10.0f, Input::GetMousePositionY());
-			//}
-		}
-
 		if (Input::IsKeyPressed(Key::Z))
 		{
 			LUG_TRACE("Attempting to detect screen reader at runtime.");
@@ -122,10 +96,30 @@ namespace Wizzard
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		RenderCommand::Clear();
 
+		// Clear our entity ID attachment to -1
+		frameBuffer->ClearAttachment(1, -1);
+
+		switch (m_SceneState)
+		{
+			case SceneState::Edit:
+			{
+				if (m_ViewportFocused)
+					orthoCamController.OnUpdate(timeStep);
+
+				m_EditorCamera.OnUpdate(timeStep);
+
+				activeScene->OnUpdateEditor(timeStep, m_EditorCamera);
+				break;
+			}
+			case SceneState::Play:
+			{
+				activeScene->OnUpdateRuntime(timeStep);
+				break;
+			}
+		}
+
 		static float rotation = 0.0f;
 		rotation += timeStep * 50.0f;
-
-		activeScene->OnUpdateEditor(timeStep, m_EditorCamera);
 
 		//Renderer2D::BeginScene(orthoCamController.GetCamera());
 		//Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -325,14 +319,56 @@ namespace Wizzard
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();
 
-			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportFocused || !isViewportHovered);
+			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportFocused && !isViewportHovered);
 
 			uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
 			ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));
 
-			// Editor camera
-			const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
-			glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+			// Gizmos
+			Entity selectedEntity = sceneHierarchyPanel.GetSelectedEntity();
+			if (selectedEntity && m_GizmoType != -1)
+			{
+				ImGuizmo::SetOrthographic(false);
+				ImGuizmo::SetDrawlist();
+
+				float windowWidth = (float)ImGui::GetWindowWidth();
+				float windowHeight = (float)ImGui::GetWindowHeight();
+				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+				// Camera
+				auto cameraEntity = activeScene->GetPrimaryCameraEntity();
+				const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+				const glm::mat4& cameraProjection = camera.GetProjection();
+				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+				// Entity transform
+				auto& tc = selectedEntity.GetComponent<TransformComponent>();
+				glm::mat4 transform = tc.GetTransform();
+
+				// Snapping
+				bool snap = Input::IsKeyPressed(Key::LeftControl);
+				float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+				// Snap to 45 degrees for rotation
+				if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+					snapValue = 45.0f;
+
+				float snapValues[3] = { snapValue, snapValue, snapValue };
+
+				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+					(ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+					nullptr, snap ? snapValues : nullptr);
+
+				if (ImGuizmo::IsUsing())
+				{
+					glm::vec3 translation, rotation, scale;
+					Maths::DecomposeTransform(transform, translation, rotation, scale);
+
+					glm::vec3 deltaRotation = rotation - tc.Rotation;
+					tc.Translation = translation;
+					tc.Rotation += deltaRotation;
+					tc.Scale = scale;
+				}
+			}
 
 			ImGui::End();	//End Viewport
 

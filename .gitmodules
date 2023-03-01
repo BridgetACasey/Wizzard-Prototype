@@ -31,3 +31,6 @@
 [submodule "WizzardEngine/lib/yaml-cpp"]
 	path = WizzardEngine/lib/yaml-cpp
 	url = https://github.com/BridgetACasey/yaml-cpp.git
+[submodule "WizzardEngine/lib/imguizmo"]
+	path = WizzardEngine/lib/imguizmo
+	url = https://github.com/BridgetACasey/ImGuizmo.git

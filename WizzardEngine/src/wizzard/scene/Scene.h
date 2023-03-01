@@ -26,6 +26,7 @@ namespace Wizzard
 
 		Entity CreateEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
+		Entity GetPrimaryCameraEntity();
 
 		void OnViewportResize(uint32_t width, uint32_t height);
 
