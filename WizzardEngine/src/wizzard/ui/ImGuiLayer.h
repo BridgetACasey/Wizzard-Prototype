@@ -33,5 +33,8 @@ namespace Wizzard
 		float time = 0.0f;
 
 		bool blockImGuiEvents = true;
+
+		std::string imguiIniFilePath;
+		std::string imguiLogFilePath;
 	};
 }

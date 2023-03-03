@@ -45,7 +45,7 @@ namespace Wizzard
 				// profiling output.
 				if (Log::GetWizzardLogger())
 				{ // Edge case: BeginSession() might be before Log::Init()
-					WIZ_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, currentSession->name);
+					WIZ_ERROR("Profiler::BeginSession('{0}') when session '{1}' already open.", name, currentSession->name);
 				}
 				InternalEndSession();
 			}
@@ -60,7 +60,7 @@ namespace Wizzard
 			{
 				if (Log::GetWizzardLogger())
 				{ // Edge case: BeginSession() might be before Log::Init()
-					WIZ_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+					WIZ_ERROR("Profiler could not open results file '{0}'.", filepath);
 				}
 			}
 		}
@@ -170,7 +170,7 @@ namespace Wizzard
 	};
 }
 
-#define WIZ_PROFILE 0
+#define WIZ_PROFILE 1
 #if WIZ_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting

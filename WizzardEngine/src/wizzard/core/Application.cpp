@@ -143,12 +143,16 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
+		WIZ_TRACE("Initialising layer '{0}' onto layer stack", layer->GetName());
+
 		layerStack.PushLayer(layer);
 	}
 
 	void Application::PopLayer(Layer* layer)
 	{
 		WIZ_PROFILE_FUNCTION();
+
+		WIZ_TRACE("Removing active layer '{0}' from layer stack", layer->GetName());
 
 		layerStack.PopLayer(layer);
 	}
@@ -157,12 +161,16 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
+		WIZ_TRACE("Initialising overlay '{0}' onto layer stack", overlay->GetName());
+
 		layerStack.PushOverlay(overlay);
 	}
 
 	void Application::PopOverlay(Layer* overlay)
 	{
 		WIZ_PROFILE_FUNCTION();
+
+		WIZ_TRACE("Removing active overlay '{0}' from layer stack", overlay->GetName());
 
 		layerStack.PopOverlay(overlay);
 	}

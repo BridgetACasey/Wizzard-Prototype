@@ -186,6 +186,12 @@ project "LuggageEditor"
 			"WIZZARD_PLATFORM_WINDOWS"
 		}
 
+		postbuildcommands
+		{
+			"{COPY} ../WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}",
+			"{COPY} res %{cfg.targetdir}/res"
+		}
+
 	filter "configurations:Debug"
 		defines "WIZZARD_DEBUG"
 		symbols "on"

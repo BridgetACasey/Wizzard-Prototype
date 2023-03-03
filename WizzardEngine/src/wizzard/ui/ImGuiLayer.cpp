@@ -12,8 +12,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "base/ResourcePathFinder.h"
 #include "core/Application.h"
-
 #include "ImGuiScreenReading.h"
 
 static ImGuiWindow* currentWindow = nullptr;
@@ -41,6 +41,12 @@ namespace Wizzard
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 
+		imguiIniFilePath = ResourcePath::GetResourcePath(CONFIG, "imgui.ini");
+		io.IniFilename = imguiIniFilePath.c_str();
+
+		imguiLogFilePath = ResourcePath::GetResourcePath(CONFIG, "imgui_log.txt");
+		io.LogFilename = imguiLogFilePath.c_str();
+
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
 
@@ -58,7 +64,9 @@ namespace Wizzard
 		//Apply scaling options
 		ImFontConfig imFontConfig;
 		imFontConfig.SizePixels = 13.0f * ImGuiSR::GetButtonFontScale();
-		io.Fonts->AddFontFromFileTTF("OpenSans-Bold.ttf", imFontConfig.SizePixels, &imFontConfig);
+
+		std::string fontPath = ResourcePath::GetResourcePath(FONT, "OpenSans-Bold.ttf");
+		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), imFontConfig.SizePixels, &imFontConfig);
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

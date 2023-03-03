@@ -7,6 +7,7 @@
 #include "imgui/imgui.h"
 #include "imguizmo/ImGuizmo.h"
 
+#include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/base/Maths.h"
 #include "wizzard/scene/SceneSerialiser.h"
 
@@ -18,9 +19,9 @@ namespace Wizzard
 
 	void EditorLayer::OnAttach()
 	{
-		customTexture = Texture2D::Create("res/textures/smiley.png");
+		customTexture = Texture2D::Create(ResourcePath::GetResourcePath(TEXTURE, "smiley.png"));
 
-		music = AudioSource::LoadFromFile("res/music/examplemusic.mp3", false);
+		music = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(MUSIC, "examplemusic.mp3"), false);
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1920;
@@ -79,13 +80,13 @@ namespace Wizzard
 		if (Input::IsKeyPressed(Key::F5))
 		{
 			SceneSerialiser serializer(activeScene);
-			serializer.Serialise("res/scenes/Example.wizzard");
+			serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 		}
 
 		if (Input::IsKeyPressed(Key::F9))
 		{
 			SceneSerialiser serializer(activeScene);
-			serializer.Deserialise("res/scenes/Example.wizzard");
+			serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 		}
 
 		// Render
