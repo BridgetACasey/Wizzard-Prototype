@@ -315,7 +315,8 @@ namespace Wizzard
 
 			ImGui::Begin("Viewport", &dockspaceOpen, viewportFlags);
 
-			ImGuiSR::Button("Test Button", ImVec2(150.0f, 150.0f), "Hey bestie, this is the viewport test button.", true);
+			if (ImGuiSR::Button("PLAY", ImVec2(150.0f, 150.0f), "Toggled play scene.", true))
+				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;
 
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();

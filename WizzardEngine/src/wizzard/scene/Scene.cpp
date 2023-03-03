@@ -10,14 +10,15 @@
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
-#include "component/BoxCollider2DComponent.h"
 
 #include "wizzard/rendering/Renderer2D.h"
 #include "component/CameraComponent.h"
 #include "component/RigidBody2DComponent.h"
 #include "component/SpriteComponent.h"
+#include "component/UUIDComponent.h"
 #include "component/TagComponent.h"
 #include "component/TransformComponent.h"
+#include "component/BoxCollider2DComponent.h"
 
 namespace Wizzard
 {
@@ -89,9 +90,15 @@ namespace Wizzard
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		Entity entity = { registry.create(), this };
-		entity.AddComponent<TransformComponent>();
+		return CreateEntityWithUUID(UUID(), name);
+	}
 
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	{
+		Entity entity = { registry.create(), this };
+
+		entity.AddComponent<UUIDComponent>(uuid);
+		entity.AddComponent<TransformComponent>();
 		auto& tagComponent = entity.AddComponent<TagComponent>();
 		tagComponent.tag = name.empty() ? "Entity" : name;
 
@@ -214,6 +221,16 @@ namespace Wizzard
 	}
 
 	template<>
+	void Scene::OnComponentAdded<UUIDComponent>(Entity entity, UUIDComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+	}
+
+	template<>
 	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 	{
 	}
@@ -226,11 +243,6 @@ namespace Wizzard
 
 	template<>
 	void Scene::OnComponentAdded<SpriteComponent>(Entity entity, SpriteComponent& component)
-	{
-	}
-
-	template<>
-	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
 	}
 

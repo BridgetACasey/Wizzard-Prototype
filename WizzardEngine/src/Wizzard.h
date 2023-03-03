@@ -25,6 +25,7 @@
 
 //Entity Component System
 #include "wizzard/scene/Entity.h"
+#include "wizzard/scene/component/UUIDComponent.h"
 #include "wizzard/scene/component/TagComponent.h"
 #include "wizzard/scene/component/TransformComponent.h"
 #include "wizzard/scene/component/SpriteComponent.h"

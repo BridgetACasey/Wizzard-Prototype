@@ -6,6 +6,9 @@
 
 #include "entt/entt.hpp"
 
+#include "wizzard/core/UUID.h"
+#include "component/UUIDComponent.h"
+
 namespace Wizzard
 {
 	class Entity
@@ -14,6 +17,8 @@ namespace Wizzard
 		Entity() = default;
 		Entity(entt::entity handle, Scene* scene);
 		Entity(const Entity& other) = default;
+
+		UUID GetUUID() { return GetComponent<UUIDComponent>().uuid; }
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)

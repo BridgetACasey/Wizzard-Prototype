@@ -168,6 +168,7 @@ namespace Wizzard
 		//Not yet implemented
 	}
 
+	//TODO: Ensure entities cannot be deserialised multiple times in a row/Fix entity duplication issue
 	bool SceneSerialiser::Deserialise(const std::string& filepath)
 	{
 		std::ifstream stream(filepath);
@@ -186,7 +187,7 @@ namespace Wizzard
 		{
 			for (auto entity : entities)
 			{
-				uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
+				uint64_t uuid = entity["UUID"].as<uint64_t>();
 
 				std::string name;
 				auto tagComponent = entity["TagComponent"];
@@ -195,7 +196,7 @@ namespace Wizzard
 
 				WIZ_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-				Entity deserializedEntity = scene->CreateEntity(name);
+				Entity deserializedEntity = scene->CreateEntityWithUUID(uuid, name);
 
 				auto transformComponent = entity["TransformComponent"];
 				if (transformComponent)
@@ -267,8 +268,10 @@ namespace Wizzard
 
 	void SceneSerialiser::SerialiseEntity(YAML::Emitter& out, Entity entity)
 	{
+		WIZ_ASSERT(entity.HasComponent<UUIDComponent>());
+
 		out << YAML::BeginMap; // Entity
-		out << YAML::Key << "Entity" << YAML::Value << "12837192831273"; // TODO: Entity ID goes here
+		out << YAML::Key << "UUID" << YAML::Value << entity.GetUUID();
 
 		if (entity.HasComponent<TagComponent>())
 		{

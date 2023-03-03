@@ -5,6 +5,7 @@
 #include "entt/entt.hpp"
 
 #include "wizzard/base/Timestep.h"
+#include "wizzard/core/UUID.h"
 #include "wizzard/rendering/EditorCamera.h"
 
 class b2World;
@@ -25,6 +26,7 @@ namespace Wizzard
 		void OnUpdateEditor(TimeStep timeStep, EditorCamera& camera);
 
 		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 		Entity GetPrimaryCameraEntity();
 
