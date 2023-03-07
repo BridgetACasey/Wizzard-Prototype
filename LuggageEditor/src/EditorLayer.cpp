@@ -32,21 +32,25 @@ namespace Wizzard
 
 		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
+		m_CameraEntity = activeScene->CreateEntity("Scene Camera");
+		m_CameraEntity.AddComponent<CameraComponent>();
+
 		// Entity
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		square.AddComponent<RigidBody2DComponent>();
+		//TransformComponent transform = TransformComponent(glm::vec3(0.0f, 0.0f, 0.0f));
+		//square.AddComponent<TransformComponent>(transform);
+		//square.AddComponent<RigidBody2DComponent>();
 
 		m_SquareEntity = square;
 
-		m_CameraEntity = activeScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>();
+		//m_SecondCamera = activeScene->CreateEntity("Clip-Space Entity");
+		//auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
+		//cc.Primary = false;
 
-		m_SecondCamera = activeScene->CreateEntity("Clip-Space Entity");
-		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-		cc.Primary = false;
-
+		appSettingsPanel.SetContext(activeScene);
 		sceneHierarchyPanel.SetContext(activeScene);
+		objCreatePanel.SetContext(activeScene);
 
 		activeScene->OnStart();
 	}
@@ -75,18 +79,6 @@ namespace Wizzard
 		{
 			LUG_TRACE("Attempting to detect screen reader at runtime.");
 			ScreenReaderSupport::DetectScreenReader();
-		}
-
-		if (Input::IsKeyPressed(Key::F5))
-		{
-			SceneSerialiser serializer(activeScene);
-			serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		}
-
-		if (Input::IsKeyPressed(Key::F9))
-		{
-			SceneSerialiser serializer(activeScene);
-			serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 		}
 
 		//TODO: Changing font scale at runtime
@@ -128,16 +120,7 @@ namespace Wizzard
 		static float rotation = 0.0f;
 		rotation += timeStep * 50.0f;
 
-		//Renderer2D::BeginScene(orthoCamController.GetCamera());
-		//Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
-		//Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		//Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		//Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, customTexture, 10.0f);
-		//Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, customTexture, 1.0f);
-		//Renderer2D::EndScene();
-
 		frameBuffer->Unbind();
-
 	}
 
 	void EditorLayer::OnImGuiRender()

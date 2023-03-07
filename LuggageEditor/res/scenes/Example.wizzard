@@ -1,24 +1,27 @@
 Scene: Untitled
 Entities:
-  - UUID: 11397598728169463322
+  - UUID: 11066603804825923285
     TagComponent:
-      Tag: Clip-Space Entity
+      Tag: Red Square
+    TransformComponent:
+      Translation: [-1.5, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]
+  - UUID: 3266628311939790796
+    TagComponent:
+      Tag: Green Square
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: false
-      FixedAspectRatio: false
-  - UUID: 15937486544961508010
+    SpriteRendererComponent:
+      Color: [0, 1, 0, 1]
+    Rigidbody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+  - UUID: 4124758987741558697
     TagComponent:
       Tag: Camera Entity
     TransformComponent:
@@ -36,7 +39,25 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - UUID: 5107760635970681508
+  - UUID: 135720499388769074
+    TagComponent:
+      Tag: Clip-Space Entity
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: false
+      FixedAspectRatio: false
+  - UUID: 2555644381997326165
     TagComponent:
       Tag: Green Square
     TransformComponent:
@@ -45,6 +66,21 @@ Entities:
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0, 1, 0, 1]
-    Rigidbody2DComponent:
-      BodyType: Static
-      FixedRotation: false
+  - UUID: 16442097257936902312
+    TagComponent:
+      Tag: Scene Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
