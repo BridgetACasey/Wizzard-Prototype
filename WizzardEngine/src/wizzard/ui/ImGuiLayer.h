@@ -2,6 +2,8 @@
 
 #pragma once
 
+#define IMGUI_DEFINE_MATH_OPERATORS	//TODO: Move this to a more appropriate location
+
 #include "wizzard/core/Layer.h"
 
 #include "wizzard/event/ApplicationEvent.h"
