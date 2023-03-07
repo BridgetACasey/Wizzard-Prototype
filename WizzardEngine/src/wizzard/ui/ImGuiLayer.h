@@ -31,7 +31,7 @@ namespace Wizzard
 
 	private:
 		bool OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent);
-		bool OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent);
+		bool OnUIElementHovered(UIElementHoveredEvent& uiElementHoveredEvent);
 		bool OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent);
 
 		float time = 0.0f;

@@ -42,9 +42,9 @@ namespace Wizzard
 		MouseButtonDown,
 		MouseButtonReleased,
 
-		UIElementFocus,
-		UIElementSelected,
-		UIWindowFocus
+		UIWindowFocus,
+		UIElementHovered,
+		UIElementSelected
 	};
 
 	enum EventCategory

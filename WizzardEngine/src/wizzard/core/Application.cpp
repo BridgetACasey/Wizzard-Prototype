@@ -5,7 +5,6 @@
 #include <glfw/glfw3.h>
 
 #include "Application.h"
-#include "wizzard/event/EventHandler.h"
 
 #include "wizzard/input/Input.h"
 #include "wizzard/screenreading/ScreenReaderSupport.h"

@@ -19,46 +19,6 @@ namespace Wizzard
 		unsigned int elementID;
 	};
 
-	class UIElementFocusEvent : public UIEvent
-	{
-	public:
-		UIElementFocusEvent(unsigned int elementID, bool focus) : UIEvent(elementID), isFocused(focus){}
-
-		bool GetIsFocused() const { return isFocused; }
-
-		std::string ToString() const override
-		{
-			std::stringstream ss;
-			ss << "UIElementFocusEvent: ImGui ID - " << elementID;
-			return ss.str();
-		}
-
-		EVENT_CLASS_TYPE(UIElementFocus)
-
-	protected:
-		bool isFocused;
-	};
-
-	class UIElementSelectedEvent : public UIEvent
-	{
-	public:
-		UIElementSelectedEvent(unsigned int elementID, bool select) : UIEvent(elementID), isSelected(select){}
-
-		bool GetIsSelected() const { return isSelected; }
-
-		std::string ToString() const override
-		{
-			std::stringstream ss;
-			ss << "UIElementSelectedEvent: ImGui ID - " << elementID;
-			return ss.str();
-		}
-
-		EVENT_CLASS_TYPE(UIElementSelected)
-
-	protected:
-		bool isSelected;
-	};
-
 	class UIWindowFocusEvent : public UIEvent
 	{
 	public:
@@ -77,5 +37,45 @@ namespace Wizzard
 
 	protected:
 		bool isFocused;
+	};
+
+	class UIElementHoveredEvent : public UIEvent
+	{
+	public:
+		UIElementHoveredEvent(unsigned int elementID, bool hovered) : UIEvent(elementID), isHovered(hovered){}
+
+		bool GetIsHovered() const { return isHovered; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "UIElementHoveredEvent: ImGui ID - " << elementID;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(UIElementHovered)
+
+	protected:
+		bool isHovered;
+	};
+
+	class UIElementSelectedEvent : public UIEvent
+	{
+	public:
+		UIElementSelectedEvent(unsigned int elementID, bool selected) : UIEvent(elementID), isSelected(selected){}
+
+		bool GetIsSelected() const { return isSelected; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "UIElementSelectedEvent: ImGui ID - " << elementID;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(UIElementSelected)
+
+	protected:
+		bool isSelected;
 	};
 }

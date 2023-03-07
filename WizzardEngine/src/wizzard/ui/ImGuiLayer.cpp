@@ -21,9 +21,9 @@ namespace Wizzard
 //TODO: Use lambda instead of std::bind perhaps?
 #define BIND_EVENT_FN(x) std::bind(&ImGuiLayer::x, this, std::placeholders::_1)
 
-	static ImGuiWindow* currentWindow = nullptr;
-	static ImGuiID currentActiveID;
+	static ImGuiWindow* currentActiveWindow = nullptr;
 	static ImGuiID currentHoveredID;
+	static ImGuiID currentActiveID;
 
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
 	{
@@ -136,7 +136,7 @@ namespace Wizzard
 	void ImGuiLayer::OnImGuiRender()
 	{
 		ImGuiContext* context = ImGui::GetCurrentContext();
-		currentWindow = context->ActiveIdWindow;
+		currentActiveWindow = context->ActiveIdWindow;
 		currentHoveredID = context->HoveredId;
 		currentActiveID = context->ActiveId;
 
@@ -145,16 +145,17 @@ namespace Wizzard
 		 * However, we need to know when this happens so we can trigger output to a screen reader, so using own engine callbacks instead.
 		 */
 
-		if (currentWindow != nullptr && currentWindow != context->ActiveIdPreviousFrameWindow)
+		if (currentActiveWindow != nullptr && currentActiveWindow != context->ActiveIdPreviousFrameWindow)
 		{
-			UIWindowFocusEvent uiWindowEvent(currentWindow->ID, true);
+			UIWindowFocusEvent uiWindowEvent(currentActiveWindow->ID, true);
+			WIZ_INFO("ImGui Window Name: {0}", currentActiveWindow->Name);
 			OnUIWindowFocusEvent(uiWindowEvent);
 		}
 
 		if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
 		{
-			UIElementFocusEvent uiFocusEvent(currentHoveredID, true);
-			OnUIElementFocus(uiFocusEvent);
+			UIElementHoveredEvent uiFocusEvent(currentHoveredID, true);
+			OnUIElementHovered(uiFocusEvent);
 		}
 
 		if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
@@ -171,7 +172,7 @@ namespace Wizzard
 		EventHandler eventHandler(event);
 
 		eventHandler.HandleEvent<UIWindowFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowFocusEvent));
-		eventHandler.HandleEvent<UIElementFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementFocus));
+		eventHandler.HandleEvent<UIElementHoveredEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementHovered));
 		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementSelected));
 
 		if(blockImGuiEvents)
@@ -190,9 +191,9 @@ namespace Wizzard
 		return false;
 	}
 
-	bool ImGuiLayer::OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent)
+	bool ImGuiLayer::OnUIElementHovered(UIElementHoveredEvent& uiElementHoveredEvent)
 	{
-		WIZ_TRACE(uiElementFocusEvent);
+		WIZ_TRACE(uiElementHoveredEvent);
 
 		return false;
 	}
