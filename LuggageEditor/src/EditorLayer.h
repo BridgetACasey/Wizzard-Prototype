@@ -4,7 +4,9 @@
 
 #include "Wizzard.h"
 #include "wizzard/rendering/EditorCamera.h"
+#include "ui/panel/ApplicationSettingsPanel.h"
 #include "ui/panel/SceneHierarchyPanel.h"
+#include "ui/panel/ObjectCreationPanel.h"
 
 namespace Wizzard
 {
@@ -50,12 +52,6 @@ namespace Wizzard
 		bool isViewportFocused = false;
 		bool isViewportHovered = false;
 
-		bool isMainMenuFocused = false;
-		bool isMainMenuHovered = false;
-
-		bool isHierarchyFocused = false;
-		bool isHierarchyHovered = false;
-
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
 		enum class SceneState
@@ -64,6 +60,8 @@ namespace Wizzard
 		};
 		SceneState m_SceneState = SceneState::Edit;
 
+		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;
+		ObjectCreationPanel objCreatePanel;
 	};
 }

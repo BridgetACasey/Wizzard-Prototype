@@ -7,7 +7,6 @@
 #include "GLFW/glfw3.h"
 #include <glad/glad.h>
 
-#include "imgui.h"
 #include "ImGuiCustom.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -15,6 +14,8 @@
 #include "base/ResourcePathFinder.h"
 #include "core/Application.h"
 #include "ImGuiScreenReading.h"
+
+#include "imgui.h"
 
 namespace Wizzard
 {
@@ -57,8 +58,6 @@ namespace Wizzard
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
 
 		//Set scaling options, may do this in a different class for user preferences later
@@ -67,6 +66,19 @@ namespace Wizzard
 		//Apply scaling options
 		ImFontConfig imFontConfig;
 		imFontConfig.SizePixels = 13.0f * ImGuiSR::GetButtonFontScale();
+
+		ImGuiContext* context = ImGui::GetCurrentContext();
+
+		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGuiKeyOwner_None);
+		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGuiKeyOwner_None);
+		context->ConfigNavWindowingKeyNext = ImGuiMod_Shift | ImGuiKey_Tab;	//TODO: Find a way to remap this to a single key press, no key holds
+		context->ConfigNavWindowingKeyPrev = ImGuiKey_None;
+
+		//if (context->ConfigNavWindowingKeyNext)
+		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyNext, ImGuiKeyOwner_None);
+		//
+		//if (context->ConfigNavWindowingKeyPrev)
+		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyPrev, ImGuiKeyOwner_None);
 
 		std::string fontPath = ResourcePath::GetResourcePath(FONT, "OpenSans-Bold.ttf");
 		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), imFontConfig.SizePixels, &imFontConfig);
@@ -87,10 +99,10 @@ namespace Wizzard
 		}
 
 		Application& app = Application::Get();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());	//TODO: Make this window call platform agnostic
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(window, true);	//TODO: Make imgui implementation calls API agnostic
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 

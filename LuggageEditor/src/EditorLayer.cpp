@@ -89,6 +89,12 @@ namespace Wizzard
 			serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 		}
 
+		//TODO: Changing font scale at runtime
+		//if(Input::IsKeyPressed(Key::LeftBracket))
+		//	ImGuiSR::SetButtonFontScale(ImGuiSR::GetButtonFontScale() - 0.5f);
+		//if (Input::IsKeyPressed(Key::LeftBracket))
+		//	ImGuiSR::SetButtonFontScale(ImGuiSR::GetButtonFontScale() + 0.5f);
+
 		// Render
 		Renderer2D::ResetStatistics();
 
@@ -165,18 +171,16 @@ namespace Wizzard
 
 		//TEMP CODE FOR TESTING & DEMO PURPOSES ONLY
 		//UI will not be handled like this in final application
-		static bool openFileMenu = false;
+		static bool openFileMenu = true;
 		static bool openEditMenu = false;
 		static bool openObjectMenu = false;
-		static bool openConsoleMenu = false;
-		static bool openSettingsMenu = false;
-		static bool openExitMenu = false;
 
 		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
 		// all active windows docked into it will lose their parent and become undocked.
 		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+
 		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
 		//ImGui::PopStyleVar();
@@ -196,10 +200,7 @@ namespace Wizzard
 		{
 			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
 
-			isMainMenuFocused = ImGui::IsWindowFocused();
-			isMainMenuHovered = ImGui::IsWindowHovered();
-
-			if (ImGuiSR::Button("FILE", ImVec2(windowWidth, 80.5f), "file menu"))
+			if (ImGuiSR::Button("PROJECT", ImVec2(windowWidth, 80.5f), "file menu"))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
@@ -211,105 +212,19 @@ namespace Wizzard
 			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f), "create menu"))
 				openObjectMenu = !openObjectMenu;
 
-			if (ImGuiSR::Button("CONSOLE", ImVec2(windowWidth, 80.5f), "console menu"))
-				openConsoleMenu = !openConsoleMenu;
-
-			if (ImGuiSR::Button("SETTINGS", ImVec2(windowWidth, 80.5f), "settings menu"))
-				openSettingsMenu = !openSettingsMenu;
-
-			if (ImGuiSR::Button("EXIT", ImVec2(windowWidth, 80.5f), "exit menu"))
-				openExitMenu = !openExitMenu;
-
 			ImGui::EndMainMenuBar();
 		}
 
-			ImGui::Begin("Hierarchy");
+		if (openFileMenu)
+			appSettingsPanel.OnImGuiRender();
 
-			if(openEditMenu)
-				sceneHierarchyPanel.OnImGuiRender();
+		if (openEditMenu)
+			sceneHierarchyPanel.OnImGuiRender();
 
-			if (m_SquareEntity)
-			{
-				ImGui::Separator();
-				auto& tag = m_SquareEntity.GetComponent<TagComponent>().tag;
-				ImGui::Text("%s", tag.c_str());
+		if (openObjectMenu)
+			objCreatePanel.OnImGuiRender();
 
-				auto& squareColor = m_SquareEntity.GetComponent<SpriteComponent>().color;
-				ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-				ImGui::Separator();
-			}
-
-			ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().GetTransform()[3]));
-
-			if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-			{
-				m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-				m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-			}
-
-			{
-				auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-				float orthoSize = camera.GetOrthographicSize();
-				if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-					camera.SetOrthographicSize(orthoSize);
-			}
-
-			isHierarchyFocused = ImGui::IsWindowFocused();
-			isHierarchyHovered = ImGui::IsWindowHovered();
-
-			ImGuiSR::Button("Test Button", ImVec2(150.0f, 150.0f), "This is the hierarchy test button.", true);
-
-			if(openFileMenu)
-			{
-				ImGui::TextWrapped("Project functions like saving go here!");
-			}
-			else if (openEditMenu)
-			{
-				ImGui::TextWrapped("Editing functions found here!");
-			}
-			else if (openObjectMenu)
-			{
-				ImGui::TextWrapped("Scene hierarchy data found here!");
-			}
-			else if (openConsoleMenu)
-			{
-				auto stats = Renderer2D::GetStatistics();
-				ImGui::Text("Renderer2D Stats:");
-				ImGui::Text("Draw Calls: %d", stats.drawCalls);
-				ImGui::Text("Quads: %d", stats.quadCount);
-				ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-				ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-			}
-			else if (openSettingsMenu)
-			{
-				ImGui::TextWrapped("User preferences go here!");
-			}
-
-			if(openExitMenu)
-			{
-				if (ImGui::Begin("Exit Menu"))
-				{
-					ImGui::Text("Quit application?");
-
-					if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f)))
-					{
-						//TODO: Fix message being cut off by exiting app before speech has finished
-						ScreenReaderSupport::OutputAll("Exiting editor application.");
-
-						if(!ScreenReaderSupport::IsSpeaking())
-							Application::Get().Close();
-					}
-
-					ImGui::SameLine();
-
-					if (ImGuiSR::Button("No", ImVec2(240.0f, 80.0f)))
-						openExitMenu = false;
-
-					ImGui::End();
-				}
-			}
-
-			ImGui::End();	//End Hierarchy
+		//-----RENDERING THE VIEWPORT-----
 
 			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
