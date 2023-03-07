@@ -177,9 +177,9 @@ namespace Wizzard
 		// all active windows docked into it will lose their parent and become undocked.
 		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-		ImGui::PopStyleVar();
+		//ImGui::PopStyleVar();
 
 		if (opt_fullscreen)
 			ImGui::PopStyleVar(2);
@@ -311,11 +311,11 @@ namespace Wizzard
 
 			ImGui::End();	//End Hierarchy
 
-			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar;
+			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
 			ImGui::Begin("Viewport", &dockspaceOpen, viewportFlags);
 
-			if (ImGuiSR::Button("PLAY", ImVec2(150.0f, 150.0f), "Toggled play scene.", true))
+			if (ImGuiSR::Button("PLAY", ImVec2(150.0f, 150.0f), "Play scene.", true))
 				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;
 
 			isViewportFocused = ImGui::IsWindowFocused();
@@ -333,8 +333,8 @@ namespace Wizzard
 				ImGuizmo::SetOrthographic(false);
 				ImGuizmo::SetDrawlist();
 
-				float windowWidth = (float)ImGui::GetWindowWidth();
-				float windowHeight = (float)ImGui::GetWindowHeight();
+				float windowWidth = ImGui::GetWindowWidth();
+				float windowHeight = ImGui::GetWindowHeight();
 				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
 				// Camera

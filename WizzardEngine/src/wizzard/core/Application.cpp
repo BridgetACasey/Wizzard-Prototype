@@ -5,8 +5,6 @@
 #include <glfw/glfw3.h>
 
 #include "Application.h"
-#include "wizzard/event/ApplicationEvent.h"
-#include "wizzard/event/UIEvent.h"
 #include "wizzard/event/EventHandler.h"
 
 #include "wizzard/input/Input.h"
@@ -49,11 +47,11 @@ namespace Wizzard
 
 		while (running)
 		{
-			float time = (float)glfwGetTime();
+			float time = (float)glfwGetTime();	//TODO: Make this platform agnostic
 			TimeStep timeStep = time - lastFrameTime;
 			lastFrameTime = time;
 
-			if (!minimized)
+			if (!minimised)
 			{
 				//Update all layers
 				for (Layer* layer : layerStack)
@@ -92,9 +90,6 @@ namespace Wizzard
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		eventHandler.HandleEvent<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
-
-		eventHandler.HandleEvent<UIElementFocusEvent>(BIND_EVENT_FN(Application::OnUIElementFocus));
-		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(Application::OnUIElementSelected));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
@@ -190,26 +185,12 @@ namespace Wizzard
 
 		if (windowResizeEvent.GetWidth() == 0 || windowResizeEvent.GetHeight() == 0)
 		{
-			minimized = true;
+			minimised = true;
 			return false;
 		}
 
-		minimized = false;
+		minimised = false;
 		Renderer::OnWindowResize(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
-
-		return false;
-	}
-
-	bool Application::OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent)
-	{
-		WIZ_TRACE(uiElementFocusEvent);
-
-		return false;
-	}
-
-	bool Application::OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent)
-	{
-		WIZ_TRACE(uiElementSelectedEvent);
 
 		return false;
 	}

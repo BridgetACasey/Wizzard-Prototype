@@ -30,6 +30,10 @@ namespace Wizzard
 		void BlockImGuiEvents(bool shouldBlock) { blockImGuiEvents = shouldBlock; }
 
 	private:
+		bool OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent);
+		bool OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent);
+		bool OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent);
+
 		float time = 0.0f;
 
 		bool blockImGuiEvents = true;

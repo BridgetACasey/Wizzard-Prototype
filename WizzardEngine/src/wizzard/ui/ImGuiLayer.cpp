@@ -16,12 +16,15 @@
 #include "core/Application.h"
 #include "ImGuiScreenReading.h"
 
-static ImGuiWindow* currentWindow = nullptr;
-static ImGuiID currentActiveID;
-static ImGuiID currentHoveredID;
-
 namespace Wizzard
 {
+//TODO: Use lambda instead of std::bind perhaps?
+#define BIND_EVENT_FN(x) std::bind(&ImGuiLayer::x, this, std::placeholders::_1)
+
+	static ImGuiWindow* currentWindow = nullptr;
+	static ImGuiID currentActiveID;
+	static ImGuiID currentHoveredID;
+
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -79,8 +82,8 @@ namespace Wizzard
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 			style.Colors[ImGuiCol_Button] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
-			style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
-			style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+			style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.1f, 0.75f, 0.75f, 1.0f);
+			style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.75f, 0.1f, 0.75f, 1.0f);
 		}
 
 		Application& app = Application::Get();
@@ -133,23 +136,43 @@ namespace Wizzard
 	void ImGuiLayer::OnImGuiRender()
 	{
 		ImGuiContext* context = ImGui::GetCurrentContext();
-		currentActiveID = context->ActiveId;
+		currentWindow = context->ActiveIdWindow;
 		currentHoveredID = context->HoveredId;
+		currentActiveID = context->ActiveId;
 
-		//if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
-		//{
-		//	WIZ_TRACE("Yoooo we've swapped active thingies! Thingie: {0}", currentActiveID);
-		//}
-		//
-		//if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
-		//{
-		//	WIZ_TRACE("Yoooo we've swapped hovered thingies! Thingie: {0}", currentHoveredID);
-		//}
+		/*
+		 * Since dearimgui is an immediate mode GUI, there are no built-in event callbacks for hovering/selecting items.
+		 * However, we need to know when this happens so we can trigger output to a screen reader, so using own engine callbacks instead.
+		 */
+
+		if (currentWindow != nullptr && currentWindow != context->ActiveIdPreviousFrameWindow)
+		{
+			UIWindowFocusEvent uiWindowEvent(currentWindow->ID, true);
+			OnUIWindowFocusEvent(uiWindowEvent);
+		}
+
+		if (currentHoveredID != 0 && currentHoveredID != context->HoveredIdPreviousFrame)
+		{
+			UIElementFocusEvent uiFocusEvent(currentHoveredID, true);
+			OnUIElementFocus(uiFocusEvent);
+		}
+
+		if (currentActiveID != 0 && currentActiveID != context->ActiveIdPreviousFrame)
+		{
+			UIElementSelectedEvent uiSelectEvent(currentActiveID, true);
+			OnUIElementSelected(uiSelectEvent);
+		}
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)
 	{
 		WIZ_PROFILE_FUNCTION();
+
+		EventHandler eventHandler(event);
+
+		eventHandler.HandleEvent<UIWindowFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowFocusEvent));
+		eventHandler.HandleEvent<UIElementFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementFocus));
+		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementSelected));
 
 		if(blockImGuiEvents)
 		{
@@ -158,5 +181,26 @@ namespace Wizzard
 			event.isHandled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
 			event.isHandled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
 		}
+	}
+
+	bool ImGuiLayer::OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent)
+	{
+		WIZ_TRACE(uiWindowFocusEvent);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent)
+	{
+		WIZ_TRACE(uiElementFocusEvent);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent)
+	{
+		WIZ_TRACE(uiElementSelectedEvent);
+
+		return false;
 	}
 }

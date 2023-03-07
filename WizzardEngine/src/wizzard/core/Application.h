@@ -48,16 +48,12 @@ namespace Wizzard
 		bool OnWindowClose(WindowCloseEvent& windowCloseEvent);
 		bool OnWindowResize(WindowResizeEvent& windowResizeEvent);
 
-		//Probably temporary, take another look at this later
-		bool OnUIElementFocus(UIElementFocusEvent& uiElementFocusEvent);
-		bool OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent);
-
 		std::unique_ptr<Window> window;
 
 		GraphicsContext* graphicsContext;
 
 		bool running = true;
-		bool minimized = false;
+		bool minimised = false;
 
 		LayerStack layerStack;
 

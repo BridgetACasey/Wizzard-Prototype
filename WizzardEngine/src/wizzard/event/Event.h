@@ -7,7 +7,7 @@
 
 namespace Wizzard
 {
-	//For future versions: attempt to buffer events into an event bus and process them during the event phase of application updating, instead of handling them instantly
+	//TODO: for future versions, attempt to buffer events into an event bus and process them during the event phase of application updating, instead of handling them instantly
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
 	virtual EventType GetEventType() const override { return GetStaticType(); }\
@@ -43,7 +43,8 @@ namespace Wizzard
 		MouseButtonReleased,
 
 		UIElementFocus,
-		UIElementSelected
+		UIElementSelected,
+		UIWindowFocus
 	};
 
 	enum EventCategory
