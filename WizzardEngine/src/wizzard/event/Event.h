@@ -42,6 +42,7 @@ namespace Wizzard
 		MouseButtonDown,
 		MouseButtonReleased,
 
+		UIWindowHovered,
 		UIWindowFocus,
 		UIElementHovered,
 		UIElementSelected

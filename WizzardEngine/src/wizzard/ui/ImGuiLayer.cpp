@@ -13,7 +13,6 @@
 
 #include "base/ResourcePathFinder.h"
 #include "core/Application.h"
-#include "ImGuiScreenReading.h"
 
 #include "imgui.h"
 
@@ -22,6 +21,7 @@ namespace Wizzard
 //TODO: Use lambda instead of std::bind perhaps?
 #define BIND_EVENT_FN(x) std::bind(&ImGuiLayer::x, this, std::placeholders::_1)
 
+	static ImGuiWindow* currentHoveredWindow = nullptr;
 	static ImGuiWindow* currentActiveWindow = nullptr;
 	static ImGuiID currentHoveredID;
 	static ImGuiID currentActiveID;
@@ -61,11 +61,11 @@ namespace Wizzard
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
 
 		//Set scaling options, may do this in a different class for user preferences later
-		ImGuiSR::SetButtonFontScale(6.0f);
+		//ImGuiSR::SetButtonFontScale(6.0f);
 
 		//Apply scaling options
 		ImFontConfig imFontConfig;
-		imFontConfig.SizePixels = 13.0f * ImGuiSR::GetButtonFontScale();
+		imFontConfig.SizePixels = 13.0f * 6.0f;
 
 		ImGuiContext* context = ImGui::GetCurrentContext();
 
@@ -157,6 +157,14 @@ namespace Wizzard
 		 * However, we need to know when this happens so we can trigger output to a screen reader, so using own engine callbacks instead.
 		 */
 
+		//TODO: Fix window hovering event callbacks
+		//if (currentHoveredWindow != nullptr && currentHoveredWindow != context->HoveredWindow)
+		//{
+		//	UIWindowHoveredEvent uiWindowEvent(currentHoveredWindow->ID, true);
+		//	WIZ_INFO("ImGui Window Name: {0}", currentHoveredWindow->Name);
+		//	OnUIWindowHoveredEvent(uiWindowEvent);
+		//}
+
 		if (currentActiveWindow != nullptr && currentActiveWindow != context->ActiveIdPreviousFrameWindow)
 		{
 			UIWindowFocusEvent uiWindowEvent(currentActiveWindow->ID, true);
@@ -175,6 +183,8 @@ namespace Wizzard
 			UIElementSelectedEvent uiSelectEvent(currentActiveID, true);
 			OnUIElementSelected(uiSelectEvent);
 		}
+
+		currentHoveredWindow = context->HoveredWindow;
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)
@@ -183,6 +193,7 @@ namespace Wizzard
 
 		EventHandler eventHandler(event);
 
+		eventHandler.HandleEvent<UIWindowHoveredEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowHoveredEvent));
 		eventHandler.HandleEvent<UIWindowFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowFocusEvent));
 		eventHandler.HandleEvent<UIElementHoveredEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementHovered));
 		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementSelected));
@@ -196,9 +207,22 @@ namespace Wizzard
 		}
 	}
 
+	bool ImGuiLayer::OnUIWindowHoveredEvent(UIWindowHoveredEvent& uiWindowHoveredEvent)
+	{
+		WIZ_TRACE(uiWindowHoveredEvent);
+
+		uiWindowMessageID = uiWindowHoveredEvent.GetElementID();
+		logWindowMessage = true;
+
+		return false;
+	}
+
 	bool ImGuiLayer::OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent)
 	{
 		WIZ_TRACE(uiWindowFocusEvent);
+
+		uiWindowMessageID = uiWindowFocusEvent.GetElementID();
+		logWindowMessage = true;
 
 		return false;
 	}
@@ -207,12 +231,18 @@ namespace Wizzard
 	{
 		WIZ_TRACE(uiElementHoveredEvent);
 
+		uiElementMessageID = uiElementHoveredEvent.GetElementID();
+		logElementMessage = true;
+
 		return false;
 	}
 
 	bool ImGuiLayer::OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent)
 	{
 		WIZ_TRACE(uiElementSelectedEvent);
+
+		uiElementMessageID = uiElementSelectedEvent.GetElementID();
+		logElementMessage = true;
 
 		return false;
 	}

@@ -31,7 +31,17 @@ namespace Wizzard
 
 		void BlockImGuiEvents(bool shouldBlock) { blockImGuiEvents = shouldBlock; }
 
+		void SetLogElementMessage(bool log) { logElementMessage = log; }
+		bool GetLogElementMessage() const { return logElementMessage; }
+
+		void SetLogWindowMessage(bool log) { logWindowMessage = log; }
+		bool GetLogWindowMessage() const { return logWindowMessage; }
+
+		unsigned int GetUIElementMessageID() const { return uiElementMessageID; }
+		unsigned int GetUIWindowMessageID() const { return uiWindowMessageID; }
+
 	private:
+		bool OnUIWindowHoveredEvent(UIWindowHoveredEvent& uiWindowHoveredEvent);
 		bool OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent);
 		bool OnUIElementHovered(UIElementHoveredEvent& uiElementHoveredEvent);
 		bool OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent);
@@ -39,6 +49,11 @@ namespace Wizzard
 		float time = 0.0f;
 
 		bool blockImGuiEvents = true;
+
+		bool logElementMessage = false;
+		bool logWindowMessage = false;
+		unsigned int uiElementMessageID;
+		unsigned int uiWindowMessageID;
 
 		std::string imguiIniFilePath;
 		std::string imguiLogFilePath;

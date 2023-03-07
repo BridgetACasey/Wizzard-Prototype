@@ -2,32 +2,64 @@
 
 #include "wzpch.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS	//TODO: Move this to a more appropriate location
+
 #include <comdef.h>
 #include "imgui.h"
 
 #include "ImGuiScreenReading.h"
+
+#include "ImGuiCustom.h"
+#include "core/Application.h"
 #include "screenreading/ScreenReaderSupport.h"
 
 namespace Wizzard
 {
-	//Probably not the best way of arranging this, to review later
+	bool ImGuiSR::WindowBegin(const std::string& windowLabel, bool* isOpen, int flags, const std::string& description, bool preferDesc)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		bool success = ImGui::Begin(windowLabel.c_str(), isOpen, flags);
+
+		ImGuiLayer* imguiLayer = Application::Get().GetImGuiLayer();
+
+		if (imguiLayer->GetLogWindowMessage())
+		{
+			if (imguiLayer->GetUIWindowMessageID() == ImGui::GetCurrentWindow()->ID)
+			{
+				if (preferDesc && !description.empty())
+					ScreenReaderSupport::OutputAll(description);
+				else if (!preferDesc)
+					ScreenReaderSupport::OutputAll(windowLabel);
+
+				imguiLayer->SetLogWindowMessage(false);
+			}
+		}
+
+		return success;
+	}
+
 	bool ImGuiSR::Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description, bool preferDesc)
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		if (ImGui::Button(buttonLabel.c_str(), sizeArg))
-		{
-			if (preferDesc && !description.empty())
-				return ScreenReaderSupport::OutputAll(description);
+		bool pressed = ImGui::Button(buttonLabel.c_str(), sizeArg);
 
-			return ScreenReaderSupport::OutputAll(buttonLabel);
+		ImGuiLayer* imguiLayer = Application::Get().GetImGuiLayer();
+
+		if (imguiLayer->GetLogElementMessage())
+		{
+			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
+			{
+				if (preferDesc && !description.empty())
+					ScreenReaderSupport::OutputAll(description);
+				else if (!preferDesc)
+					ScreenReaderSupport::OutputAll(buttonLabel);
+
+				imguiLayer->SetLogElementMessage(false);
+			}
 		}
 
-		//if(ImGui::IsItemFocused())
-		//{
-		//	return ScreenReaderSupport::OutputAll(buttonLabel);
-		//}
-
-		return false;
+		return pressed;
 	}
 }

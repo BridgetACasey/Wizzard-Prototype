@@ -228,7 +228,7 @@ namespace Wizzard
 
 			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
-			ImGui::Begin("Viewport", &dockspaceOpen, viewportFlags);
+			ImGuiSR::WindowBegin("Viewport", &dockspaceOpen, viewportFlags);
 
 			if (ImGuiSR::Button("PLAY", ImVec2(150.0f, 150.0f), "Play scene.", true))
 				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;

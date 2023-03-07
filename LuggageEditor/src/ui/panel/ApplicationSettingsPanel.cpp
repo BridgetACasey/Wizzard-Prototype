@@ -14,19 +14,20 @@ namespace Wizzard
     {
 		static bool openExitMenu = false;
 
-        ImGui::Begin("Settings");
+        ImGuiSR::WindowBegin("Settings");
 
         ImGui::TextWrapped("Project functions like saving go here!");
 
-        ImGuiSR::Button("EXIT", ImVec2(120.0f, 80.5f), "exit menu");
+		if (ImGuiSR::Button("EXIT", ImVec2(161.0f, 80.5f)))
+			openExitMenu = !openExitMenu;
 
 		if (openExitMenu)
 		{
-			if (ImGui::Begin("Exit Menu"))
+			if (ImGuiSR::WindowBegin("Exit Menu"))
 			{
 				ImGui::Text("Quit application?");
 
-				if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f)))
+				if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f), "Yes, I want to exit", true))
 				{
 					//TODO: Fix message being cut off by exiting app before speech has finished
 					ScreenReaderSupport::OutputAll("Exiting editor application.");
@@ -37,7 +38,7 @@ namespace Wizzard
 
 				ImGui::SameLine();
 
-				if (ImGuiSR::Button("No", ImVec2(240.0f, 80.0f)))
+				if (ImGuiSR::Button("No", ImVec2(240.0f, 80.0f), "No, I want to continue", true))
 					openExitMenu = false;
 
 				ImGui::End();

@@ -4,6 +4,7 @@
 
 #include <imgui/imgui.h>
 #include "wizzard/scene/component/TagComponent.h"
+#include "wizzard/ui/ImGuiScreenReading.h"
 
 namespace Wizzard
 {
@@ -19,7 +20,7 @@ namespace Wizzard
 
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
-		ImGui::Begin("Scene Hierarchy");
+		ImGuiSR::WindowBegin("Scene Hierarchy");
 
 		m_Context->registry.each([&](auto entityID)
 		{

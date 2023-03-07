@@ -19,6 +19,26 @@ namespace Wizzard
 		unsigned int elementID;
 	};
 
+	class UIWindowHoveredEvent : public UIEvent
+	{
+	public:
+		UIWindowHoveredEvent(unsigned int elementID, bool hovered) : UIEvent(elementID), isHovered(hovered) {}
+
+		bool GetIsFocused() const { return isHovered; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "UIWindowHoveredEvent: ImGui Window ID - " << elementID;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(UIWindowHovered)
+
+	protected:
+		bool isHovered;
+	};
+
 	class UIWindowFocusEvent : public UIEvent
 	{
 	public:
