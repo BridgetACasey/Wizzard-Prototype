@@ -8,6 +8,7 @@
 
 #include "wizzard/common/UUID.h"
 #include "component/UUIDComponent.h"
+#include "component/TagComponent.h"
 
 namespace Wizzard
 {
@@ -19,12 +20,21 @@ namespace Wizzard
 		Entity(const Entity& other) = default;
 
 		UUID GetUUID() { return GetComponent<UUIDComponent>().uuid; }
+		const std::string& GetName() { return GetComponent<TagComponent>().tag; }
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
 			WIZ_ASSERT(!HasComponent<T>(), "Entity already has component!");
 			T& component = scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
+			scene->OnComponentAdded<T>(*this, component);
+			return component;
+		}
+
+		template<typename T, typename... Args>
+		T& AddOrReplaceComponent(Args&&... args)
+		{
+			T& component = scene->registry.emplace_or_replace<T>(entityHandle, std::forward<Args>(args)...);
 			scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}

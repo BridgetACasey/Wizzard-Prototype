@@ -1,5 +1,23 @@
 Scene: Untitled
 Entities:
+  - UUID: 4193433809278873897
+    TagComponent:
+      Tag: Scene Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
   - UUID: 1867421718733640710
     TagComponent:
       Tag: Green Square
@@ -9,7 +27,16 @@ Entities:
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0, 1, 0, 1]
-  - UUID: 4193433809278873897
+  - UUID: 6893224059102720582
+    TagComponent:
+      Tag: Green Square
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0, 1, 0, 1]
+  - UUID: 4635565065990411511
     TagComponent:
       Tag: Scene Camera
     TransformComponent:

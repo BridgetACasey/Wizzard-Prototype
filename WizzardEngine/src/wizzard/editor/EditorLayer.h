@@ -38,9 +38,10 @@ namespace Wizzard
 		EditorCamera m_EditorCamera;
 
 		Ref<Scene> activeScene;
+		Ref<Scene> editorScene;
+
 		Entity m_SquareEntity;
 		Entity m_CameraEntity;
-		Entity m_SecondCamera;
 
 		int m_GizmoType = -1;
 
@@ -48,6 +49,7 @@ namespace Wizzard
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		glm::vec2 m_ViewportBounds[2];
 
 		// Temp
 		Ref<VertexArray> squareVA;
@@ -74,5 +76,7 @@ namespace Wizzard
 		SceneHierarchyPanel sceneHierarchyPanel;
 		ObjectCreationPanel objCreatePanel;
 		ObjectPropertiesPanel objPropertiesPanel;
+
+		Entity hoveredEntity;
 	};
 }

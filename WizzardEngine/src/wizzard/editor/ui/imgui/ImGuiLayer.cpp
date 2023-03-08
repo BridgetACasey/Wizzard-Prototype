@@ -95,6 +95,14 @@ namespace Wizzard
 		{
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+			style.Colors[ImGuiCol_TitleBg] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+			style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.6f, 0.6f, 0.6f, 1.0f);
+			style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
+			style.Colors[ImGuiCol_Tab] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+			style.Colors[ImGuiCol_TabHovered] = ImVec4(0.1f, 0.75f, 0.75f, 1.0f);
+			style.Colors[ImGuiCol_TabActive] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+			style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.75f, 0.75f, 0.75f, 1.0f);
+			style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.33f, 0.33f, 0.33f, 1.0f);
 			style.Colors[ImGuiCol_Button] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
 			style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.1f, 0.75f, 0.75f, 1.0f);
 			style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.75f, 0.1f, 0.75f, 1.0f);

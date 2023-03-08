@@ -16,11 +16,34 @@ namespace Wizzard
 	{
 		ImGuiSR::WindowBegin("Scene Hierarchy");
 
-		sceneContext->registry.each([&](auto entityID)
+		if (sceneContext)
 		{
-			Entity entity{ entityID , sceneContext.get() };
-			DrawEntityNode(entity);
-		});
+			sceneContext->registry.each([&](auto entityID)
+			{
+				Entity entity{ entityID , sceneContext.get() };
+				DrawEntityNode(entity);
+			});
+
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+				selectionContext = {};
+
+			// Right-click on blank space
+			if (ImGui::BeginPopupContextWindow(0))
+			{
+				if (ImGui::MenuItem("Create Empty Entity"))
+					sceneContext->CreateEntity("Empty Entity");
+
+				ImGui::EndPopup();
+			}
+
+		}
+		ImGui::End();
+
+		ImGuiSR::WindowBegin("Properties");
+		if (selectionContext)
+		{
+			DrawComponents(selectionContext);
+		}
 
 		ImGui::End();
 	}
@@ -28,6 +51,10 @@ namespace Wizzard
 	void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
 	{
 		selectionContext = entity;
+	}
+
+	void SceneHierarchyPanel::DrawComponents(Entity entity)
+	{
 	}
 
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)

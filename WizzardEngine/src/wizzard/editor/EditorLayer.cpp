@@ -22,6 +22,10 @@
 #include "wizzard/scene/SceneSerialiser.h"
 #include <scene/component/TransformComponent.h>
 
+#include "scene/component/BoxCollider2DComponent.h"
+#include "scene/component/RigidBody2DComponent.h"
+#include "scene/component/TagComponent.h"
+
 namespace Wizzard
 {
 	EditorLayer::EditorLayer() : Layer("Editor"), orthoCamController(1920.0f / 1080.0f)
@@ -50,6 +54,9 @@ namespace Wizzard
 		// Entity
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		square.AddComponent<RigidBody2DComponent>();
+		square.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
+		square.AddComponent<BoxCollider2DComponent>();
 
 		m_SquareEntity = square;
 
@@ -58,7 +65,7 @@ namespace Wizzard
 		objCreatePanel.SetSceneContext(activeScene);
 		objPropertiesPanel.SetSceneContext(activeScene);
 
-		activeScene->OnStart();
+		//activeScene->OnStart();
 	}
 
 	void EditorLayer::OnDetach()
@@ -69,6 +76,8 @@ namespace Wizzard
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
+		activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+
 		// Resize
 		if (FramebufferSpecification spec = frameBuffer->GetSpecification();
 			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -85,6 +94,12 @@ namespace Wizzard
 		{
 			LUG_TRACE("Attempting to detect screen reader at runtime.");
 			ScreenReaderSupport::DetectScreenReader();
+		}
+
+		if (Input::IsMouseButtonPressed(Mouse::LeftButton))
+		{
+			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
 		}
 
 		// Render
@@ -117,8 +132,21 @@ namespace Wizzard
 			}
 		}
 
-		static float rotation = 0.0f;
-		rotation += timeStep * 50.0f;
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+		glm::vec2 viewportSize = m_ViewportSize;
+		my = viewportSize.y - my;
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		{
+			int pixelData = frameBuffer->ReadPixel(1, mouseX, mouseY);
+			hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, activeScene.get());
+		}
+
+		//OnOverlayRender();
 
 		frameBuffer->Unbind();
 	}
@@ -130,7 +158,7 @@ namespace Wizzard
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen_persistant = true;
 		bool opt_fullscreen = opt_fullscreen_persistant;
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_AutoHideTabBar;
 
 		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		// because it would be confusing to have two docking targets within each others.
@@ -195,6 +223,22 @@ namespace Wizzard
 			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f), "create menu"))
 				openObjectMenu = !openObjectMenu;
 
+			if (ImGuiSR::Button("PLAY", ImVec2(windowWidth, 80.5f), "Play scene.", true))
+			{
+				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;
+
+				if (m_SceneState == SceneState::Play)
+				{
+					editorScene = Scene::Copy(activeScene);
+					activeScene->OnStart();
+				}
+				else
+				{
+					activeScene = Scene::Copy(editorScene);
+					activeScene->OnStop();
+				}
+			}
+
 			ImGui::EndMainMenuBar();
 		}
 
@@ -204,28 +248,49 @@ namespace Wizzard
 		if (openEditMenu)
 		{
 			sceneHierarchyPanel.OnImGuiRender();
-			objPropertiesPanel.OnImGuiRender();
+			//objPropertiesPanel.OnImGuiRender();
 		}
 
 		if (openObjectMenu)
 			objCreatePanel.OnImGuiRender();
 
+		//std::string name = "None";
+		//if (hoveredEntity)
+		//	name = hoveredEntity.GetComponent<TagComponent>().tag;
+		//ImGui::Text("Hovered Entity: %s", name.c_str());
+
 		//-----RENDERING THE VIEWPORT-----
 
-			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
+			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
-			ImGuiSR::WindowBegin("Viewport", &dockspaceOpen, viewportFlags);
+			ImGuiSR::WindowBegin("Viewport", nullptr, viewportFlags);
 
-			if (ImGuiSR::Button("PLAY", ImVec2(150.0f, 150.0f), "Play scene.", true))
-				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;
+			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+			auto viewportOffset = ImGui::GetWindowPos();
+			m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+			m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();
 
 			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportFocused && !isViewportHovered);
 
-			uint32_t textureID = frameBuffer->GetColorAttachmentRendererID();
-			ImGui::Image((void*)textureID, ImVec2{ 1920, 1080 }, ImVec2(0, 1), ImVec2(1, 0));
+			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
+			uint64_t textureID = frameBuffer->GetColorAttachmentRendererID();
+			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+			//if (ImGui::BeginDragDropTarget())
+			//{
+			//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			//	{
+			//		const wchar_t* path = (const wchar_t*)payload->Data;
+			//		OpenScene(path);
+			//	}
+			//	ImGui::EndDragDropTarget();
+			//}
 
 			// Gizmos
 			Entity selectedEntity = sceneHierarchyPanel.GetSelectedEntity();

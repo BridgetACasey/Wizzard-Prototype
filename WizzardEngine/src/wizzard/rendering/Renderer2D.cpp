@@ -18,6 +18,9 @@ namespace Wizzard
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
+
+		// Editor-only
+		int EntityID;
 	};
 
 	struct Renderer2DData
@@ -60,7 +63,8 @@ namespace Wizzard
 			{ ShaderDataType::Float4, "a_Color" },
 			{ ShaderDataType::Float2, "a_TexCoord" },
 			{ ShaderDataType::Float, "a_TexIndex" },
-			{ ShaderDataType::Float, "a_TilingFactor" }
+			{ ShaderDataType::Float, "a_TilingFactor" },
+			{ ShaderDataType::Int, "a_EntityID" },
 			});
 		data->quadVertexArray->AddVertexBuffer(data->quadVertexBuffer);
 
@@ -315,7 +319,7 @@ namespace Wizzard
 		data->statistics.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -334,6 +338,7 @@ namespace Wizzard
 			data->quadVertexBufferPtr->TexCoord = textureCoords[i];
 			data->quadVertexBufferPtr->TexIndex = textureIndex;
 			data->quadVertexBufferPtr->TilingFactor = tilingFactor;
+			data->quadVertexBufferPtr->EntityID = entityID;
 			data->quadVertexBufferPtr++;
 		}
 
@@ -342,7 +347,7 @@ namespace Wizzard
 		data->statistics.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -379,6 +384,7 @@ namespace Wizzard
 			data->quadVertexBufferPtr->TexCoord = textureCoords[i];
 			data->quadVertexBufferPtr->TexIndex = textureIndex;
 			data->quadVertexBufferPtr->TilingFactor = tilingFactor;
+			data->quadVertexBufferPtr->EntityID = entityID;
 			data->quadVertexBufferPtr++;
 		}
 
@@ -509,6 +515,11 @@ namespace Wizzard
 		data->quadIndexCount += 6;
 
 		data->statistics.quadCount++;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteComponent& src, int entityID)
+	{
+		DrawQuad(transform, src.color, entityID);
 	}
 
 	void Renderer2D::ResetStatistics()

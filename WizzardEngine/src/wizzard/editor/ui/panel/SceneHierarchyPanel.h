@@ -18,8 +18,9 @@ namespace Wizzard
 		void SetSelectedEntity(Entity entity);
 
 	private:
+		void DrawComponents(Entity entity);
 		void DrawEntityNode(Entity entity);
 
-		Entity selectionContext;
+		Entity selectionContext = {};
 	};
 }

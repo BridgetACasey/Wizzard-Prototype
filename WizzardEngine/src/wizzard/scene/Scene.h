@@ -25,9 +25,13 @@ namespace Wizzard
 		void OnUpdateRuntime(TimeStep timeStep);
 		void OnUpdateEditor(TimeStep timeStep, EditorCamera& camera);
 
+		static Ref<Scene> Copy(Ref<Scene> other);
+
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+		void DuplicateEntity(Entity entity);
 		void DestroyEntity(Entity entity);
+
 		Entity GetPrimaryCameraEntity();
 
 		void OnViewportResize(uint32_t width, uint32_t height);
