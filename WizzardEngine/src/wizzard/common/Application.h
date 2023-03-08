@@ -8,7 +8,7 @@
 #include "wizzard/event/Event.h"
 #include "wizzard/event/EventHandler.h"
 #include "wizzard/event/ApplicationEvent.h"
-#include "wizzard/ui/ImGuiLayer.h"
+#include "wizzard/editor/ui/imgui/ImGuiLayer.h"
 #include "wizzard/base/Timestep.h"
 
 int main(int argc, int** argv);

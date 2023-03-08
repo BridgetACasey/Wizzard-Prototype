@@ -4,24 +4,28 @@
 
 //Base
 #include "wizzard/base/TimeStep.h"
+#include "wizzard/base/Maths.h"
 
-//Core
-#include "wizzard/core/Application.h"
-#include "wizzard/core/Layer.h"
-#include "wizzard/core/Log.h"
-#include "wizzard/core/OrthographicCameraController.h"
+//Common
+#include "wizzard/common/Application.h"
+#include "wizzard/common/Layer.h"
+#include "wizzard/common/Log.h"
+#include "wizzard/common/OrthographicCameraController.h"
 
 //Input
 #include "wizzard/input/Input.h"
 #include "wizzard/input/KeyCode.h"
 #include "wizzard/input/MouseCode.h"
 
+//Editor
+#include "wizzard/editor/EditorLayer.h"
+
 //Accessibility
-#include "wizzard/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
 
 //User Interface
-#include "wizzard/ui/ImGuiLayer.h"
-#include "wizzard/ui/ImGuiScreenReading.h"
+#include "wizzard/editor/ui/imgui/ImGuiLayer.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 //Entity Component System
 #include "wizzard/scene/Entity.h"

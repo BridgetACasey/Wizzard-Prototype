@@ -1,14 +1,15 @@
 //@BridgetACasey
 
+#include <wzpch.h>
+
 #include "ApplicationSettingsPanel.h"
 
-#include <string>
-#include "imgui/imgui.h"
+#include "imgui.h"
 #include "wizzard/base/ResourcePathFinder.h"
-#include "wizzard/core/Application.h"
+#include "wizzard/common/Application.h"
 #include "wizzard/scene/SceneSerialiser.h"
-#include "wizzard/screenreading/ScreenReaderSupport.h"
-#include "wizzard/ui/ImGuiScreenReading.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 namespace Wizzard
 {

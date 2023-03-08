@@ -16,7 +16,4 @@ public:
 	void OnUpdate(Wizzard::TimeStep timeStep) override;
 	virtual void OnImGuiRender() override;
 	void OnEvent(Wizzard::Event& event) override;
-
-private:
-	Wizzard::OrthographicCameraController orthoCamController;
 };

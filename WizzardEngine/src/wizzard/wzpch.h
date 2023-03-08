@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "wizzard/core/Log.h"
+#include "wizzard/common/Log.h"
 #include "wizzard/debug/Profiler.h"
 
 #ifdef WIZZARD_PLATFORM_WINDOWS

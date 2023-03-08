@@ -12,7 +12,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "base/ResourcePathFinder.h"
-#include "core/Application.h"
+#include "common/Application.h"
 
 #include "imgui.h"
 

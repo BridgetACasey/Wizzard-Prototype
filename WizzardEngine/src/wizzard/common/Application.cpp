@@ -6,9 +6,9 @@
 
 #include "Application.h"
 
-#include "ui/ImGuiScreenReading.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 #include "wizzard/input/Input.h"
-#include "wizzard/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
 #include "wizzard/audio/Audio.h"
 #include "wizzard/rendering/GraphicsContext.h"
 #include "wizzard/rendering/Renderer.h"

@@ -1,15 +1,26 @@
 //@BridgetACasey
 
+#include <wzpch.h>
+
 #include "EditorLayer.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "imgui/imgui.h"
-#include "imguizmo/ImGuizmo.h"
+#include "imgui.h"
+#include "ImGuizmo.h"
+#include "common/Application.h"
+#include "input/Input.h"
+#include "rendering/RenderCommand.h"
+#include "rendering/Renderer2D.h"
+#include "scene/component/CameraComponent.h"
+#include "scene/component/SpriteComponent.h"
+#include "editor/ui/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 #include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/base/Maths.h"
 #include "wizzard/scene/SceneSerialiser.h"
+#include <scene/component/TransformComponent.h>
 
 namespace Wizzard
 {

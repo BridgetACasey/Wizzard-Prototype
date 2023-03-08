@@ -5,7 +5,7 @@
 #include "GraphicsContext.h"
 #include "RendererAPI.h"
 
-#include "core/Application.h"
+#include "common/Application.h"
 #include "platform/opengl/OpenGLContext.h"
 
 namespace Wizzard

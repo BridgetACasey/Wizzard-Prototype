@@ -1,6 +1,6 @@
 workspace "Wizzard"
 	architecture "x64"
-	startproject "LuggageEditor"
+	startproject "GameApplication"
 
 	configurations
 	{
@@ -143,71 +143,8 @@ project "WizzardEngine"
 		defines "WIZZARD_DISTRIBUTION"
 		optimize "on"
 
-
-
-project "LuggageEditor"
-	location "LuggageEditor"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("build/" .. outputdir .. "/%{prj.name}")
-	objdir ("build-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs
-	{
-		"WizzardEngine/src",
-		"WizzardEngine/lib/spdlog/include",
-		"WizzardEngine/lib",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.Tolk}",
-		"%{IncludeDir.ENTT}",
-		"WizzardEngine/lib/entt/single_include",
-		"%{IncludeDir.YAMLCPP}"
-	}
-
-	links
-	{
-		"WizzardEngine"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			"WIZZARD_PLATFORM_WINDOWS"
-		}
-
-		postbuildcommands
-		{
-			"{COPY} ../WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}",
-			"{COPY} res %{cfg.targetdir}/res"
-		}
-
-	filter "configurations:Debug"
-		defines "WIZZARD_DEBUG"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "WIZZARD_RELEASE"
-		optimize "on"
-
-	filter "configurations:Distribution"
-		defines "WIZZARD_DISTRIBUTION"
-		optimize "on"
-
-
-
-project "Application"
-	location "Application"
+project "GameApplication"
+	location "GameApplication"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -249,7 +186,8 @@ project "Application"
 
 		postbuildcommands
 		{
-			"{COPY} ../WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}"
+			"{COPY} ../WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}",
+			"{COPY} res %{cfg.targetdir}/res"
 		}
 
 	filter "configurations:Debug"

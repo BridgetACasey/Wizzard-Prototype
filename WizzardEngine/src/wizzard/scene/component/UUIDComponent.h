@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "wizzard/core/UUID.h"
+#include "wizzard/common/UUID.h"
 
 namespace Wizzard
 {

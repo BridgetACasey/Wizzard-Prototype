@@ -1,10 +1,12 @@
 //@BridgetACasey
 
+#include <wzpch.h>
+
 #include "SceneHierarchyPanel.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include "wizzard/scene/component/TagComponent.h"
-#include "wizzard/ui/ImGuiScreenReading.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 namespace Wizzard
 {

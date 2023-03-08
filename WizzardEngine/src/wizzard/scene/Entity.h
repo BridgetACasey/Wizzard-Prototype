@@ -6,7 +6,7 @@
 
 #include "entt/entt.hpp"
 
-#include "wizzard/core/UUID.h"
+#include "wizzard/common/UUID.h"
 #include "component/UUIDComponent.h"
 
 namespace Wizzard

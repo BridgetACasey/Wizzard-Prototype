@@ -13,8 +13,8 @@
 #include "audio/Audio.h"
 #include "audio/AudioSource.h"
 #include "base/ResourcePathFinder.h"
-#include "core/Application.h"
-#include "screenreading/ScreenReaderSupport.h"
+#include "common/Application.h"
+#include "editor/ui/screenreading/ScreenReaderSupport.h"
 
 namespace Wizzard
 {

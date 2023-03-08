@@ -1,12 +1,14 @@
 //@BridgetACasey
 
+#include <wzpch.h>
+
 #include "ObjectCreationPanel.h"
 
-#include "imgui/imgui.h"
+#include "imgui.h"
 #include "wizzard/scene/Entity.h"
 #include "wizzard/scene/component/SpriteComponent.h"
 #include "wizzard/scene/component/TransformComponent.h"
-#include "wizzard/ui/ImGuiScreenReading.h"
+#include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 namespace Wizzard
 {

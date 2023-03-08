@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "wizzard/core/Window.h"
+#include "wizzard/common/Window.h"
 
 #include <GLFW/glfw3.h>
 

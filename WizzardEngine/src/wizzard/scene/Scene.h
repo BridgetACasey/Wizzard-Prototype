@@ -5,7 +5,7 @@
 #include "entt/entt.hpp"
 
 #include "wizzard/base/Timestep.h"
-#include "wizzard/core/UUID.h"
+#include "wizzard/common/UUID.h"
 #include "wizzard/rendering/EditorCamera.h"
 
 class b2World;

@@ -3,7 +3,7 @@
 #include "wzpch.h"
 
 #include "input/Input.h"
-#include "wizzard/core/Application.h"
+#include "wizzard/common/Application.h"
 #include "GLFW/glfw3.h"
 
 namespace Wizzard
