@@ -83,6 +83,8 @@ namespace Wizzard
 		std::string fontPath = ResourcePath::GetResourcePath(FONT, "OpenSans-Bold.ttf");
 		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), imFontConfig.SizePixels, &imFontConfig);
 
+		io.FontAllowUserScaling = true;
+
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();

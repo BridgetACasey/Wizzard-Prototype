@@ -10,11 +10,26 @@
 #include "ImGuiScreenReading.h"
 
 #include "ImGuiCustom.h"
+#include "audio/Audio.h"
+#include "audio/AudioSource.h"
+#include "base/ResourcePathFinder.h"
 #include "core/Application.h"
 #include "screenreading/ScreenReaderSupport.h"
 
 namespace Wizzard
 {
+	static AudioSource clickSFX;
+
+	void ImGuiSR::Init()
+	{
+		clickSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "Logitech-mouse-click.mp3"), false);
+	}
+
+	void ImGuiSR::Shutdown()
+	{
+		clickSFX.FreeSource();
+	}
+
 	bool ImGuiSR::WindowBegin(const std::string& windowLabel, bool* isOpen, int flags, const std::string& description, bool preferDesc)
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -59,6 +74,9 @@ namespace Wizzard
 				imguiLayer->SetLogElementMessage(false);
 			}
 		}
+
+		if(pressed)
+			Audio::Play(clickSFX);
 
 		return pressed;
 	}

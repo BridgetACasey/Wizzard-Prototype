@@ -6,6 +6,7 @@
 
 #include "Application.h"
 
+#include "ui/ImGuiScreenReading.h"
 #include "wizzard/input/Input.h"
 #include "wizzard/screenreading/ScreenReaderSupport.h"
 #include "wizzard/audio/Audio.h"
@@ -112,8 +113,9 @@ namespace Wizzard
 		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Input::Init();
-		ScreenReaderSupport::Init();
 		Audio::Init();
+		ScreenReaderSupport::Init();
+		ImGuiSR::Init();
 		Renderer::Init();
 
 		WIZ_TRACE("WIZZARD Engine successfully initialised.");
@@ -127,6 +129,7 @@ namespace Wizzard
 
 		Input::Shutdown();
 		ScreenReaderSupport::Shutdown();
+		ImGuiSR::Shutdown();
 		Audio::Shutdown();
 		Renderer::Shutdown();
 
