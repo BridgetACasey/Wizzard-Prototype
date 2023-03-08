@@ -12,16 +12,6 @@
 
 namespace Wizzard
 {
-    ObjectCreationPanel::ObjectCreationPanel(const Ref<Scene>& scene)
-    {
-        SetContext(scene);
-    }
-
-    void ObjectCreationPanel::SetContext(const Ref<Scene>& scene)
-    {
-        sceneContext = scene;
-    }
-
     void ObjectCreationPanel::OnImGuiRender()
     {
         ImGuiSR::WindowBegin("Object Menu");

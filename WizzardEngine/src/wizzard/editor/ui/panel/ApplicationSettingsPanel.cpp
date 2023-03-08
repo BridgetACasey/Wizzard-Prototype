@@ -13,16 +13,6 @@
 
 namespace Wizzard
 {
-	ApplicationSettingsPanel::ApplicationSettingsPanel(const Ref<Scene>& scene)
-	{
-		SetContext(scene);
-	}
-
-	void ApplicationSettingsPanel::SetContext(const Ref<Scene>& scene)
-	{
-		sceneContext = scene;
-	}
-
 	void ApplicationSettingsPanel::OnImGuiRender()
     {
 		static bool openExitMenu = false;

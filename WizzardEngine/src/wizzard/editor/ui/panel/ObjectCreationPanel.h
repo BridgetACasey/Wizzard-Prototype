@@ -2,22 +2,15 @@
 
 #pragma once
 
-#include "wizzard/base/Base.h"
-#include "wizzard/scene/Scene.h"
+#include "EditorPanel.h"
 
 namespace Wizzard
 {
-	class ObjectCreationPanel
+	class ObjectCreationPanel : public EditorPanel
 	{
 	public:
 		ObjectCreationPanel() = default;
-		ObjectCreationPanel(const Ref<Scene>& scene);
 
-		void SetContext(const Ref<Scene>& scene);
-
-		void OnImGuiRender();
-
-	private:
-		Ref<Scene> sceneContext;
+		void OnImGuiRender() override;
 	};
 }

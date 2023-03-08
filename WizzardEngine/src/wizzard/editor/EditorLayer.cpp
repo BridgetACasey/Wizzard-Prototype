@@ -49,19 +49,13 @@ namespace Wizzard
 		// Entity
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		//TransformComponent transform = TransformComponent(glm::vec3(0.0f, 0.0f, 0.0f));
-		//square.AddComponent<TransformComponent>(transform);
-		//square.AddComponent<RigidBody2DComponent>();
 
 		m_SquareEntity = square;
 
-		//m_SecondCamera = activeScene->CreateEntity("Clip-Space Entity");
-		//auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-		//cc.Primary = false;
-
-		appSettingsPanel.SetContext(activeScene);
-		sceneHierarchyPanel.SetContext(activeScene);
-		objCreatePanel.SetContext(activeScene);
+		appSettingsPanel.SetSceneContext(activeScene);
+		sceneHierarchyPanel.SetSceneContext(activeScene);
+		objCreatePanel.SetSceneContext(activeScene);
+		objPropertiesPanel.SetSceneContext(activeScene);
 
 		activeScene->OnStart();
 	}
@@ -91,12 +85,6 @@ namespace Wizzard
 			LUG_TRACE("Attempting to detect screen reader at runtime.");
 			ScreenReaderSupport::DetectScreenReader();
 		}
-
-		//TODO: Changing font scale at runtime
-		//if(Input::IsKeyPressed(Key::LeftBracket))
-		//	ImGuiSR::SetButtonFontScale(ImGuiSR::GetButtonFontScale() - 0.5f);
-		//if (Input::IsKeyPressed(Key::LeftBracket))
-		//	ImGuiSR::SetButtonFontScale(ImGuiSR::GetButtonFontScale() + 0.5f);
 
 		// Render
 		Renderer2D::ResetStatistics();
@@ -213,7 +201,10 @@ namespace Wizzard
 			appSettingsPanel.OnImGuiRender();
 
 		if (openEditMenu)
+		{
 			sceneHierarchyPanel.OnImGuiRender();
+			objPropertiesPanel.OnImGuiRender();
+		}
 
 		if (openObjectMenu)
 			objCreatePanel.OnImGuiRender();

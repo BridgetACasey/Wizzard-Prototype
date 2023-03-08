@@ -6,10 +6,10 @@
 
 namespace Wizzard
 {
-	class ApplicationSettingsPanel : public EditorPanel
+	class ObjectPropertiesPanel : public EditorPanel
 	{
 	public:
-		ApplicationSettingsPanel() = default;
+		ObjectPropertiesPanel() = default;
 
 		void OnImGuiRender() override;
 	};

@@ -2,18 +2,21 @@
 
 #pragma once
 
-//#include "Wizzard.h"
 #include "wizzard/audio/AudioSource.h"
+
 #include "wizzard/common/Layer.h"
 #include "wizzard/common/OrthographicCameraController.h"
+
 #include "wizzard/rendering/Framebuffer.h"
 #include "wizzard/rendering/Shader.h"
 #include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/VertexArray.h"
 #include "wizzard/rendering/EditorCamera.h"
+
 #include "wizzard/editor/ui/panel/ApplicationSettingsPanel.h"
 #include "wizzard/editor/ui/panel/SceneHierarchyPanel.h"
 #include "wizzard/editor/ui/panel/ObjectCreationPanel.h"
+#include "wizzard/editor/ui/panel/ObjectPropertiesPanel.h"
 
 namespace Wizzard
 {
@@ -70,5 +73,6 @@ namespace Wizzard
 		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;
 		ObjectCreationPanel objCreatePanel;
+		ObjectPropertiesPanel objPropertiesPanel;
 	};
 }
