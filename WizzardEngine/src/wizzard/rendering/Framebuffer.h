@@ -24,8 +24,7 @@ namespace Wizzard
 	struct FramebufferTextureSpecification
 	{
 		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(FramebufferTextureFormat format)
-			: TextureFormat(format) {}
+		FramebufferTextureSpecification(FramebufferTextureFormat format) : TextureFormat(format) {}
 
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
 		// TODO: filtering/wrap
@@ -44,7 +43,7 @@ namespace Wizzard
 	{
 		uint32_t width, height;
 		uint32_t samples = 1;
-
+		FramebufferAttachmentSpecification Attachments;
 		bool swapChainTarget = false;
 	};
 
@@ -59,7 +58,7 @@ namespace Wizzard
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
-		virtual uint32_t GetColorAttachmentRendererID() const = 0;
+		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 

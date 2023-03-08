@@ -37,6 +37,7 @@ namespace Wizzard
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1920;
 		fbSpec.height = 1080;
+		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		frameBuffer = Framebuffer::Create(fbSpec);
 
 		activeScene = CreateRef<Scene>();

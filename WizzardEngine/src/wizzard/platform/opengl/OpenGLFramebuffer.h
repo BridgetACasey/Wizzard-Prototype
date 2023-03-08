@@ -22,13 +22,21 @@ namespace Wizzard
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
-		virtual uint32_t GetColorAttachmentRendererID() const override { return colorAttachment; }
+		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override
+		{
+			WIZ_ASSERT(index < colorAttachments.size(), "ColorAttachments out of bounds");
+			return colorAttachments[index];
+		}
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return specification; }
 
 	private:
 		uint32_t rendererID;
-		uint32_t colorAttachment, depthAttachment;
 		FramebufferSpecification specification;
+		std::vector<FramebufferTextureSpecification> colorAttachmentSpecifications;
+		FramebufferTextureSpecification depthAttachmentSpecification = FramebufferTextureFormat::None;
+
+		std::vector<uint32_t> colorAttachments;
+		uint32_t depthAttachment = 0;
 	};
 }
