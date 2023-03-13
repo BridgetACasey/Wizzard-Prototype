@@ -19,6 +19,7 @@
 #include "component/TagComponent.h"
 #include "component/TransformComponent.h"
 #include "component/BoxCollider2DComponent.h"
+#include "component/CharacterControllerComponent.h"
 
 namespace Wizzard
 {
@@ -130,7 +131,7 @@ namespace Wizzard
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
 
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 			}
 
 			Renderer2D::EndScene();
@@ -153,7 +154,7 @@ namespace Wizzard
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
 
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 		}
 
 		Renderer2D::EndScene();
@@ -232,6 +233,7 @@ namespace Wizzard
 		CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<RigidBody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<CharacterControllerComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -264,6 +266,14 @@ namespace Wizzard
 			Entity entity = { currentEntity, this };
 			auto& transform = entity.GetComponent<TransformComponent>();
 			auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+			if(entity.HasComponent<CharacterControllerComponent>())
+			{
+				auto& cc = entity.GetComponent<CharacterControllerComponent>();
+
+				if(cc.disableGravity)
+				rb2d.Type = RigidBody2DComponent::BodyType::Static;
+			}
 
 			b2BodyDef bodyDef;
 			bodyDef.type = RigidBody2DTypeToBox2DBody(rb2d.Type);
@@ -338,6 +348,11 @@ namespace Wizzard
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CharacterControllerComponent>(Entity entity, CharacterControllerComponent& component)
 	{
 	}
 }

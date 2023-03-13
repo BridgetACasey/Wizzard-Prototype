@@ -71,7 +71,7 @@ namespace Wizzard
 	{
 		switch (format)
 		{
-		case FramebufferTextureFormat::DEPTH24STENCIL8:  return true;
+			case FramebufferTextureFormat::DEPTH24STENCIL8:  return true;
 		}
 
 		return false;

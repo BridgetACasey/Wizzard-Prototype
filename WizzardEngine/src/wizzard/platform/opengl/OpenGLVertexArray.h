@@ -23,6 +23,7 @@ namespace Wizzard
 
 	private:
 		uint32_t rendererID;
+		uint32_t vertexBufferIndex = 0;
 		std::vector<Ref<VertexBuffer>> vertexBuffers;
 		Ref<IndexBuffer> indexBuffer;
 	};

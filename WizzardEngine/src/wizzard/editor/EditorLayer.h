@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "wizzard/event/KeyEvent.h"
 #include "wizzard/audio/AudioSource.h"
 
 #include "wizzard/common/Layer.h"
@@ -34,6 +35,9 @@ namespace Wizzard
 		void OnEvent(Event& event) override;
 
 	private:
+		bool OnKeyPressed(KeyPressedEvent& keyEvent);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
+
 		void OnOverlayRender() const;
 
 		void NewProject();

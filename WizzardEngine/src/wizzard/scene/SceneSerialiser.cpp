@@ -11,6 +11,7 @@
 #include "component/SpriteComponent.h"
 #include "component/TagComponent.h"
 #include "component/TransformComponent.h"
+#include "component/CharacterControllerComponent.h"
 
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
@@ -254,6 +255,13 @@ namespace Wizzard
 					bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
 					bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
 				}
+
+				auto characterControllerComponent = entity["CharacterControllerComponent"];
+				if(characterControllerComponent)
+				{
+					auto ccc = deserializedEntity.AddComponent<CharacterControllerComponent>();
+					ccc.disableGravity = characterControllerComponent["DisableGravity"].as<bool>();
+				}
 			}
 		}
 
@@ -359,6 +367,17 @@ namespace Wizzard
 			out << YAML::Key << "RestitutionThreshold" << YAML::Value << bc2dComponent.RestitutionThreshold;
 
 			out << YAML::EndMap; // BoxCollider2DComponent
+		}
+
+		if(entity.HasComponent<CharacterControllerComponent>())
+		{
+			out << YAML::Key << "CharacterControllerComponent";
+			out << YAML::BeginMap;
+
+			auto ccComponent = entity.GetComponent<CharacterControllerComponent>();
+			out << YAML::Key << "DisableGravity" << YAML::Value << ccComponent.disableGravity;
+
+			out << YAML::EndMap;	//CharacterControllerComponent
 		}
 
 		out << YAML::EndMap; // Entity

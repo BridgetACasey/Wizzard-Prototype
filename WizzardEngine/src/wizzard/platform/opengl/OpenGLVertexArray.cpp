@@ -72,14 +72,59 @@ namespace Wizzard
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetComponentCount(),
-				ShaderDataTypeToOpenGLBaseType(element.type),
-				element.isNormalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(const void*)element.offset);
-			index++;
+			switch (element.type)
+			{
+			case ShaderDataType::Float:
+			case ShaderDataType::Float2:
+			case ShaderDataType::Float3:
+			case ShaderDataType::Float4:
+			{
+				glEnableVertexAttribArray(vertexBufferIndex);
+				glVertexAttribPointer(vertexBufferIndex,
+					element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.type),
+					element.isNormalized ? GL_TRUE : GL_FALSE,
+					layout.GetStride(),
+					(const void*)element.offset);
+				vertexBufferIndex++;
+				break;
+			}
+			case ShaderDataType::Int:
+			case ShaderDataType::Int2:
+			case ShaderDataType::Int3:
+			case ShaderDataType::Int4:
+			case ShaderDataType::Bool:
+			{
+				glEnableVertexAttribArray(vertexBufferIndex);
+				glVertexAttribIPointer(vertexBufferIndex,
+					element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.type),
+					layout.GetStride(),
+					(const void*)element.offset);
+				vertexBufferIndex++;
+				break;
+			}
+			case ShaderDataType::Mat3:
+			case ShaderDataType::Mat4:
+			{
+				uint8_t count = element.GetComponentCount();
+				for (uint8_t i = 0; i < count; i++)
+				{
+					glEnableVertexAttribArray(vertexBufferIndex);
+					glVertexAttribPointer(vertexBufferIndex,
+						count,
+						ShaderDataTypeToOpenGLBaseType(element.type),
+						element.isNormalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*)(element.offset + sizeof(float) * count * i));
+					glVertexAttribDivisor(vertexBufferIndex, 1);
+					vertexBufferIndex++;
+				}
+				break;
+			}
+			default:
+				WIZ_ASSERT(false, "Unknown ShaderDataType!");
+			}
 		}
 		vertexBuffers.push_back(vertexBuffer);
 	}

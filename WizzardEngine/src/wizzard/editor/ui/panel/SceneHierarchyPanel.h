@@ -21,6 +21,9 @@ namespace Wizzard
 		void DrawComponents(Entity entity);
 		void DrawEntityNode(Entity entity);
 
+		template<typename T>
+		void DisplayAddComponentEntry(const std::string& entryName);
+
 		Entity selectionContext = {};
 	};
 }

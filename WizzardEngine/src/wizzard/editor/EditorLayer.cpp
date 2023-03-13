@@ -23,6 +23,7 @@
 #include <scene/component/TransformComponent.h>
 
 #include "scene/component/BoxCollider2DComponent.h"
+#include "scene/component/CharacterControllerComponent.h"
 #include "scene/component/RigidBody2DComponent.h"
 #include "scene/component/TagComponent.h"
 
@@ -47,15 +48,43 @@ namespace Wizzard
 		editorScene = CreateRef<Scene>();
 		activeScene = editorScene;
 
-		cameraEntity = activeScene->CreateEntity("Scene Camera");
-		cameraEntity.AddComponent<CameraComponent>();
-		
-		// Entity
+		//cameraEntity = activeScene->CreateEntity("Scene Camera");
+		//cameraEntity.AddComponent<CameraComponent>();
+
+		// Entity - playable character, hence camera attached
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 		square.AddComponent<RigidBody2DComponent>();
 		square.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
 		square.AddComponent<BoxCollider2DComponent>();
+		square.AddComponent<CameraComponent>();
+		square.AddComponent<CharacterControllerComponent>();
+
+		// Entity
+		auto squareTwo = activeScene->CreateEntity("Red Square");
+		squareTwo.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+		squareTwo.GetComponent<TransformComponent>().Translation.x -= 2.0f;
+		squareTwo.AddComponent<RigidBody2DComponent>();
+		squareTwo.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
+		squareTwo.AddComponent<BoxCollider2DComponent>();
+
+		// Entity
+		auto squareThree = activeScene->CreateEntity("Blue Square");
+		squareThree.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+		squareThree.GetComponent<TransformComponent>().Translation.x += 2.0f;
+		squareThree.AddComponent<RigidBody2DComponent>();
+		squareThree.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
+		squareThree.AddComponent<BoxCollider2DComponent>();
+
+		// Entity
+		auto floor = activeScene->CreateEntity("Floor");
+		floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+		floor.GetComponent<TransformComponent>().Translation.y -= 3.5f;
+		floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
+		floor.GetComponent<TransformComponent>().Scale.x *= 5.0f;
+		floor.AddComponent<RigidBody2DComponent>();
+		floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+		floor.AddComponent<BoxCollider2DComponent>();
 		
 		squareEntity = square;
 
@@ -84,28 +113,6 @@ namespace Wizzard
 			frameBuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 			orthoCamController.OnResize(viewportSize.x, viewportSize.y);
 			editorCamera.SetViewportSize(viewportSize.x, viewportSize.y);
-		}
-
-		if (Input::IsKeyPressed(Key::Z))
-		{
-			WIZ_TRACE("Attempting to detect screen reader at runtime.");
-			ScreenReaderSupport::DetectScreenReader();
-		}
-
-		if (Input::IsMouseButtonPressed(Mouse::LeftButton))
-		{
-			if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
-		}
-
-		if (!ImGuizmo::IsUsing())
-		{
-			if (Input::IsKeyPressed(Key::W))
-				gizmoType = ImGuizmo::OPERATION::TRANSLATE;
-			if (Input::IsKeyPressed(Key::E))
-				gizmoType = ImGuizmo::OPERATION::ROTATE;
-			if (Input::IsKeyPressed(Key::R))
-				gizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 
 		// Render
@@ -154,7 +161,32 @@ namespace Wizzard
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewSize.x && mouseY < (int)viewSize.y)
 		{
 			int pixelData = frameBuffer->ReadPixel(1, mouseX, mouseY);
-			hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, activeScene.get());
+			hoveredEntity = pixelData == -1 ? Entity() : Entity(static_cast<entt::entity>(pixelData), activeScene.get());
+
+			if (hoveredEntity)
+				WIZ_TRACE("Hovered Entity: {0}", hoveredEntity.GetName());
+		}
+
+		//if (Input::IsMouseButtonPressed(Mouse::LeftButton))
+		//{
+		//	if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyDown(Key::LeftAlt))
+		//		sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
+		//}
+
+		if (!ImGuizmo::IsUsing())
+		{
+			if (Input::IsKeyPressed(Key::W))
+				gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			if (Input::IsKeyPressed(Key::E))
+				gizmoType = ImGuizmo::OPERATION::ROTATE;
+			if (Input::IsKeyPressed(Key::R))
+				gizmoType = ImGuizmo::OPERATION::SCALE;
+		}
+
+		if (Input::IsKeyPressed(Key::Z))
+		{
+			WIZ_TRACE("Attempting to detect screen reader at runtime.");
+			ScreenReaderSupport::DetectScreenReader();
 		}
 
 		OnOverlayRender();
@@ -310,7 +342,7 @@ namespace Wizzard
 			Entity selectedEntity = sceneHierarchyPanel.GetSelectedEntity();
 			if (selectedEntity && gizmoType != -1)
 			{
-				ImGuizmo::SetOrthographic(false);
+				ImGuizmo::SetOrthographic(true);
 				ImGuizmo::SetDrawlist();
 
 				ImGuizmo::SetRect(viewportBounds[0].x, viewportBounds[0].y, viewportBounds[1].x - viewportBounds[0].x, viewportBounds[1].y - viewportBounds[0].y);
@@ -324,7 +356,7 @@ namespace Wizzard
 				glm::mat4 transform = tc.GetTransform();
 
 				// Snapping
-				bool snap = Input::IsKeyPressed(Key::LeftControl);
+				bool snap = Input::IsKeyDown(Key::LeftControl);
 				float snapValue = 0.5f; // Snap to 0.5m for translation/scale
 				// Snap to 45 degrees for rotation
 				if (gizmoType == ImGuizmo::OPERATION::ROTATE)
@@ -356,7 +388,28 @@ namespace Wizzard
 	void EditorLayer::OnEvent(Event& event)
 	{
 		orthoCamController.OnEvent(event);
+
+		if(activeScene->GetState() == SceneState::EDIT)
 		editorCamera.OnEvent(event);
+
+		EventHandler eventHandler(event);
+		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		eventHandler.HandleEvent<MouseButtonPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
+	{
+		return false;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent)
+	{
+		if (mouseEvent.GetMouseButton() == Mouse::LeftButton)
+		{
+			if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
+		}
+		return false;
 	}
 
 	void EditorLayer::OnOverlayRender() const

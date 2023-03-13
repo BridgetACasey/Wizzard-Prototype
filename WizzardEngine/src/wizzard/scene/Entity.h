@@ -19,9 +19,6 @@ namespace Wizzard
 		Entity(entt::entity handle, Scene* scene);
 		Entity(const Entity& other) = default;
 
-		UUID GetUUID() { return GetComponent<UUIDComponent>().uuid; }
-		const std::string& GetName() { return GetComponent<TagComponent>().tag; }
-
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
@@ -40,16 +37,17 @@ namespace Wizzard
 		}
 
 		template<typename T>
+		bool HasComponent()
+		{
+			//WIZ_ASSERT(scene->registry.valid(entityHandle), "Not a valid entity!");
+			return scene->registry.all_of<T>(entityHandle);
+		}
+
+		template<typename T>
 		T& GetComponent()
 		{
 			WIZ_ASSERT(HasComponent<T>(), "Entity does not have component!");
 			return scene->registry.get<T>(entityHandle);
-		}
-
-		template<typename T>
-		bool HasComponent()
-		{
-			return scene->registry.any_of<T>(entityHandle);
 		}
 
 		template<typename T>
@@ -73,8 +71,11 @@ namespace Wizzard
 			return !(*this == other);
 		}
 
+		UUID GetUUID() { return GetComponent<UUIDComponent>().uuid; }
+		const std::string& GetName() { return GetComponent<TagComponent>().tag; }
+
 	private:
-		entt::entity entityHandle{ 0 };
+		entt::entity entityHandle{ entt::null };
 
 		Scene* scene = nullptr;
 	};
