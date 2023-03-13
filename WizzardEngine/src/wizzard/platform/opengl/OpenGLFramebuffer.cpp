@@ -227,7 +227,6 @@ namespace Wizzard
 		WIZ_ASSERT(attachmentIndex < colorAttachments.size(), "ColorAttachments out of bounds");
 		
 		auto& spec = colorAttachmentSpecifications[attachmentIndex];
-		glClearTexImage(colorAttachments[attachmentIndex], 0,
-		FBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+		glClearTexImage(colorAttachments[attachmentIndex], 0, FBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 	}
 }

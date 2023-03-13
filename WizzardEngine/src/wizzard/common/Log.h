@@ -17,12 +17,10 @@ namespace Wizzard
 		static void Init();
 
 		static std::shared_ptr<spdlog::logger>& GetWizzardLogger() { return wizzardLogger; }
-		static std::shared_ptr<spdlog::logger>& GetLuggageLogger() { return luggageLogger; }
 		static std::shared_ptr<spdlog::logger>& GetAppLogger() { return appLogger; }
 
 	private:
 		static std::shared_ptr<spdlog::logger> wizzardLogger;
-		static std::shared_ptr<spdlog::logger> luggageLogger;
 		static std::shared_ptr<spdlog::logger> appLogger;
 	};
 }
@@ -33,13 +31,6 @@ namespace Wizzard
 #define WIZ_WARN(...)	::Wizzard::Log::GetWizzardLogger()->warn(__VA_ARGS__)
 #define WIZ_ERROR(...)	::Wizzard::Log::GetWizzardLogger()->error(__VA_ARGS__)
 #define WIZ_FATAL(...)	::Wizzard::Log::GetWizzardLogger()->fatal(__VA_ARGS__)
-
-//Wizzard Engine logger macros
-#define LUG_TRACE(...)	::Wizzard::Log::GetLuggageLogger()->trace(__VA_ARGS__)
-#define LUG_INFO(...)	::Wizzard::Log::GetLuggageLogger()->info(__VA_ARGS__)
-#define LUG_WARN(...)	::Wizzard::Log::GetLuggageLogger()->warn(__VA_ARGS__)
-#define LUG_ERROR(...)	::Wizzard::Log::GetLuggageLogger()->error(__VA_ARGS__)
-#define LUG_FATAL(...)	::Wizzard::Log::GetLuggageLogger()->fatal(__VA_ARGS__)
 
 //Application logger macros
 #define APP_TRACE(...)	::Wizzard::Log::GetAppLogger()->trace(__VA_ARGS__)

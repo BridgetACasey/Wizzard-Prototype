@@ -7,8 +7,6 @@
 #include "wizzard/common/Layer.h"
 
 #include "wizzard/event/ApplicationEvent.h"
-#include "wizzard/event/KeyEvent.h"
-#include "wizzard/event/MouseEvent.h"
 #include "wizzard/event/UIEvent.h"
 #include "wizzard/event/EventHandler.h"
 

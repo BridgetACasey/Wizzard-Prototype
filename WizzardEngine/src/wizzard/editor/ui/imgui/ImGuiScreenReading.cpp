@@ -6,6 +6,7 @@
 
 #include <comdef.h>
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 #include "ImGuiScreenReading.h"
 

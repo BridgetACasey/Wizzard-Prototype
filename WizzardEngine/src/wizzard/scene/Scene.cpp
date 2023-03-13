@@ -42,6 +42,7 @@ namespace Wizzard
 
 	Scene::~Scene()
 	{
+		OnEndPlay();
 	}
 
 	template<typename Component>
@@ -66,48 +67,96 @@ namespace Wizzard
 			dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
 	}
 
-	void Scene::OnStart()
+	void Scene::OnBeginPlay()
 	{
-		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
+		sceneState = SceneState::PLAY;
 
-		auto view = registry.view<RigidBody2DComponent>();
-		for (auto e : view)
+		OnBeginPhysics2D();
+	}
+
+	void Scene::OnUpdatePlay(TimeStep timeStep)
+	{
+		if (sceneState != SceneState::PAUSED || stepFrames-- > 0)
 		{
-			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
-
-			b2BodyDef bodyDef;
-			bodyDef.type = RigidBody2DTypeToBox2DBody(rb2d.Type);
-			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
-			bodyDef.angle = transform.Rotation.z;
-
-			b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-			body->SetFixedRotation(rb2d.FixedRotation);
-			rb2d.RuntimeBody = body;
-
-			if (entity.HasComponent<BoxCollider2DComponent>())
+			// Physics
 			{
-				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+				const int32_t velocityIterations = 6;
+				const int32_t positionIterations = 2;
+				physicsWorld->Step(timeStep, velocityIterations, positionIterations);
 
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+				// Retrieve transform from Box2D
+				auto view = registry.view<RigidBody2DComponent>();
+				for (auto e : view)
+				{
+					Entity entity = { e, this };
+					auto& transform = entity.GetComponent<TransformComponent>();
+					auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = bc2d.Density;
-				fixtureDef.friction = bc2d.Friction;
-				fixtureDef.restitution = bc2d.Restitution;
-				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
-				body->CreateFixture(&fixtureDef);
+					b2Body* body = (b2Body*)rb2d.RuntimeBody;
+					const auto& position = body->GetPosition();
+					transform.Translation.x = position.x;
+					transform.Translation.y = position.y;
+					transform.Rotation.z = body->GetAngle();
+				}
 			}
+		}
+
+		// Render 2D
+		Camera* mainCamera = nullptr;
+		glm::mat4 cameraTransform;
+		{
+			auto group = registry.view<TransformComponent, CameraComponent>();
+
+			for (auto entity : group)
+			{
+				auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+
+				if (camera.Primary)
+				{
+					mainCamera = &camera.Camera;
+					cameraTransform = transform.GetTransform();
+					break;
+				}
+			}
+		}
+
+		if (mainCamera)
+		{
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
+
+			auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
+
+			for (auto entity : group)
+			{
+				auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+			}
+
+			Renderer2D::EndScene();
 		}
 	}
 
-	void Scene::OnStop()
+	void Scene::OnEndPlay()
 	{
-		delete m_PhysicsWorld;
-		m_PhysicsWorld = nullptr;
+		sceneState = SceneState::EDIT;
+
+		OnEndPhysics2D();
+	}
+
+	void Scene::OnUpdateEditor(TimeStep timeStep, EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+
+		auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
+		for (auto entity : group)
+		{
+			auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+		}
+
+		Renderer2D::EndScene();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -156,81 +205,6 @@ namespace Wizzard
 		return {};
 	}
 
-	void Scene::OnUpdateRuntime(TimeStep timeStep)
-	{
-		// Physics
-		{
-			const int32_t velocityIterations = 6;
-			const int32_t positionIterations = 2;
-			m_PhysicsWorld->Step(timeStep, velocityIterations, positionIterations);
-
-			// Retrieve transform from Box2D
-			auto view = registry.view<RigidBody2DComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
-
-				b2Body* body = (b2Body*)rb2d.RuntimeBody;
-				const auto& position = body->GetPosition();
-				transform.Translation.x = position.x;
-				transform.Translation.y = position.y;
-				transform.Rotation.z = body->GetAngle();
-			}
-		}
-
-		// Render 2D
-		Camera* mainCamera = nullptr;
-		glm::mat4 cameraTransform;
-		{
-			auto group = registry.view<TransformComponent, CameraComponent>();
-
-			for (auto entity : group)
-			{
-				auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
-
-				if (camera.Primary)
-				{
-					mainCamera = &camera.Camera;
-					cameraTransform = transform.GetTransform();
-					break;
-				}
-			}
-		}
-
-		if (mainCamera)
-		{
-			Renderer2D::BeginScene(*mainCamera, cameraTransform);
-
-			auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
-
-			for (auto entity : group)
-			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
-
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-			}
-
-			Renderer2D::EndScene();
-		}
-	}
-
-	void Scene::OnUpdateEditor(TimeStep timeStep, EditorCamera& camera)
-	{
-		Renderer2D::BeginScene(camera);
-
-		auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
-		for (auto entity : group)
-		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
-
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-		}
-
-		Renderer2D::EndScene();
-	}
-
 	Ref<Scene> Scene::Copy(Ref<Scene> other)
 	{
 		Ref<Scene> newScene = CreateRef<Scene>();
@@ -277,6 +251,51 @@ namespace Wizzard
 
 				cameraComponent.Camera.SetViewportSize(width, height);
 		}
+	}
+
+	void Scene::OnBeginPhysics2D()
+	{
+		physicsWorld = new b2World({ 0.0f, -9.8f });
+
+		auto view = registry.view<RigidBody2DComponent>();
+
+		for (auto currentEntity : view)
+		{
+			Entity entity = { currentEntity, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+			b2BodyDef bodyDef;
+			bodyDef.type = RigidBody2DTypeToBox2DBody(rb2d.Type);
+			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+			bodyDef.angle = transform.Rotation.z;
+
+			b2Body* body = physicsWorld->CreateBody(&bodyDef);
+			body->SetFixedRotation(rb2d.FixedRotation);
+			rb2d.RuntimeBody = body;
+
+			if (entity.HasComponent<BoxCollider2DComponent>())
+			{
+				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+
+				b2PolygonShape boxShape;
+				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = bc2d.Density;
+				fixtureDef.friction = bc2d.Friction;
+				fixtureDef.restitution = bc2d.Restitution;
+				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		}
+	}
+
+	void Scene::OnEndPhysics2D()
+	{
+		delete physicsWorld;
+		physicsWorld = nullptr;
 	}
 
 	template<typename T>

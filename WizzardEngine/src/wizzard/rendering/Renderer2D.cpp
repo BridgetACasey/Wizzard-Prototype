@@ -197,6 +197,8 @@ namespace Wizzard
 
 	void Renderer2D::NextBatch()
 	{
+		Flush();
+		StartBatch();
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)

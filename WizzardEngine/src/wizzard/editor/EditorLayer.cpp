@@ -44,62 +44,68 @@ namespace Wizzard
 		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		frameBuffer = Framebuffer::Create(fbSpec);
 
-		activeScene = CreateRef<Scene>();
+		editorScene = CreateRef<Scene>();
+		activeScene = editorScene;
 
-		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
-		m_CameraEntity = activeScene->CreateEntity("Scene Camera");
-		m_CameraEntity.AddComponent<CameraComponent>();
-
+		cameraEntity = activeScene->CreateEntity("Scene Camera");
+		cameraEntity.AddComponent<CameraComponent>();
+		
 		// Entity
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 		square.AddComponent<RigidBody2DComponent>();
 		square.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
 		square.AddComponent<BoxCollider2DComponent>();
-
-		m_SquareEntity = square;
+		
+		squareEntity = square;
 
 		appSettingsPanel.SetSceneContext(activeScene);
 		sceneHierarchyPanel.SetSceneContext(activeScene);
 		objCreatePanel.SetSceneContext(activeScene);
 		objPropertiesPanel.SetSceneContext(activeScene);
 
-		//activeScene->OnStart();
+		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 	}
 
 	void EditorLayer::OnDetach()
 	{
 		music.FreeSource();
-		activeScene->OnStop();
 	}
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
-		activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		activeScene->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 
 		// Resize
 		if (FramebufferSpecification spec = frameBuffer->GetSpecification();
-			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
-			(spec.width != m_ViewportSize.x || spec.height != m_ViewportSize.y))
+			viewportSize.x > 0.0f && viewportSize.y > 0.0f && // zero sized framebuffer is invalid
+			(spec.width != viewportSize.x || spec.height != viewportSize.y))
 		{
-			frameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			orthoCamController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-
-			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-			activeScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			frameBuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+			orthoCamController.OnResize(viewportSize.x, viewportSize.y);
+			editorCamera.SetViewportSize(viewportSize.x, viewportSize.y);
 		}
 
 		if (Input::IsKeyPressed(Key::Z))
 		{
-			LUG_TRACE("Attempting to detect screen reader at runtime.");
+			WIZ_TRACE("Attempting to detect screen reader at runtime.");
 			ScreenReaderSupport::DetectScreenReader();
 		}
 
 		if (Input::IsMouseButtonPressed(Mouse::LeftButton))
 		{
-			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+			if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
+		}
+
+		if (!ImGuizmo::IsUsing())
+		{
+			if (Input::IsKeyPressed(Key::W))
+				gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			if (Input::IsKeyPressed(Key::E))
+				gizmoType = ImGuizmo::OPERATION::ROTATE;
+			if (Input::IsKeyPressed(Key::R))
+				gizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 
 		// Render
@@ -107,46 +113,51 @@ namespace Wizzard
 
 		frameBuffer->Bind();
 
-		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::Clear();
 
 		// Clear our entity ID attachment to -1
 		frameBuffer->ClearAttachment(1, -1);
 
-		switch (m_SceneState)
+		switch (activeScene->GetState())
 		{
-			case SceneState::Edit:
+			case SceneState::EDIT:
 			{
-				if (m_ViewportFocused)
+				if (isViewportFocused)
 					orthoCamController.OnUpdate(timeStep);
 
-				m_EditorCamera.OnUpdate(timeStep);
+				editorCamera.OnUpdate(timeStep);
 
-				activeScene->OnUpdateEditor(timeStep, m_EditorCamera);
+				activeScene->OnUpdateEditor(timeStep, editorCamera);
 				break;
 			}
-			case SceneState::Play:
+			case SceneState::PLAY:
 			{
-				activeScene->OnUpdateRuntime(timeStep);
+				activeScene->OnUpdatePlay(timeStep);
 				break;
 			}
+			case SceneState::PAUSED:
+				activeScene->Step();
+				break;
+			default:
+				WIZ_ERROR("Scene State not yet implemented!");
 		}
 
 		auto [mx, my] = ImGui::GetMousePos();
-		mx -= m_ViewportBounds[0].x;
-		my -= m_ViewportBounds[0].y;
-		glm::vec2 viewportSize = m_ViewportSize;
-		my = viewportSize.y - my;
+		mx -= viewportBounds[0].x;
+		my -= viewportBounds[0].y;
+		glm::vec2 viewSize = viewportSize;
+		my = viewSize.y - my;
 		int mouseX = (int)mx;
 		int mouseY = (int)my;
 
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewSize.x && mouseY < (int)viewSize.y)
 		{
 			int pixelData = frameBuffer->ReadPixel(1, mouseX, mouseY);
 			hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, activeScene.get());
 		}
 
-		//OnOverlayRender();
+		OnOverlayRender();
 
 		frameBuffer->Unbind();
 	}
@@ -192,9 +203,7 @@ namespace Wizzard
 		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 
-		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-		//ImGui::PopStyleVar();
 
 		if (opt_fullscreen)
 			ImGui::PopStyleVar(2);
@@ -211,31 +220,50 @@ namespace Wizzard
 		{
 			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
 
-			if (ImGuiSR::Button("PROJECT", ImVec2(windowWidth, 80.5f), "file menu"))
+			if (ImGuiSR::Button("PROJECT", ImVec2(windowWidth, 80.5f)))
 			{
 				ImGui::SetItemDefaultFocus();
 				openFileMenu = !openFileMenu;
 			}
 
-			if (ImGuiSR::Button("SCENE", ImVec2(windowWidth, 80.5f), "scene menu"))
+			if (ImGuiSR::Button("SCENE", ImVec2(windowWidth, 80.5f)))
 				openEditMenu = !openEditMenu;
 
-			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f), "create menu"))
+			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f)))
 				openObjectMenu = !openObjectMenu;
 
-			if (ImGuiSR::Button("PLAY", ImVec2(windowWidth, 80.5f), "Play scene.", true))
-			{
-				m_SceneState = (m_SceneState == SceneState::Edit) ? m_SceneState = SceneState::Play : m_SceneState = SceneState::Edit;
+			//Temp
+			static std::string playButtonLabel = "PLAY";
+			static std::string playButtonDesc = "Play scene.";
 
-				if (m_SceneState == SceneState::Play)
+			if (ImGuiSR::Button(playButtonLabel, ImVec2(windowWidth, 80.5f), playButtonDesc, true))
+			{
+				switch(activeScene->GetState())
 				{
-					editorScene = Scene::Copy(activeScene);
-					activeScene->OnStart();
+					case SceneState::EDIT:
+					case SceneState::PAUSED:
+					{
+						OnSceneBeginPlay();
+						playButtonLabel = "PAUSE";
+						playButtonDesc = "Pause scene.";
+					}
+						break;
+					case SceneState::PLAY:
+					{
+						OnScenePausePlay();
+						playButtonLabel = "PLAY";
+						playButtonDesc = "Play scene.";
+					}
 				}
-				else
+			}
+
+			if (ImGuiSR::Button("STOP", ImVec2(windowWidth, 80.5f), "Stop scene.", true))
+			{
+				if (activeScene->GetState() == SceneState::PLAY || activeScene->GetState() == SceneState::PAUSED)
 				{
-					activeScene = Scene::Copy(editorScene);
-					activeScene->OnStop();
+					OnSceneEndPlay();
+					playButtonLabel = "PLAY";
+					playButtonDesc = "Play scene.";
 				}
 			}
 
@@ -254,10 +282,6 @@ namespace Wizzard
 		if (openObjectMenu)
 			objCreatePanel.OnImGuiRender();
 
-		//std::string name = "None";
-		//if (hoveredEntity)
-		//	name = hoveredEntity.GetComponent<TagComponent>().tag;
-		//ImGui::Text("Hovered Entity: %s", name.c_str());
 
 		//-----RENDERING THE VIEWPORT-----
 
@@ -268,46 +292,32 @@ namespace Wizzard
 			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 			auto viewportOffset = ImGui::GetWindowPos();
-			m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-			m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+			viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+			viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();
 
-			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportFocused && !isViewportHovered);
+			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportHovered);
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+			viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 			uint64_t textureID = frameBuffer->GetColorAttachmentRendererID();
-			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-			//if (ImGui::BeginDragDropTarget())
-			//{
-			//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			//	{
-			//		const wchar_t* path = (const wchar_t*)payload->Data;
-			//		OpenScene(path);
-			//	}
-			//	ImGui::EndDragDropTarget();
-			//}
+			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportSize.x, viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 			// Gizmos
 			Entity selectedEntity = sceneHierarchyPanel.GetSelectedEntity();
-			if (selectedEntity && m_GizmoType != -1)
+			if (selectedEntity && gizmoType != -1)
 			{
 				ImGuizmo::SetOrthographic(false);
 				ImGuizmo::SetDrawlist();
 
-				float windowWidth = ImGui::GetWindowWidth();
-				float windowHeight = ImGui::GetWindowHeight();
-				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+				ImGuizmo::SetRect(viewportBounds[0].x, viewportBounds[0].y, viewportBounds[1].x - viewportBounds[0].x, viewportBounds[1].y - viewportBounds[0].y);
 
-				// Camera
-				auto cameraEntity = activeScene->GetPrimaryCameraEntity();
-				const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-				const glm::mat4& cameraProjection = camera.GetProjection();
-				glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+				// Editor camera
+				const glm::mat4& cameraProjection = editorCamera.GetProjection();
+				glm::mat4 cameraView = editorCamera.GetViewMatrix();
 
 				// Entity transform
 				auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -317,13 +327,13 @@ namespace Wizzard
 				bool snap = Input::IsKeyPressed(Key::LeftControl);
 				float snapValue = 0.5f; // Snap to 0.5m for translation/scale
 				// Snap to 45 degrees for rotation
-				if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+				if (gizmoType == ImGuizmo::OPERATION::ROTATE)
 					snapValue = 45.0f;
 
 				float snapValues[3] = { snapValue, snapValue, snapValue };
 
 				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-					(ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+					(ImGuizmo::OPERATION)gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
 					nullptr, snap ? snapValues : nullptr);
 
 				if (ImGuizmo::IsUsing())
@@ -346,6 +356,94 @@ namespace Wizzard
 	void EditorLayer::OnEvent(Event& event)
 	{
 		orthoCamController.OnEvent(event);
-		m_EditorCamera.OnEvent(event);
+		editorCamera.OnEvent(event);
+	}
+
+	void EditorLayer::OnOverlayRender() const
+	{
+		if (activeScene->GetState() == SceneState::PLAY)
+		{
+			Entity camera = activeScene->GetPrimaryCameraEntity();
+			if (!camera)
+				return;
+
+			Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera, camera.GetComponent<TransformComponent>().GetTransform());
+		}
+		else
+			Renderer2D::BeginScene(editorCamera);
+
+		Renderer2D::EndScene();
+	}
+
+	void EditorLayer::NewProject()
+	{
+	}
+
+	bool EditorLayer::OpenProject()
+	{
+		return false;
+	}
+
+	void EditorLayer::OpenProject(const std::filesystem::path& path)
+	{
+	}
+
+	void EditorLayer::SaveProject()
+	{
+	}
+
+	void EditorLayer::SaveProjectAs()
+	{
+	}
+
+	void EditorLayer::NewScene()
+	{
+	}
+
+	void EditorLayer::OpenScene()
+	{
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+	}
+
+	void EditorLayer::SaveScene()
+	{
+	}
+
+	void EditorLayer::SaveSceneAs()
+	{
+	}
+
+	void EditorLayer::OnSceneBeginPlay()
+	{
+		activeScene->SetState(SceneState::PLAY);
+
+		activeScene = Scene::Copy(editorScene);
+		activeScene->OnBeginPlay();
+
+		sceneHierarchyPanel.SetSceneContext(activeScene);
+	}
+
+	void EditorLayer::OnSceneEndPlay()
+	{
+		if (activeScene->GetState() == SceneState::PLAY)
+			activeScene->OnEndPlay();
+
+		activeScene->SetState(SceneState::EDIT);
+
+		//activeScene = editorScene;
+		activeScene = Scene::Copy(editorScene);
+
+		sceneHierarchyPanel.SetSceneContext(activeScene);
+	}
+
+	void EditorLayer::OnScenePausePlay() const
+	{
+		if (activeScene->GetState() == SceneState::EDIT)
+			return;
+
+		activeScene->SetState(SceneState::PAUSED);
 	}
 }

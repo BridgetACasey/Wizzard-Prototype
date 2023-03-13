@@ -34,22 +34,41 @@ namespace Wizzard
 		void OnEvent(Event& event) override;
 
 	private:
+		void OnOverlayRender() const;
+
+		void NewProject();
+		bool OpenProject();
+		void OpenProject(const std::filesystem::path& path);
+		void SaveProject();
+		void SaveProjectAs();
+
+		void NewScene();
+		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
+		void SaveScene();
+		void SaveSceneAs();
+
+		void OnSceneBeginPlay();
+		void OnSceneEndPlay();
+		void OnScenePausePlay() const;
+
 		OrthographicCameraController orthoCamController;
-		EditorCamera m_EditorCamera;
+		EditorCamera editorCamera;
 
 		Ref<Scene> activeScene;
 		Ref<Scene> editorScene;
 
-		Entity m_SquareEntity;
-		Entity m_CameraEntity;
+		Entity squareEntity;
+		Entity cameraEntity;
 
-		int m_GizmoType = -1;
+		int gizmoType = -1;
 
-		bool m_PrimaryCamera = true;
+		bool primaryCamera = true;
 
-		bool m_ViewportFocused = false, m_ViewportHovered = false;
-		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-		glm::vec2 m_ViewportBounds[2];
+		bool isViewportFocused = false;
+		bool isViewportHovered = false;
+		glm::vec2 viewportSize = { 0.0f, 0.0f };
+		glm::vec2 viewportBounds[2];
 
 		// Temp
 		Ref<VertexArray> squareVA;
@@ -61,16 +80,7 @@ namespace Wizzard
 		AudioSource music;
 		bool playMusic = false;
 
-		bool isViewportFocused = false;
-		bool isViewportHovered = false;
-
 		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
-
-		enum class SceneState
-		{
-			Edit = 0, Play = 1
-		};
-		SceneState m_SceneState = SceneState::Edit;
 
 		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;
