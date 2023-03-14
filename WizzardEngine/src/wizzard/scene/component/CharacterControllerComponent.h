@@ -6,8 +6,9 @@ namespace Wizzard
 {
 	struct CharacterControllerComponent
 	{
-		bool disableGravity = false;
-
 		CharacterControllerComponent() = default;
+		CharacterControllerComponent(const CharacterControllerComponent&) = default;
+
+		bool disableGravity = false;
 	};
 }

@@ -8,6 +8,7 @@
 
 #include "imgui_internal.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "scene/component/AudioListenerComponent.h"
 #include "scene/component/BoxCollider2DComponent.h"
 #include "scene/component/CameraComponent.h"
 #include "scene/component/CharacterControllerComponent.h"
@@ -247,6 +248,7 @@ namespace Wizzard
 			DisplayAddComponentEntry<RigidBody2DComponent>("RigidBody 2D");
 			DisplayAddComponentEntry<BoxCollider2DComponent>("Box Collider 2D");
 			DisplayAddComponentEntry<CharacterControllerComponent>("Character Controller");
+			DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
 
 			ImGui::EndPopup();
 		}
@@ -321,28 +323,10 @@ namespace Wizzard
 		}
 		});
 
-		//DrawComponent<SpriteComponent>("Sprite", entity, [](auto& component)
-		//{
-		//	ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
-		//
-		//ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
-		//if (ImGui::BeginDragDropTarget())
-		//{
-		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-		//	{
-		//		const wchar_t* path = (const wchar_t*)payload->Data;
-		//		std::filesystem::path texturePath(path);
-		//		Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
-		//		if (texture->IsLoaded())
-		//			component.Texture = texture;
-		//		else
-		//			WIZ_WARN("Could not load texture {0}", texturePath.filename().string());
-		//	}
-		//	ImGui::EndDragDropTarget();
-		//}
-		//
-		//ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
-		//});
+		DrawComponent<SpriteComponent>("Sprite", entity, [](auto& component)
+		{
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.color));
+		});
 
 		DrawComponent<RigidBody2DComponent>("RigidBody 2D", entity, [](auto& component)
 		{
@@ -382,6 +366,11 @@ namespace Wizzard
 		DrawComponent<CharacterControllerComponent>("Character Controller", entity, [](auto& component)
 		{
 			ImGui::Checkbox("Disable Gravity", &component.disableGravity);
+		});
+
+		DrawComponent<AudioListenerComponent>("Audio Listener", entity, [](auto& component)
+		{
+			ImGui::Checkbox("Active", &component.isActive);
 		});
 	}
 }

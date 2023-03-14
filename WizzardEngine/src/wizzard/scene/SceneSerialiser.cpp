@@ -5,6 +5,7 @@
 #include "SceneSerialiser.h"
 
 #include "Entity.h"
+#include "component/AudioListenerComponent.h"
 #include "component/BoxCollider2DComponent.h"
 #include "component/CameraComponent.h"
 #include "component/RigidBody2DComponent.h"
@@ -262,6 +263,13 @@ namespace Wizzard
 					auto ccc = deserializedEntity.AddComponent<CharacterControllerComponent>();
 					ccc.disableGravity = characterControllerComponent["DisableGravity"].as<bool>();
 				}
+
+				auto audioListenerComponent = entity["AudioListenerComponent"];
+				if(audioListenerComponent)
+				{
+					auto alc = deserializedEntity.AddComponent<AudioListenerComponent>();
+					alc.isActive = audioListenerComponent["IsActive"].as<bool>();
+				}
 			}
 		}
 
@@ -378,6 +386,17 @@ namespace Wizzard
 			out << YAML::Key << "DisableGravity" << YAML::Value << ccComponent.disableGravity;
 
 			out << YAML::EndMap;	//CharacterControllerComponent
+		}
+
+		if(entity.HasComponent<AudioListenerComponent>())
+		{
+			out << YAML::Key << "AudioListenerComponent";
+			out << YAML::BeginMap;
+
+			auto alComponent = entity.GetComponent<AudioListenerComponent>();
+			out << YAML::Key << "IsActive" << YAML::Value << alComponent.isActive;
+
+			out << YAML::EndMap;	//AudioListenerComponent
 		}
 
 		out << YAML::EndMap; // Entity

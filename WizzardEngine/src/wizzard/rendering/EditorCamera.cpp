@@ -65,17 +65,17 @@ namespace Wizzard
 
 	void EditorCamera::OnUpdate(TimeStep ts)
 	{
-		if (Input::IsKeyPressed(Key::LeftAlt))
+		if (Input::IsKeyDown(Key::LeftAlt))
 		{
 			const glm::vec2& mouse{ Input::GetMousePositionX(), Input::GetMousePositionY() };
 			glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
 			m_InitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(Mouse::MiddleButton))
+			if (Input::IsMouseButtonDown(Mouse::MiddleButton))
 				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(Mouse::LeftButton))
+			else if (Input::IsMouseButtonDown(Mouse::LeftButton))
 				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(Mouse::RightButton))
+			else if (Input::IsMouseButtonDown(Mouse::RightButton))
 				MouseZoom(delta.y);
 		}
 

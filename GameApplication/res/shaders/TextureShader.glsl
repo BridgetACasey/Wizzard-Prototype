@@ -25,6 +25,7 @@ void main()
 	v_TexIndex = a_TexIndex;
 	v_TilingFactor = a_TilingFactor;
 	gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+	v_EntityID = a_EntityID;
 }
 
 #type fragment

@@ -57,7 +57,7 @@ namespace Wizzard
 			scene->registry.remove<T>(entityHandle);
 		}
 
-		operator bool() const { return entityHandle != entt::null; }
+		operator bool() const { return entityHandle != entt::null && scene && scene->registry.valid(entityHandle); }
 		operator entt::entity() const { return entityHandle; }
 		operator uint32_t() const { return (uint32_t)entityHandle; }
 

@@ -48,9 +48,6 @@ namespace Wizzard
 		editorScene = CreateRef<Scene>();
 		activeScene = editorScene;
 
-		//cameraEntity = activeScene->CreateEntity("Scene Camera");
-		//cameraEntity.AddComponent<CameraComponent>();
-
 		// Entity - playable character, hence camera attached
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
@@ -117,9 +114,7 @@ namespace Wizzard
 
 		// Render
 		Renderer2D::ResetStatistics();
-
 		frameBuffer->Bind();
-
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::Clear();
 
@@ -153,7 +148,7 @@ namespace Wizzard
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= viewportBounds[0].x;
 		my -= viewportBounds[0].y;
-		glm::vec2 viewSize = viewportSize;
+		glm::vec2 viewSize = viewportBounds[1] - viewportBounds[0];
 		my = viewSize.y - my;
 		int mouseX = (int)mx;
 		int mouseY = (int)my;

@@ -20,6 +20,7 @@
 #include "component/TransformComponent.h"
 #include "component/BoxCollider2DComponent.h"
 #include "component/CharacterControllerComponent.h"
+#include "component/AudioListenerComponent.h"
 
 namespace Wizzard
 {
@@ -187,6 +188,8 @@ namespace Wizzard
 		CopyComponentIfExists<CameraComponent>(newEntity, entity);
 		CopyComponentIfExists<RigidBody2DComponent>(newEntity, entity);
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
+		CopyComponentIfExists<CharacterControllerComponent>(newEntity, entity);
+		CopyComponentIfExists<AudioListenerComponent>(newEntity, entity);
 	}
 
 	void Scene::DestroyEntity(Entity entity)
@@ -234,6 +237,7 @@ namespace Wizzard
 		CopyComponent<RigidBody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<CharacterControllerComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<AudioListenerComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -353,6 +357,11 @@ namespace Wizzard
 
 	template<>
 	void Scene::OnComponentAdded<CharacterControllerComponent>(Entity entity, CharacterControllerComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<AudioListenerComponent>(Entity entity, AudioListenerComponent& component)
 	{
 	}
 }
