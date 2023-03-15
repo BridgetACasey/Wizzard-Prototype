@@ -11,6 +11,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "audio/Audio.h"
+#include "audio/AudioSource.h"
 #include "base/ResourcePathFinder.h"
 #include "common/Application.h"
 
@@ -26,6 +28,8 @@ namespace Wizzard
 	static ImGuiWindow* currentActiveWindow = nullptr;
 	static ImGuiID currentHoveredID;
 	static ImGuiID currentActiveID;
+
+	static AudioSource windowChangeSFX;
 
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
 	{
@@ -70,16 +74,17 @@ namespace Wizzard
 
 		ImGuiContext* context = ImGui::GetCurrentContext();
 
-		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGuiKeyOwner_None);
-		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGuiKeyOwner_None);
-		context->ConfigNavWindowingKeyNext = ImGuiMod_Shift | ImGuiKey_Tab;	//TODO: Find a way to remap this to a single key press, no key holds
-		context->ConfigNavWindowingKeyPrev = ImGuiKey_None;
-
 		//if (context->ConfigNavWindowingKeyNext)
 		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyNext, ImGuiKeyOwner_None);
 		//
 		//if (context->ConfigNavWindowingKeyPrev)
 		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyPrev, ImGuiKeyOwner_None);
+
+		ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGuiKeyOwner_None);
+		ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGuiKeyOwner_None);
+
+		//context->ConfigNavWindowingKeyNext = ImGuiMod_None | ImGuiKey_Tab;	//TODO: Find a way to remap this to a single key press, no key holds
+		//context->ConfigNavWindowingKeyPrev = ImGuiKey_None;
 
 		std::string fontPath = ResourcePath::GetResourcePath(FONT, "OpenSans-Bold.ttf");
 		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), imFontConfig.SizePixels, &imFontConfig);
@@ -115,6 +120,11 @@ namespace Wizzard
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(window, true);	//TODO: Make imgui implementation calls API agnostic
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		if(Audio::IsActive())
+		{
+			windowChangeSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "page-flip-01a.mp3"), false);
+		}
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -236,6 +246,8 @@ namespace Wizzard
 		uiWindowMessageID = uiWindowFocusEvent.GetElementID();
 		logWindowMessage = true;
 
+		Audio::Play(windowChangeSFX);
+
 		return false;
 	}
 
@@ -254,7 +266,7 @@ namespace Wizzard
 		WIZ_TRACE(uiElementSelectedEvent);
 
 		uiElementMessageID = uiElementSelectedEvent.GetElementID();
-		logElementMessage = true;
+		//logElementMessage = true;
 
 		return false;
 	}

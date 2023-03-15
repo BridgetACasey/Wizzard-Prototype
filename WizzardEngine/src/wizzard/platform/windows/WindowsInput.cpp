@@ -97,7 +97,7 @@ namespace Wizzard
 
 		bool down = false;
 
-		if(state == GLFW_PRESS || state == GLFW_REPEAT)
+		if(state == GLFW_PRESS)
 		{
 			keyStates.at(keyCode) = DOWN;
 			down = true;

@@ -6,6 +6,7 @@
 #include "wizzard/base/TimeStep.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/MouseEvent.h"
+#include "wizzard/event/KeyEvent.h"
 
 #include <glm/glm.hpp>
 
@@ -42,6 +43,7 @@ namespace Wizzard
 		void UpdateView();
 
 		bool OnMouseScroll(MouseScrolledEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);

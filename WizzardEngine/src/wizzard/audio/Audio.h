@@ -24,6 +24,8 @@ namespace Wizzard
 		static void SetDebugLogging(bool log);
 		static void PrintAudioDeviceInfo();
 
+		static bool IsActive();
+
 	private:
 		static AudioSource LoadAudioSourceMP3(const std::string& fileName);
 		static AudioSource LoadAudioSourceOgg(const std::string& fileName);

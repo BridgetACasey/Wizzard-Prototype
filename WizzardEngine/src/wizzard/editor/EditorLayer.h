@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "wizzard/event/UIEvent.h"
 #include "wizzard/event/KeyEvent.h"
 #include "wizzard/audio/AudioSource.h"
 
@@ -16,8 +17,7 @@
 
 #include "wizzard/editor/ui/panel/ApplicationSettingsPanel.h"
 #include "wizzard/editor/ui/panel/SceneHierarchyPanel.h"
-#include "wizzard/editor/ui/panel/ObjectCreationPanel.h"
-#include "wizzard/editor/ui/panel/ObjectPropertiesPanel.h"
+#include "wizzard/editor/ui/panel/PropertiesPanel.h"
 
 namespace Wizzard
 {
@@ -37,8 +37,10 @@ namespace Wizzard
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
+		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
 
 		void OnOverlayRender() const;
+		void OnViewportToolbarRender();
 
 		void NewProject();
 		bool OpenProject();
@@ -88,8 +90,7 @@ namespace Wizzard
 
 		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;
-		ObjectCreationPanel objCreatePanel;
-		ObjectPropertiesPanel objPropertiesPanel;
+		//PropertiesPanel propertiesPanel;
 
 		Entity hoveredEntity;
 	};

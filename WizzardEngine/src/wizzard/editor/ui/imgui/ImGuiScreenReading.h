@@ -16,8 +16,11 @@ namespace Wizzard
 		static void Init();
 		static void Shutdown();
 
-		static bool WindowBegin(const std::string& windowLabel, bool* isOpen = nullptr, int flags = 0, const std::string& description = "", bool preferDesc = false);
+		static bool Begin(const std::string& windowLabel, bool* isOpen = nullptr, int flags = 0, const std::string& description = "", bool preferDesc = false);
+		static bool End();
+
 		static bool Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description = "", bool preferDesc = false);
+		static bool Checkbox(const std::string& label, bool* flags, const std::string& description = "", bool preferDesc = false);
 
 		static void SetButtonFontScale(float scale) { buttonFontScale = scale; }
 		static float GetButtonFontScale() { return buttonFontScale; }

@@ -8,6 +8,7 @@
 
 #include "imgui_internal.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "input/Input.h"
 #include "scene/component/AudioListenerComponent.h"
 #include "scene/component/BoxCollider2DComponent.h"
 #include "scene/component/CameraComponent.h"
@@ -22,7 +23,7 @@ namespace Wizzard
 {
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
-		ImGuiSR::WindowBegin("Scene Hierarchy");
+		ImGuiSR::Begin("SCENE");
 
 		if (sceneContext)
 		{
@@ -30,24 +31,37 @@ namespace Wizzard
 			{
 				Entity entity{ entityID , sceneContext.get() };
 				DrawEntityNode(entity);
+
+				//TODO: Check if default entity has been deleted from scene, then reset
+				//if (defaultEntity.GetName().empty())
+				//	defaultEntity = entity;
 			});
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 				selectionContext = {};
 
-			// Right-click on blank space
-			if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_NoOpenOverItems))
-			{
-				if (ImGui::MenuItem("Create Empty Entity"))
-					sceneContext->CreateEntity("Empty Entity");
+			static bool openCreatePopup = false;
 
-				ImGui::EndPopup();
+			// Right-click on blank space
+			//TODO: Fix later. Probably use event callbacks instead and pass to editor layer to handle.
+			if (Input::IsKeyPressed(Key::Enter) || Input::IsMouseButtonPressed(Mouse::RightButton))
+				openCreatePopup = !openCreatePopup;
+
+			if (openCreatePopup)
+			{
+				if (ImGui::BeginPopupContextWindow(0))
+				{
+					if (ImGui::MenuItem("Create Empty Entity"))
+						sceneContext->CreateEntity("Empty Entity");
+
+					ImGui::EndPopup();
+				}
 			}
 
 		}
 		ImGui::End();
 
-		ImGuiSR::WindowBegin("Properties");
+		ImGuiSR::Begin("PROPERTIES");
 		if (selectionContext)
 		{
 			DrawComponents(selectionContext);
@@ -59,6 +73,11 @@ namespace Wizzard
 	void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
 	{
 		selectionContext = entity;
+	}
+
+	void SceneHierarchyPanel::SetSelectedEntityToDefault()
+	{
+		selectionContext = defaultEntity;
 	}
 
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)

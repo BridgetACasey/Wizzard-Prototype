@@ -49,6 +49,8 @@ namespace Wizzard
 	static uint8_t* audioScratchBuffer;
 	static uint32_t audioScratchBufferSize = 10 * 1024 * 1024; // 10mb initially
 
+	static bool isActive = false;
+
 	static AudioFileFormat GetFileFormat(const std::string& fileName)
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -97,6 +99,8 @@ namespace Wizzard
 			audioScratchBuffer = new uint8_t[audioScratchBufferSize];
 
 			WIZ_INFO("Successfully initalised OpenAL...");
+
+			isActive = true;
 		}
 	}
 
@@ -127,6 +131,11 @@ namespace Wizzard
 			WIZ_INFO("Mono: {0}", audioData->device->NumMonoSources);
 			WIZ_INFO("Stereo: {0}", audioData->device->NumStereoSources);
 		}
+	}
+
+	bool Audio::IsActive()
+	{
+		return isActive;
 	}
 
 	AudioSource Audio::LoadAudioSource(const std::string& fileName)

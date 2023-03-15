@@ -9,6 +9,10 @@
 #include "wizzard/input/MouseCode.h"
 #include "wizzard/event/EventHandler.h"
 
+#include "audio/Audio.h"
+#include "audio/AudioSource.h"
+#include "base/ResourcePathFinder.h"
+
 #include <glfw/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -16,10 +20,21 @@
 
 namespace Wizzard
 {
+	static AudioSource zoomInSFX;
+	static AudioSource zoomOutSFX;
+
 	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
 		: m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 	{
 		UpdateView();
+
+		if (Audio::IsActive())
+		{
+			zoomInSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "178187__snapper4298__lens-zooming-in.mp3"), false);
+			zoomOutSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "178187__snapper4298__lens-zooming-out.mp3"), false);
+		}
+		else
+			WIZ_ERROR("Could not initialise SFX for EditorCamera!");
 	}
 
 	void EditorCamera::UpdateProjection()
@@ -79,20 +94,52 @@ namespace Wizzard
 				MouseZoom(delta.y);
 		}
 
+		if(Input::IsKeyDown(Key::LeftBracket))
+		{
+			float delta = -1.5f * ts;	//TODO: Set default values for keyboard zoom/pan/rotate speeds
+			MouseZoom(delta);
+			UpdateView();
+		}
+		else if(Input::IsKeyDown(Key::RightBracket))
+		{
+			float delta = 1.5f * ts;
+			MouseZoom(delta);
+			UpdateView();
+		}
+
 		UpdateView();
 	}
 
 	void EditorCamera::OnEvent(Event& e)
 	{
-		EventHandler dispatcher(e);
-		dispatcher.HandleEvent<MouseScrolledEvent>(WIZ_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
+		EventHandler handler(e);
+		handler.HandleEvent<MouseScrolledEvent>(WIZ_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
+		handler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorCamera::OnKeyPressed));
 	}
 
 	bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
 	{
 		float delta = e.GetYOffset() * 0.1f;
+
 		MouseZoom(delta);
 		UpdateView();
+
+		Audio::Play(zoomInSFX);
+
+		return false;
+	}
+
+	bool EditorCamera::OnKeyPressed(KeyPressedEvent& keyEvent)
+	{
+		if (keyEvent.GetKeyCode() == Key::LeftBracket)
+		{
+			Audio::Play(zoomInSFX);
+		}
+		else if (keyEvent.GetKeyCode() == Key::RightBracket)
+		{
+			Audio::Play(zoomOutSFX);
+		}
+
 		return false;
 	}
 

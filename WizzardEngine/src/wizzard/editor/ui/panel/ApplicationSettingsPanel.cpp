@@ -17,7 +17,7 @@ namespace Wizzard
     {
 		static bool openExitMenu = false;
 
-        ImGuiSR::WindowBegin("Settings");
+        ImGuiSR::Begin("PROJECT");
 
 		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
 		{
@@ -42,7 +42,7 @@ namespace Wizzard
 
 		//TODO: Add SR functions for remaining ImGui elements
 		static bool tutorial = true;
-		if(ImGui::Checkbox("TUTORIAL MESSAGES", &tutorial))
+		if(ImGuiSR::Checkbox("TUTORIAL MESSAGES", &tutorial))
 		{
 			/*
 			 * ...
@@ -63,7 +63,7 @@ namespace Wizzard
 		{
 			ImGuiWindowFlags exitFlags = ImGuiWindowFlags_NoResize;
 
-			if (ImGuiSR::WindowBegin("Exit Menu", nullptr, exitFlags))
+			if (ImGuiSR::Begin("Exit Menu", nullptr, exitFlags))
 			{
 				ImGui::Text("Quit application?");
 

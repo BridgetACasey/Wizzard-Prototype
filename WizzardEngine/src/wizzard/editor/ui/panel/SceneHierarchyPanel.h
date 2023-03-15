@@ -16,6 +16,7 @@ namespace Wizzard
 
 		Entity GetSelectedEntity() const { return selectionContext; }
 		void SetSelectedEntity(Entity entity);
+		void SetSelectedEntityToDefault();
 
 	private:
 		void DrawComponents(Entity entity);
@@ -25,5 +26,6 @@ namespace Wizzard
 		void DisplayAddComponentEntry(const std::string& entryName);
 
 		Entity selectionContext = {};
+		Entity defaultEntity = {};
 	};
 }

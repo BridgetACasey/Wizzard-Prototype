@@ -23,7 +23,12 @@ namespace Wizzard
 
 	void ImGuiSR::Init()
 	{
-		clickSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "Logitech-mouse-click.mp3"), false);
+		if (Audio::IsActive())
+		{
+			clickSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "Logitech-mouse-click.mp3"), false);
+		}
+		else
+			WIZ_ERROR("Could not initialise SFX for ImGuiScreenReading!");
 	}
 
 	void ImGuiSR::Shutdown()
@@ -31,7 +36,7 @@ namespace Wizzard
 		clickSFX.FreeSource();
 	}
 
-	bool ImGuiSR::WindowBegin(const std::string& windowLabel, bool* isOpen, int flags, const std::string& description, bool preferDesc)
+	bool ImGuiSR::Begin(const std::string& windowLabel, bool* isOpen, int flags, const std::string& description, bool preferDesc)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -53,6 +58,13 @@ namespace Wizzard
 		}
 
 		return success;
+	}
+
+	bool ImGuiSR::End()
+	{
+		ImGui::End();
+
+		return true;
 	}
 
 	bool ImGuiSR::Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description, bool preferDesc)
@@ -77,6 +89,33 @@ namespace Wizzard
 		}
 
 		if(pressed)
+			Audio::Play(clickSFX);
+
+		return pressed;
+	}
+
+	bool ImGuiSR::Checkbox(const std::string& label, bool* flags, const std::string& description, bool preferDesc)
+	{
+		WIZ_PROFILE_FUNCTION();
+
+		bool pressed = ImGui::Checkbox(label.c_str(), flags);
+
+		ImGuiLayer* imguiLayer = Application::Get().GetImGuiLayer();
+
+		if (imguiLayer->GetLogElementMessage())
+		{
+			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
+			{
+				if (preferDesc && !description.empty())
+					ScreenReaderSupport::OutputAll(description);
+				else if (!preferDesc)
+					ScreenReaderSupport::OutputAll(label);
+
+				imguiLayer->SetLogElementMessage(false);
+			}
+		}
+
+		if (pressed)
 			Audio::Play(clickSFX);
 
 		return pressed;

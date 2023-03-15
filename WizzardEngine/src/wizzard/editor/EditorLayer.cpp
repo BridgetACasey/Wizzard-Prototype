@@ -87,10 +87,11 @@ namespace Wizzard
 
 		appSettingsPanel.SetSceneContext(activeScene);
 		sceneHierarchyPanel.SetSceneContext(activeScene);
-		objCreatePanel.SetSceneContext(activeScene);
-		objPropertiesPanel.SetSceneContext(activeScene);
 
 		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+		//editorCamera.se
+
+		gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 	}
 
 	void EditorLayer::OnDetach()
@@ -162,12 +163,6 @@ namespace Wizzard
 				WIZ_TRACE("Hovered Entity: {0}", hoveredEntity.GetName());
 		}
 
-		//if (Input::IsMouseButtonPressed(Mouse::LeftButton))
-		//{
-		//	if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyDown(Key::LeftAlt))
-		//		sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
-		//}
-
 		if (!ImGuizmo::IsUsing())
 		{
 			if (Input::IsKeyPressed(Key::W))
@@ -196,11 +191,11 @@ namespace Wizzard
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen_persistant = true;
 		bool opt_fullscreen = opt_fullscreen_persistant;
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_AutoHideTabBar;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;//ImGuiDockNodeFlags_AutoHideTabBar;
 
 		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		// because it would be confusing to have two docking targets within each others.
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;// ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
 			ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -221,8 +216,8 @@ namespace Wizzard
 		//TEMP CODE FOR TESTING & DEMO PURPOSES ONLY
 		//UI will not be handled like this in final application
 		static bool openFileMenu = true;
-		static bool openEditMenu = false;
-		static bool openObjectMenu = false;
+		static bool openEditMenu = true;
+		static bool openObjectMenu = true;
 
 		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
@@ -243,78 +238,17 @@ namespace Wizzard
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		if (ImGui::BeginMainMenuBar())
-		{
-			float windowWidth = (float)Application::Get().GetWindow().GetWidth() / 6.15f;
-
-			if (ImGuiSR::Button("PROJECT", ImVec2(windowWidth, 80.5f)))
-			{
-				ImGui::SetItemDefaultFocus();
-				openFileMenu = !openFileMenu;
-			}
-
-			if (ImGuiSR::Button("SCENE", ImVec2(windowWidth, 80.5f)))
-				openEditMenu = !openEditMenu;
-
-			if (ImGuiSR::Button("CREATE", ImVec2(windowWidth, 80.5f)))
-				openObjectMenu = !openObjectMenu;
-
-			//Temp
-			static std::string playButtonLabel = "PLAY";
-			static std::string playButtonDesc = "Play scene.";
-
-			if (ImGuiSR::Button(playButtonLabel, ImVec2(windowWidth, 80.5f), playButtonDesc, true))
-			{
-				switch(activeScene->GetState())
-				{
-					case SceneState::EDIT:
-					case SceneState::PAUSED:
-					{
-						OnSceneBeginPlay();
-						playButtonLabel = "PAUSE";
-						playButtonDesc = "Pause scene.";
-					}
-						break;
-					case SceneState::PLAY:
-					{
-						OnScenePausePlay();
-						playButtonLabel = "PLAY";
-						playButtonDesc = "Play scene.";
-					}
-				}
-			}
-
-			if (ImGuiSR::Button("STOP", ImVec2(windowWidth, 80.5f), "Stop scene.", true))
-			{
-				if (activeScene->GetState() == SceneState::PLAY || activeScene->GetState() == SceneState::PAUSED)
-				{
-					OnSceneEndPlay();
-					playButtonLabel = "PLAY";
-					playButtonDesc = "Play scene.";
-				}
-			}
-
-			ImGui::EndMainMenuBar();
-		}
+		if (openEditMenu)
+			sceneHierarchyPanel.OnImGuiRender();
 
 		if (openFileMenu)
 			appSettingsPanel.OnImGuiRender();
-
-		if (openEditMenu)
-		{
-			sceneHierarchyPanel.OnImGuiRender();
-			//objPropertiesPanel.OnImGuiRender();
-		}
-
-		if (openObjectMenu)
-			objCreatePanel.OnImGuiRender();
-
 
 		//-----RENDERING THE VIEWPORT-----
 
 			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
-			ImGuiSR::WindowBegin("Viewport", nullptr, viewportFlags);
+			ImGuiSR::Begin("VIEWPORT", nullptr, viewportFlags);
 
 			auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 			auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
@@ -390,6 +324,7 @@ namespace Wizzard
 		EventHandler eventHandler(event);
 		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 		eventHandler.HandleEvent<MouseButtonPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+		eventHandler.HandleEvent<UIWindowFocusEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnUIWindowFocus));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
@@ -404,6 +339,15 @@ namespace Wizzard
 			if (isViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
 		}
+
+		return false;
+	}
+
+	bool EditorLayer::OnUIWindowFocus(UIWindowFocusEvent& uiEvent)
+	{
+		if (isViewportFocused && sceneHierarchyPanel.GetSelectedEntity().GetName().empty())
+			sceneHierarchyPanel.SetSelectedEntityToDefault();
+
 		return false;
 	}
 
@@ -421,6 +365,48 @@ namespace Wizzard
 			Renderer2D::BeginScene(editorCamera);
 
 		Renderer2D::EndScene();
+	}
+
+	void EditorLayer::OnViewportToolbarRender()
+	{
+		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		//Temp??
+		static std::string playButtonLabel = "PLAY";
+		static std::string playButtonDesc = "Play scene.";
+
+		if (ImGuiSR::Button(playButtonLabel, ImVec2(175.0f, 80.5f), playButtonDesc, true))
+		{
+			switch (activeScene->GetState())
+			{
+				case SceneState::EDIT:
+				case SceneState::PAUSED:
+				{
+					OnSceneBeginPlay();
+					playButtonLabel = "PAUSE";
+					playButtonDesc = "Pause scene.";
+				}
+				break;
+				case SceneState::PLAY:
+				{
+					OnScenePausePlay();
+					playButtonLabel = "PLAY";
+					playButtonDesc = "Play scene.";
+				}
+			}
+		}
+
+		if (ImGuiSR::Button("STOP", ImVec2(175.0f, 80.5f), "Stop scene.", true))
+		{
+			if (activeScene->GetState() == SceneState::PLAY || activeScene->GetState() == SceneState::PAUSED)
+			{
+				OnSceneEndPlay();
+				playButtonLabel = "PLAY";
+				playButtonDesc = "Play scene.";
+			}
+		}
+
+		ImGui::End();
 	}
 
 	void EditorLayer::NewProject()
