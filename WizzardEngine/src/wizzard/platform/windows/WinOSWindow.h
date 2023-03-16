@@ -24,6 +24,8 @@ namespace Wizzard
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
 
+		void SetWindowTitle(const std::string& title) override;
+
 	private:
 		GLFWwindow* glfwWindow;
 

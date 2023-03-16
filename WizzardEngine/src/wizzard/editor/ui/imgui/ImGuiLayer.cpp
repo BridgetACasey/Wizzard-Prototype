@@ -21,9 +21,6 @@
 
 namespace Wizzard
 {
-//TODO: Use lambda instead of std::bind perhaps?
-#define BIND_EVENT_FN(x) std::bind(&ImGuiLayer::x, this, std::placeholders::_1)
-
 	static ImGuiWindow* currentHoveredWindow = nullptr;
 	static ImGuiWindow* currentActiveWindow = nullptr;
 	static ImGuiID currentHoveredID;
@@ -134,6 +131,8 @@ namespace Wizzard
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+
+		windowChangeSFX.FreeSource();
 	}
 
 	void ImGuiLayer::Begin()
@@ -215,10 +214,10 @@ namespace Wizzard
 
 		EventHandler eventHandler(event);
 
-		eventHandler.HandleEvent<UIWindowHoveredEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowHoveredEvent));
-		eventHandler.HandleEvent<UIWindowFocusEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIWindowFocusEvent));
-		eventHandler.HandleEvent<UIElementHoveredEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementHovered));
-		eventHandler.HandleEvent<UIElementSelectedEvent>(BIND_EVENT_FN(ImGuiLayer::OnUIElementSelected));
+		eventHandler.HandleEvent<UIWindowHoveredEvent>(WIZ_BIND_EVENT_FN(ImGuiLayer::OnUIWindowHoveredEvent));
+		eventHandler.HandleEvent<UIWindowFocusEvent>(WIZ_BIND_EVENT_FN(ImGuiLayer::OnUIWindowFocusEvent));
+		eventHandler.HandleEvent<UIElementHoveredEvent>(WIZ_BIND_EVENT_FN(ImGuiLayer::OnUIElementHovered));
+		eventHandler.HandleEvent<UIElementSelectedEvent>(WIZ_BIND_EVENT_FN(ImGuiLayer::OnUIElementSelected));
 
 		if(blockImGuiEvents)
 		{

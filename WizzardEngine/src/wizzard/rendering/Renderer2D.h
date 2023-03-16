@@ -4,7 +4,7 @@
 
 #include "Texture.h"
 #include "Camera.h"
-#include "EditorCamera.h"
+#include "wizzard/editor/EditorCamera.h"
 #include "OrthographicCamera.h"
 #include "wizzard/scene/component/SpriteComponent.h"
 

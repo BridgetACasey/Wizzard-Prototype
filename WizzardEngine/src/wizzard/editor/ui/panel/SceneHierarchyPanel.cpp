@@ -7,6 +7,7 @@
 #include <imgui.h>
 
 #include "imgui_internal.h"
+#include "wizzard/event/EventHandler.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "input/Input.h"
 #include "scene/component/AudioListenerComponent.h"
@@ -23,7 +24,7 @@ namespace Wizzard
 {
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
-		ImGuiSR::Begin("SCENE");
+		ImGuiSR::Begin("SCENE", nullptr, 0, "Scene hierarchy.", true);
 
 		if (sceneContext)
 		{
@@ -44,24 +45,30 @@ namespace Wizzard
 
 			// Right-click on blank space
 			//TODO: Fix later. Probably use event callbacks instead and pass to editor layer to handle.
-			if (Input::IsKeyPressed(Key::Enter) || Input::IsMouseButtonPressed(Mouse::RightButton))
+			//if (Input::IsKeyPressed(Key::Enter) || Input::IsMouseButtonPressed(Mouse::RightButton))
+				
+
+			if(ImGuiSR::Button("CREATE ENTITY", ImVec2(440.0f, 80.5f)))
+			{
 				openCreatePopup = !openCreatePopup;
+			}
 
 			if (openCreatePopup)
 			{
-				if (ImGui::BeginPopupContextWindow(0))
+				if (ImGui::BeginPopup(0))
 				{
+					ImGui::SetKeyboardFocusHere();
+
 					if (ImGui::MenuItem("Create Empty Entity"))
 						sceneContext->CreateEntity("Empty Entity");
 
 					ImGui::EndPopup();
 				}
 			}
-
 		}
 		ImGui::End();
 
-		ImGuiSR::Begin("PROPERTIES");
+		ImGuiSR::Begin("PROPERTIES", nullptr, 0, "Object properties.", true);
 		if (selectionContext)
 		{
 			DrawComponents(selectionContext);
@@ -90,6 +97,13 @@ namespace Wizzard
 
 		if (ImGui::IsItemClicked() || ImGui::IsItemFocused())
 		{
+			if (selectionContext != entity)
+			{
+				ViewportSelectionChangedEvent selectionEvent(entity, entity.GetUUID(), true);
+
+				selectionData.eventCallback(selectionEvent);
+			}
+
 			selectionContext = entity;
 		}
 
@@ -239,6 +253,14 @@ namespace Wizzard
 		}
 	}
 
+
+	bool SceneHierarchyPanel::OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent)
+	{
+		WIZ_TRACE(sceneEvent);
+
+		return false;
+	}
+
 	void SceneHierarchyPanel::DrawComponents(Entity entity)
 	{
 		if (entity.HasComponent<TagComponent>())
@@ -254,6 +276,8 @@ namespace Wizzard
 			}
 		}
 
+		//TODO: Re-add at a later date
+		/*
 		ImGui::SameLine();
 		ImGui::PushItemWidth(-1);
 
@@ -273,6 +297,7 @@ namespace Wizzard
 		}
 
 		ImGui::PopItemWidth();
+		*/
 
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 		{

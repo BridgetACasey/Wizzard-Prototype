@@ -17,7 +17,7 @@ namespace Wizzard
     {
 		static bool openExitMenu = false;
 
-        ImGuiSR::Begin("PROJECT");
+        ImGuiSR::Begin("PROJECT", nullptr, 0, "Project settings.", true);
 
 		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
 		{
@@ -25,20 +25,21 @@ namespace Wizzard
 			serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 		}
 
-		if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
-		{
-			SceneSerialiser serializer(sceneContext);
-			/*
-			 *	...
-				serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-			*/
-		}
-
-		if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
-		{
-			SceneSerialiser serializer(sceneContext);
-			serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		}
+		//TODO: Re-implement these later along with new/open scene functions
+		//if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
+		//{
+		//	SceneSerialiser serializer(sceneContext);
+		//	/*
+		//	 *	...
+		//		serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+		//	*/
+		//}
+		//
+		//if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
+		//{
+		//	SceneSerialiser serializer(sceneContext);
+		//	serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+		//}
 
 		//TODO: Add SR functions for remaining ImGui elements
 		static bool tutorial = true;
@@ -63,7 +64,7 @@ namespace Wizzard
 		{
 			ImGuiWindowFlags exitFlags = ImGuiWindowFlags_NoResize;
 
-			if (ImGuiSR::Begin("Exit Menu", nullptr, exitFlags))
+			if (ImGuiSR::Begin("EXIT MENU", nullptr, exitFlags))
 			{
 				ImGui::Text("Quit application?");
 

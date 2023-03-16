@@ -3,6 +3,7 @@
 #pragma once
 
 #include "EditorPanel.h"
+#include "wizzard/event/SceneEvent.h"
 #include "wizzard/scene/Entity.h"
 
 namespace Wizzard
@@ -10,6 +11,8 @@ namespace Wizzard
 	class SceneHierarchyPanel : public EditorPanel
 	{
 	public:
+		using EventCallbackFunction = std::function<void(Event&)>;
+
 		SceneHierarchyPanel() = default;
 
 		void OnImGuiRender() override;
@@ -18,7 +21,16 @@ namespace Wizzard
 		void SetSelectedEntity(Entity entity);
 		void SetSelectedEntityToDefault();
 
+		void SetEventCallback(const EventCallbackFunction& callback) { selectionData.eventCallback = callback; }
+
 	private:
+		struct SelectionData
+		{
+			EventCallbackFunction eventCallback;
+		};
+
+		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
+
 		void DrawComponents(Entity entity);
 		void DrawEntityNode(Entity entity);
 
@@ -27,5 +39,7 @@ namespace Wizzard
 
 		Entity selectionContext = {};
 		Entity defaultEntity = {};
+
+		SelectionData selectionData;
 	};
 }

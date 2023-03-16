@@ -6,7 +6,7 @@
 
 #include "wizzard/base/Timestep.h"
 #include "wizzard/common/UUID.h"
-#include "wizzard/rendering/EditorCamera.h"
+#include "wizzard/editor/EditorCamera.h"
 
 class b2World;
 

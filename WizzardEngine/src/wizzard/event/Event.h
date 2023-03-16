@@ -45,7 +45,9 @@ namespace Wizzard
 		UIWindowHovered,
 		UIWindowFocus,
 		UIElementHovered,
-		UIElementSelected
+		UIElementSelected,
+
+		ViewportSelectionChanged
 	};
 
 	enum EventCategory
@@ -56,7 +58,8 @@ namespace Wizzard
 		EventCategoryKeyboard = BIT(2),
 		EventCategoryMouse = BIT(3),
 		EventCategoryMouseButton = BIT(4),
-		EventCategoryEditor = BIT(5)
+		EventCategoryEditor = BIT(5),
+		EventCategoryScene = BIT(6)
 	};
 
 	class Event

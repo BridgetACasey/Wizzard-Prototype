@@ -15,8 +15,6 @@
 
 namespace Wizzard
 {
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
-
 	Application* Application::appInstance = nullptr;
 
 	Application::Application(const std::string& name)
@@ -88,8 +86,8 @@ namespace Wizzard
 
 		EventHandler eventHandler(event);
 		
-		eventHandler.HandleEvent<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
-		eventHandler.HandleEvent<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
+		eventHandler.HandleEvent<WindowCloseEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowClose));
+		eventHandler.HandleEvent<WindowResizeEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
@@ -110,7 +108,7 @@ namespace Wizzard
 		graphicsContext->Init();
 
 		window->SetVSync(true);
-		window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+		window->SetEventCallback(WIZ_BIND_EVENT_FN(Application::OnEvent));
 
 		Input::Init();
 		Audio::Init();
@@ -126,6 +124,11 @@ namespace Wizzard
 		WIZ_PROFILE_FUNCTION();
 
 		WIZ_TRACE("Beginning WIZZARD Engine shutdown sequence...");
+
+		for (Layer* layer : layerStack)
+		{
+			layer->OnDetach();
+		}
 
 		Input::Shutdown();
 		ScreenReaderSupport::Shutdown();

@@ -66,6 +66,12 @@ namespace Wizzard
 		return windowData.vSync;
 	}
 
+	void WinOSWindow::SetWindowTitle(const std::string& title)
+	{
+		windowData.title = title;
+		glfwSetWindowTitle(glfwWindow, windowData.title.c_str());
+	}
+
 	void WinOSWindow::Init(const WindowProps & props)
 	{
 		WIZ_PROFILE_FUNCTION();

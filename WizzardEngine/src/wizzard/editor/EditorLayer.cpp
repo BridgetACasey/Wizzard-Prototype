@@ -16,6 +16,7 @@
 #include "scene/component/SpriteComponent.h"
 #include "editor/ui/screenreading/ScreenReaderSupport.h"
 #include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
+#include "wizzard/audio/Audio.h"
 
 #include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/base/Maths.h"
@@ -35,9 +36,8 @@ namespace Wizzard
 
 	void EditorLayer::OnAttach()
 	{
-		customTexture = Texture2D::Create(ResourcePath::GetResourcePath(TEXTURE, "smiley.png"));
-
-		music = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(MUSIC, "examplemusic.mp3"), false);
+		levelMusic = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(MUSIC, "game-comedy-interesting-playful-sweet-bright-childish-music-57040.mp3"), false);
+		levelMusic.SetGain(0.25f);
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1920;
@@ -48,9 +48,12 @@ namespace Wizzard
 		editorScene = CreateRef<Scene>();
 		activeScene = editorScene;
 
+		Application::Get().GetWindow().SetWindowTitle("Game Editor - Example Scene");	//TODO: Fix this to match actual scene name!
+
 		// Entity - playable character, hence camera attached
 		auto square = activeScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		square.GetComponent<TransformComponent>().Scale.x *= 0.5f;
 		square.AddComponent<RigidBody2DComponent>();
 		square.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
 		square.AddComponent<BoxCollider2DComponent>();
@@ -83,20 +86,22 @@ namespace Wizzard
 		floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
 		floor.AddComponent<BoxCollider2DComponent>();
 		
-		squareEntity = square;
+		playerEntity = square;
 
 		appSettingsPanel.SetSceneContext(activeScene);
 		sceneHierarchyPanel.SetSceneContext(activeScene);
+		//propertiesPanel.SetSceneContext(activeScene);
+
+		sceneHierarchyPanel.SetEventCallback(WIZ_BIND_EVENT_FN(EditorLayer::OnEvent));
 
 		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-		//editorCamera.se
 
 		gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 	}
 
 	void EditorLayer::OnDetach()
 	{
-		music.FreeSource();
+		levelMusic.FreeSource();
 	}
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
@@ -173,6 +178,18 @@ namespace Wizzard
 				gizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 
+		if(Input::IsKeyPressed(Key::Space) || Input::IsMouseButtonPressed(Mouse::LeftButton))
+		{
+			if(isViewportFocused && hoveredEntity)
+			{
+				sceneHierarchyPanel.SetSelectedEntity(hoveredEntity);
+
+				ViewportSelectionChangedEvent sceneEvent(hoveredEntity, hoveredEntity.GetUUID(), true);
+				OnViewportSelectionChanged(sceneEvent);
+				//editorCamera.FocusOnPoint(hoveredEntity.GetComponent<TransformComponent>().Translation);
+			}
+		}
+
 		if (Input::IsKeyPressed(Key::Z))
 		{
 			WIZ_TRACE("Attempting to detect screen reader at runtime.");
@@ -213,12 +230,6 @@ namespace Wizzard
 			window_flags |= ImGuiWindowFlags_NoBackground;
 
 
-		//TEMP CODE FOR TESTING & DEMO PURPOSES ONLY
-		//UI will not be handled like this in final application
-		static bool openFileMenu = true;
-		static bool openEditMenu = true;
-		static bool openObjectMenu = true;
-
 		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
 		// all active windows docked into it will lose their parent and become undocked.
@@ -238,11 +249,9 @@ namespace Wizzard
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		if (openEditMenu)
 			sceneHierarchyPanel.OnImGuiRender();
-
-		if (openFileMenu)
 			appSettingsPanel.OnImGuiRender();
+			//propertiesPanel.OnImGuiRender();
 
 		//-----RENDERING THE VIEWPORT-----
 
@@ -259,6 +268,7 @@ namespace Wizzard
 			isViewportFocused = ImGui::IsWindowFocused();
 			isViewportHovered = ImGui::IsWindowHovered();
 
+			editorCamera.SetEnableUserControl(isViewportHovered && isViewportFocused);
 			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportHovered);
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -309,6 +319,8 @@ namespace Wizzard
 				}
 			}
 
+			OnViewportToolbarRender();
+
 			ImGui::End();	//End Viewport
 
 		ImGui::End();	//End Dockspace Demo
@@ -325,10 +337,18 @@ namespace Wizzard
 		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 		eventHandler.HandleEvent<MouseButtonPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 		eventHandler.HandleEvent<UIWindowFocusEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnUIWindowFocus));
+		eventHandler.HandleEvent<ViewportSelectionChangedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionChanged));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
+		if(keyEvent.GetKeyCode() == Key::F)
+		{
+			Entity selectedEntity = sceneHierarchyPanel.GetSelectedEntity();
+			if (selectedEntity)
+				editorCamera.FocusOnPoint(selectedEntity.GetComponent<TransformComponent>().Translation);
+		}
+
 		return false;
 	}
 
@@ -347,6 +367,15 @@ namespace Wizzard
 	{
 		if (isViewportFocused && sceneHierarchyPanel.GetSelectedEntity().GetName().empty())
 			sceneHierarchyPanel.SetSelectedEntityToDefault();
+
+		return false;
+	}
+
+	bool EditorLayer::OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent)
+	{
+		editorCamera.FocusOnPoint(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
+
+		ScreenReaderSupport::OutputAll(sceneEvent.GetSelectionContext().GetName());
 
 		return false;
 	}
@@ -396,6 +425,8 @@ namespace Wizzard
 			}
 		}
 
+		ImGui::SameLine();
+
 		if (ImGuiSR::Button("STOP", ImVec2(175.0f, 80.5f), "Stop scene.", true))
 		{
 			if (activeScene->GetState() == SceneState::PLAY || activeScene->GetState() == SceneState::PAUSED)
@@ -407,27 +438,6 @@ namespace Wizzard
 		}
 
 		ImGui::End();
-	}
-
-	void EditorLayer::NewProject()
-	{
-	}
-
-	bool EditorLayer::OpenProject()
-	{
-		return false;
-	}
-
-	void EditorLayer::OpenProject(const std::filesystem::path& path)
-	{
-	}
-
-	void EditorLayer::SaveProject()
-	{
-	}
-
-	void EditorLayer::SaveProjectAs()
-	{
 	}
 
 	void EditorLayer::NewScene()
@@ -458,6 +468,8 @@ namespace Wizzard
 		activeScene->OnBeginPlay();
 
 		sceneHierarchyPanel.SetSceneContext(activeScene);
+
+		Audio::Play(levelMusic);
 	}
 
 	void EditorLayer::OnSceneEndPlay()
@@ -471,6 +483,8 @@ namespace Wizzard
 		activeScene = Scene::Copy(editorScene);
 
 		sceneHierarchyPanel.SetSceneContext(activeScene);
+
+		Audio::Stop(levelMusic);
 	}
 
 	void EditorLayer::OnScenePausePlay() const

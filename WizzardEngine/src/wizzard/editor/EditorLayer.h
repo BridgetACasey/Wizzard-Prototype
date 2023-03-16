@@ -4,6 +4,7 @@
 
 #include "wizzard/event/UIEvent.h"
 #include "wizzard/event/KeyEvent.h"
+#include "wizzard/event/SceneEvent.h"
 #include "wizzard/audio/AudioSource.h"
 
 #include "wizzard/common/Layer.h"
@@ -11,13 +12,12 @@
 
 #include "wizzard/rendering/Framebuffer.h"
 #include "wizzard/rendering/Shader.h"
-#include "wizzard/rendering/Texture.h"
 #include "wizzard/rendering/VertexArray.h"
-#include "wizzard/rendering/EditorCamera.h"
 
-#include "wizzard/editor/ui/panel/ApplicationSettingsPanel.h"
-#include "wizzard/editor/ui/panel/SceneHierarchyPanel.h"
-#include "wizzard/editor/ui/panel/PropertiesPanel.h"
+#include "EditorCamera.h"
+#include "ui/panel/ApplicationSettingsPanel.h"
+#include "ui/panel/SceneHierarchyPanel.h"
+#include "ui/panel/PropertiesPanel.h"
 
 namespace Wizzard
 {
@@ -38,15 +38,10 @@ namespace Wizzard
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
 		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
+		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
 
 		void OnOverlayRender() const;
 		void OnViewportToolbarRender();
-
-		void NewProject();
-		bool OpenProject();
-		void OpenProject(const std::filesystem::path& path);
-		void SaveProject();
-		void SaveProjectAs();
 
 		void NewScene();
 		void OpenScene();
@@ -64,29 +59,18 @@ namespace Wizzard
 		Ref<Scene> activeScene;
 		Ref<Scene> editorScene;
 
-		Entity squareEntity;
-		Entity cameraEntity;
+		Entity playerEntity;
 
 		int gizmoType = -1;
-
-		bool primaryCamera = true;
 
 		bool isViewportFocused = false;
 		bool isViewportHovered = false;
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];
 
-		// Temp
-		Ref<VertexArray> squareVA;
-		Ref<Shader> flatShader;
 		Ref<Framebuffer> frameBuffer;
 
-		Ref<Texture2D> customTexture;
-
-		AudioSource music;
-		bool playMusic = false;
-
-		glm::vec4 squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+		AudioSource levelMusic;
 
 		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;
