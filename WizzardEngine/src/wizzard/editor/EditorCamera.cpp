@@ -23,6 +23,7 @@
 
 namespace Wizzard
 {
+	//TODO: Move these somewhere more sensible
 	static AudioSource zoomInSFX;
 	static AudioSource zoomOutSFX;
 

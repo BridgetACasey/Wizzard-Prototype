@@ -17,6 +17,8 @@ namespace Wizzard
 
 	AudioSource::~AudioSource()
 	{
+		if(markForUnload)
+		FreeSource();
 	}
 
 	void AudioSource::FreeSource()
@@ -75,6 +77,7 @@ namespace Wizzard
 	{
 		AudioSource result = Audio::LoadAudioSource(file);
 		result.SetSpatial(spatial);
+
 		return result;
 	}
 }

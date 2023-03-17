@@ -21,7 +21,7 @@
 #include "wizzard/editor/EditorLayer.h"
 
 //Accessibility
-#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 
 //User Interface
 #include "wizzard/editor/ui/imgui/ImGuiLayer.h"

@@ -8,7 +8,7 @@
 
 #include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 #include "wizzard/input/Input.h"
-#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/audio/Audio.h"
 #include "wizzard/rendering/GraphicsContext.h"
 #include "wizzard/rendering/Renderer.h"
@@ -51,6 +51,8 @@ namespace Wizzard
 
 			if (!minimised)
 			{
+				ScreenReaderLogger::OnUpdate();
+
 				//Update all layers
 				for (Layer* layer : layerStack)
 				{
@@ -89,6 +91,8 @@ namespace Wizzard
 		eventHandler.HandleEvent<WindowCloseEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowClose));
 		eventHandler.HandleEvent<WindowResizeEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowResize));
 
+		ScreenReaderLogger::OnEvent(event);
+
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{
 			if (event.isHandled)
@@ -112,7 +116,7 @@ namespace Wizzard
 
 		Input::Init();
 		Audio::Init();
-		ScreenReaderSupport::Init();
+		ScreenReaderLogger::Init();
 		ImGuiSR::Init();
 		Renderer::Init();
 
@@ -131,7 +135,7 @@ namespace Wizzard
 		}
 
 		Input::Shutdown();
-		ScreenReaderSupport::Shutdown();
+		ScreenReaderLogger::Shutdown();
 		ImGuiSR::Shutdown();
 		Audio::Shutdown();
 		Renderer::Shutdown();

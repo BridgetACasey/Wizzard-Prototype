@@ -26,6 +26,8 @@ namespace Wizzard
 	{
 		ImGuiSR::Begin("SCENE", nullptr, 0, "Scene hierarchy.", true);
 
+		ImGui::SetItemDefaultFocus();
+
 		if (sceneContext)
 		{
 			sceneContext->registry.each([&](auto entityID)
@@ -118,10 +120,12 @@ namespace Wizzard
 
 		if (opened)
 		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-			if (opened)
-				ImGui::TreePop();
+			//TODO: Repurpose this when implementing group tagging
+
+			//ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+			//bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
+			//if (opened)
+			//	ImGui::TreePop();
 			ImGui::TreePop();
 		}
 

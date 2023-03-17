@@ -5,6 +5,7 @@
 #include "wizzard/event/UIEvent.h"
 #include "wizzard/event/KeyEvent.h"
 #include "wizzard/event/SceneEvent.h"
+#include "wizzard/event/AudioEvent.h"
 #include "wizzard/audio/AudioSource.h"
 
 #include "wizzard/common/Layer.h"
@@ -71,6 +72,8 @@ namespace Wizzard
 		Ref<Framebuffer> frameBuffer;
 
 		AudioSource levelMusic;
+		AudioSource editorLaunchSFX;
+		AudioSource errorSFX;
 
 		ApplicationSettingsPanel appSettingsPanel;
 		SceneHierarchyPanel sceneHierarchyPanel;

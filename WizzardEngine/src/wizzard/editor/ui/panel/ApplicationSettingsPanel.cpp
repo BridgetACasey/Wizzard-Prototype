@@ -8,16 +8,24 @@
 #include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/common/Application.h"
 #include "wizzard/scene/SceneSerialiser.h"
-#include "wizzard/editor/ui/screenreading/ScreenReaderSupport.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
 namespace Wizzard
 {
+	void ApplicationSettingsPanel::OnEvent(Event& event)
+	{
+		EventHandler eventHandler(event);
+		eventHandler.HandleEvent<ScreenReaderMessageEndedEvent>(WIZ_BIND_EVENT_FN(ApplicationSettingsPanel::OnScreenReaderMessageEnded));
+	}
+
 	void ApplicationSettingsPanel::OnImGuiRender()
     {
 		static bool openExitMenu = false;
 
         ImGuiSR::Begin("PROJECT", nullptr, 0, "Project settings.", true);
+
+		ImGui::SetItemDefaultFocus();
 
 		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
 		{
@@ -71,9 +79,9 @@ namespace Wizzard
 				if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f), "Yes, I want to exit", true))
 				{
 					//TODO: Fix message being cut off by exiting app before speech has finished
-					ScreenReaderSupport::OutputAll("Exiting editor application.");
+					ScreenReaderLogger::QueueOutput("Exiting editor application.");
 
-					if (!ScreenReaderSupport::IsSpeaking())
+					if (!ScreenReaderLogger::IsSpeaking())
 						Application::Get().Close();
 				}
 
@@ -88,4 +96,9 @@ namespace Wizzard
 
         ImGui::End();
     }
+
+	bool ApplicationSettingsPanel::OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent)
+	{
+		return false;
+	}
 }

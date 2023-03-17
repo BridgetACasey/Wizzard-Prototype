@@ -14,7 +14,7 @@
 #include "rendering/Renderer2D.h"
 #include "scene/component/CameraComponent.h"
 #include "scene/component/SpriteComponent.h"
-#include "editor/ui/screenreading/ScreenReaderSupport.h"
+#include "editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 #include "wizzard/audio/Audio.h"
 
@@ -39,6 +39,9 @@ namespace Wizzard
 		levelMusic = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(MUSIC, "game-comedy-interesting-playful-sweet-bright-childish-music-57040.mp3"), false);
 		levelMusic.SetGain(0.25f);
 
+		editorLaunchSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "start-computeraif-14572.mp3"));
+		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"));
+
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1920;
 		fbSpec.height = 1080;
@@ -47,8 +50,6 @@ namespace Wizzard
 
 		editorScene = CreateRef<Scene>();
 		activeScene = editorScene;
-
-		Application::Get().GetWindow().SetWindowTitle("Game Editor - Example Scene");	//TODO: Fix this to match actual scene name!
 
 		// Entity - playable character, hence camera attached
 		auto square = activeScene->CreateEntity("Green Square");
@@ -97,6 +98,12 @@ namespace Wizzard
 		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+
+		Audio::Play(editorLaunchSFX);
+
+		std::string title = "Game Editor - Example Scene";
+		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
+		ScreenReaderLogger::ForceQueueOutput(title);
 	}
 
 	void EditorLayer::OnDetach()
@@ -193,7 +200,7 @@ namespace Wizzard
 		if (Input::IsKeyPressed(Key::Z))
 		{
 			WIZ_TRACE("Attempting to detect screen reader at runtime.");
-			ScreenReaderSupport::DetectScreenReader();
+			ScreenReaderLogger::DetectScreenReader();
 		}
 
 		OnOverlayRender();
@@ -375,7 +382,7 @@ namespace Wizzard
 	{
 		editorCamera.FocusOnPoint(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
 
-		ScreenReaderSupport::OutputAll(sceneEvent.GetSelectionContext().GetName());
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
 
 		return false;
 	}

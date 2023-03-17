@@ -47,7 +47,12 @@ namespace Wizzard
 		UIElementHovered,
 		UIElementSelected,
 
-		ViewportSelectionChanged
+		ViewportSelectionChanged,
+
+		AudioTrackStarted,
+		AudioTrackEnded,
+		ScreenReaderMessageStarted,
+		ScreenReaderMessageEnded
 	};
 
 	enum EventCategory
@@ -59,7 +64,8 @@ namespace Wizzard
 		EventCategoryMouse = BIT(3),
 		EventCategoryMouseButton = BIT(4),
 		EventCategoryEditor = BIT(5),
-		EventCategoryScene = BIT(6)
+		EventCategoryScene = BIT(6),
+		EventCategoryAudio = BIT(7)
 	};
 
 	class Event

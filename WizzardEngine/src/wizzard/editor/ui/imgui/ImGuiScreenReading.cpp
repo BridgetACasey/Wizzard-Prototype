@@ -15,7 +15,7 @@
 #include "audio/AudioSource.h"
 #include "base/ResourcePathFinder.h"
 #include "common/Application.h"
-#include "editor/ui/screenreading/ScreenReaderSupport.h"
+#include "editor/ui/screenreading/ScreenReaderLogger.h"
 
 namespace Wizzard
 {
@@ -33,6 +33,7 @@ namespace Wizzard
 
 	void ImGuiSR::Shutdown()
 	{
+		if(clickSFX.IsLoaded())
 		clickSFX.FreeSource();
 	}
 
@@ -46,12 +47,12 @@ namespace Wizzard
 
 		if (imguiLayer->GetLogWindowMessage())
 		{
-			if (imguiLayer->GetUIWindowMessageID() == ImGui::GetCurrentWindow()->ID)
+			if(imguiLayer->GetUIWindowMessageID() == ImGui::GetCurrentWindow()->ID)
 			{
 				if (preferDesc && !description.empty())
-					ScreenReaderSupport::OutputAll(description);
+					ScreenReaderLogger::ForceQueueOutput(description);
 				else if (!preferDesc)
-					ScreenReaderSupport::OutputAll(windowLabel);
+					ScreenReaderLogger::ForceQueueOutput(windowLabel);
 
 				imguiLayer->SetLogWindowMessage(false);
 			}
@@ -80,9 +81,9 @@ namespace Wizzard
 			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
 			{
 				if (preferDesc && !description.empty())
-					ScreenReaderSupport::OutputAll(description);
+					ScreenReaderLogger::QueueOutput(description);
 				else if (!preferDesc)
-					ScreenReaderSupport::OutputAll(buttonLabel);
+					ScreenReaderLogger::QueueOutput(buttonLabel);
 
 				imguiLayer->SetLogElementMessage(false);
 			}
@@ -107,9 +108,9 @@ namespace Wizzard
 			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
 			{
 				if (preferDesc && !description.empty())
-					ScreenReaderSupport::OutputAll(description);
+					ScreenReaderLogger::QueueOutput(description);
 				else if (!preferDesc)
-					ScreenReaderSupport::OutputAll(label);
+					ScreenReaderLogger::QueueOutput(label);
 
 				imguiLayer->SetLogElementMessage(false);
 			}

@@ -18,6 +18,7 @@
 
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "editor/ui/screenreading/ScreenReaderLogger.h"
 
 namespace Wizzard
 {
@@ -69,19 +70,19 @@ namespace Wizzard
 		ImFontConfig imFontConfig;
 		imFontConfig.SizePixels = 13.0f * 6.0f;
 
-		ImGuiContext* context = ImGui::GetCurrentContext();
-
+		//ImGuiContext* context = ImGui::GetCurrentContext();
+		//
+		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGuiKeyOwner_None);
+		//ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGuiKeyOwner_None);
+		//
 		//if (context->ConfigNavWindowingKeyNext)
 		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyNext, ImGuiKeyOwner_None);
 		//
 		//if (context->ConfigNavWindowingKeyPrev)
 		//	ImGui::SetShortcutRouting(context->ConfigNavWindowingKeyPrev, ImGuiKeyOwner_None);
-
-		ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGuiKeyOwner_None);
-		ImGui::SetShortcutRouting(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGuiKeyOwner_None);
-
-		//context->ConfigNavWindowingKeyNext = ImGuiMod_None | ImGuiKey_Tab;	//TODO: Find a way to remap this to a single key press, no key holds
-		//context->ConfigNavWindowingKeyPrev = ImGuiKey_None;
+		//
+		//context->ConfigNavWindowingKeyNext = ImGuiKey_LeftCtrl;	//TODO: Find a way to remap this to a single key press, no key holds
+		//context->ConfigNavWindowingKeyPrev = ImGuiMod_None | ImGuiKey_Enter;
 
 		std::string fontPath = ResourcePath::GetResourcePath(FONT, "OpenSans-Bold.ttf");
 		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), imFontConfig.SizePixels, &imFontConfig);
@@ -169,7 +170,6 @@ namespace Wizzard
 	void ImGuiLayer::OnImGuiRender()
 	{
 		ImGuiContext* context = ImGui::GetCurrentContext();
-		currentActiveWindow = context->ActiveIdWindow;
 		currentHoveredID = context->HoveredId;
 		currentActiveID = context->ActiveId;
 
@@ -178,18 +178,21 @@ namespace Wizzard
 		 * However, we need to know when this happens so we can trigger output to a screen reader, so using own engine callbacks instead.
 		 */
 
-		//TODO: Fix window hovering event callbacks
-		//if (currentHoveredWindow != nullptr && currentHoveredWindow != context->HoveredWindow)
-		//{
-		//	UIWindowHoveredEvent uiWindowEvent(currentHoveredWindow->ID, true);
-		//	WIZ_INFO("ImGui Window Name: {0}", currentHoveredWindow->Name);
-		//	OnUIWindowHoveredEvent(uiWindowEvent);
-		//}
-
-		if (currentActiveWindow != nullptr && currentActiveWindow != context->ActiveIdPreviousFrameWindow)
+		if (context->HoveredWindow != nullptr && currentHoveredWindow != context->HoveredWindow)
 		{
+			currentHoveredWindow = context->HoveredWindow;
+
+			UIWindowHoveredEvent uiWindowEvent(currentHoveredWindow->ID, true);
+			WIZ_INFO("ImGui Window Name: {0}, TABID: {1}", currentHoveredWindow->Name, currentHoveredWindow->TabId);
+			OnUIWindowHoveredEvent(uiWindowEvent);
+		}
+
+		if (context->ActiveIdWindow != nullptr && currentActiveWindow != context->ActiveIdPreviousFrameWindow)
+		{
+			currentActiveWindow = context->ActiveIdWindow;
+
 			UIWindowFocusEvent uiWindowEvent(currentActiveWindow->ID, true);
-			WIZ_INFO("ImGui Window Name: {0}", currentActiveWindow->Name);
+			WIZ_INFO("ImGui Window Name: {0}, TabID: {1}", currentActiveWindow->Name, currentActiveWindow->TabId);
 			OnUIWindowFocusEvent(uiWindowEvent);
 		}
 
@@ -204,10 +207,8 @@ namespace Wizzard
 			UIElementSelectedEvent uiSelectEvent(currentActiveID, true);
 			OnUIElementSelected(uiSelectEvent);
 		}
-
-		currentHoveredWindow = context->HoveredWindow;
 	}
-
+	
 	void ImGuiLayer::OnEvent(Event& event)
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -243,8 +244,10 @@ namespace Wizzard
 		WIZ_TRACE(uiWindowFocusEvent);
 
 		uiWindowMessageID = uiWindowFocusEvent.GetElementID();
-		logWindowMessage = true;
+		//logWindowMessage = true;
 
+		//TODO: Still have to fix this playing over elements sometimes
+		if(currentActiveID != currentActiveWindow->TabId)
 		Audio::Play(windowChangeSFX);
 
 		return false;
@@ -257,6 +260,8 @@ namespace Wizzard
 		uiElementMessageID = uiElementHoveredEvent.GetElementID();
 		logElementMessage = true;
 
+		//if(uiElementHoveredEvent.GetElementID() == )
+
 		return false;
 	}
 
@@ -266,6 +271,8 @@ namespace Wizzard
 
 		uiElementMessageID = uiElementSelectedEvent.GetElementID();
 		//logElementMessage = true;
+
+		ScreenReaderLogger::Stop();
 
 		return false;
 	}

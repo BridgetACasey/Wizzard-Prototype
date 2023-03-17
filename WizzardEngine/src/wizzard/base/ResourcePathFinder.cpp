@@ -10,15 +10,15 @@ namespace Wizzard
 
 	void ResourcePath::Init()
 	{
-		resourcePaths.emplace(ALL, std::string("res"));
-		resourcePaths.emplace(FONT, std::string("res/font"));
-		resourcePaths.emplace(MUSIC, std::string("res/music"));
-		resourcePaths.emplace(SCENE, std::string("res/scenes"));
-		resourcePaths.emplace(SFX, std::string("res/sfx"));
-		resourcePaths.emplace(SHADER, std::string("res/shaders"));
-		resourcePaths.emplace(TEXTURE, std::string("res/textures"));
-		resourcePaths.emplace(CONFIG, std::string("res/config"));
-		resourcePaths.emplace(DEBUG, std::string("res/debug"));
+		resourcePaths.emplace(ALL, std::string("../Assets/WizzardEngine"));
+		resourcePaths.emplace(FONT, std::string("../Assets/WizzardEngine/font"));
+		resourcePaths.emplace(MUSIC, std::string("../Assets/WizzardEngine/music"));
+		resourcePaths.emplace(SCENE, std::string("../Assets/WizzardEngine/scenes"));
+		resourcePaths.emplace(SFX, std::string("../Assets/WizzardEngine/sfx"));
+		resourcePaths.emplace(SHADER, std::string("../Assets/WizzardEngine/shaders"));
+		resourcePaths.emplace(TEXTURE, std::string("../Assets/WizzardEngine/textures"));
+		resourcePaths.emplace(CONFIG, std::string("../Assets/WizzardEngine/config"));
+		resourcePaths.emplace(DEBUG, std::string("../Assets/WizzardEngine/debug"));
 	}
 
 	void ResourcePath::Shutdown()

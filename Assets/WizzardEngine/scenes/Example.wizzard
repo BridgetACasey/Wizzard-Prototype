@@ -1,8 +1,8 @@
 Scene: Untitled
 Entities:
-  - UUID: 16697186473272642396
+  - UUID: 296562280995113719
     TagComponent:
-      Tag: Ass
+      Tag: Floor
     TransformComponent:
       Translation: [0, -3.5, 0]
       Rotation: [0, 0, 0]
@@ -19,7 +19,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 10249891086505550751
+  - UUID: 5241549905415977105
     TagComponent:
       Tag: Blue Square
     TransformComponent:
@@ -38,7 +38,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 9645119706916649081
+  - UUID: 17590773024278171648
     TagComponent:
       Tag: Red Square
     TransformComponent:
@@ -57,13 +57,13 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 2109606273185420812
+  - UUID: 172421129592292442
     TagComponent:
       Tag: Green Square
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [0.5, 1, 1]
     CameraComponent:
       Camera:
         ProjectionType: 1

@@ -6,6 +6,7 @@
 #include "RenderCommand.h"
 #include "Shader.h"
 #include "VertexArray.h"
+#include "base/ResourcePathFinder.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "platform/opengl/OpenGLShader.h"
 
@@ -98,7 +99,7 @@ namespace Wizzard
 		for (uint32_t i = 0; i < data->MaxTextureSlots; i++)
 			samplers[i] = i;
 
-		data->textureShader = Shader::Create("res/shaders/TextureShader.glsl");
+		data->textureShader = Shader::Create(ResourcePath::GetResourcePath(SHADER, "TextureShader.glsl"));
 		data->textureShader->Bind();
 		data->textureShader->SetIntArray("u_Textures", samplers, data->MaxTextureSlots);
 
