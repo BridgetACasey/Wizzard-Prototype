@@ -20,7 +20,7 @@
 //Editor
 #include "wizzard/editor/EditorLayer.h"
 
-//Accessibility
+//Screen Reading
 #include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 
 //User Interface
@@ -40,6 +40,7 @@
 
 //Audio
 #include "wizzard/audio/Audio.h"
+#include "wizzard/audio/AudioEventListener.h"
 #include "wizzard/audio/AudioSource.h"
 
 //Renderer

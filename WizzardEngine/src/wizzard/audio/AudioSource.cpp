@@ -8,6 +8,7 @@
 #include <alext.h>
 
 #include "Audio.h"
+#include "AudioEventListener.h"
 
 namespace Wizzard
 {
@@ -28,6 +29,20 @@ namespace Wizzard
 
 		if (alIsBuffer(bufferHandle))
 			alDeleteBuffers(1, &bufferHandle);
+	}
+
+	int32_t AudioSource::GetCurrentPlayState()
+	{
+		alGetSourcei(sourceHandle, AL_SOURCE_STATE, &playState);
+
+		return playState;
+	}
+
+	int32_t AudioSource::GetCurrentBufferState()
+	{
+		alGetBufferi(bufferHandle, AL_BUFFER, &bufferState);
+
+		return bufferState;
 	}
 
 	void AudioSource::SetPosition(float x, float y, float z)

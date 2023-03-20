@@ -13,6 +13,8 @@
 #include "examples/common/alhelpers.h"
 
 #include "AudioSource.h"
+#include "AudioEventListener.h"
+
 #include "alc/context.h"
 #include "alc/device.h"
 
@@ -98,6 +100,8 @@ namespace Wizzard
 
 			audioScratchBuffer = new uint8_t[audioScratchBufferSize];
 
+			eventListener = new AudioEventListener();
+
 			WIZ_INFO("Successfully initalised OpenAL...");
 
 			isActive = true;
@@ -107,6 +111,18 @@ namespace Wizzard
 	void Audio::Shutdown()
 	{
 		WIZ_PROFILE_FUNCTION();
+
+		if(eventListener)
+		{
+			delete eventListener;
+			eventListener = nullptr;
+		}
+
+		if(audioScratchBuffer)
+		{
+			delete audioScratchBuffer;
+			audioScratchBuffer = nullptr;
+		}
 
 		CloseAL();
 	}
@@ -184,6 +200,11 @@ namespace Wizzard
 		alSourceStop(audioSource.sourceHandle);
 	}
 
+	void Audio::QueuePlay(const AudioSource& audioSource)
+	{
+		eventListener->QueueAudioSource(audioSource);
+	}
+
 	AudioSource Audio::LoadAudioSourceMP3(const std::string& fileName)
 	{
 		WIZ_PROFILE_FUNCTION();
@@ -223,6 +244,8 @@ namespace Wizzard
 			if(!fileName.empty())
 			WIZ_ERROR("Could not find sound source at {0}", fileName);
 		}
+
+		result.fileName = fileName;	//TODO: Fix this not passing to AudioSource properly
 
 		return result;
 	}

@@ -51,8 +51,6 @@ namespace Wizzard
 
 			if (!minimised)
 			{
-				ScreenReaderLogger::OnUpdate();
-
 				//Update all layers
 				for (Layer* layer : layerStack)
 				{
@@ -90,8 +88,6 @@ namespace Wizzard
 		
 		eventHandler.HandleEvent<WindowCloseEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowClose));
 		eventHandler.HandleEvent<WindowResizeEvent>(WIZ_BIND_EVENT_FN(Application::OnWindowResize));
-
-		ScreenReaderLogger::OnEvent(event);
 
 		for (auto it = layerStack.end(); it != layerStack.begin();)
 		{

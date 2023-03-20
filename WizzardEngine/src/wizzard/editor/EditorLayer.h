@@ -40,6 +40,8 @@ namespace Wizzard
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
 		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
 		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
+		bool OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent);
+		bool OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent);
 
 		void OnOverlayRender() const;
 		void OnViewportToolbarRender();

@@ -23,6 +23,7 @@
 #include "wizzard/scene/SceneSerialiser.h"
 #include <scene/component/TransformComponent.h>
 
+#include "audio/AudioEventListener.h"
 #include "scene/component/BoxCollider2DComponent.h"
 #include "scene/component/CharacterControllerComponent.h"
 #include "scene/component/RigidBody2DComponent.h"
@@ -99,7 +100,8 @@ namespace Wizzard
 
 		gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 
-		Audio::Play(editorLaunchSFX);
+		Audio::QueuePlay(editorLaunchSFX);
+		//Audio::Play(editorLaunchSFX);
 
 		std::string title = "Game Editor - Example Scene";
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
@@ -113,6 +115,9 @@ namespace Wizzard
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
+		Audio::GetEventListener()->OnUpdate();
+		ScreenReaderLogger::OnUpdate();
+
 		activeScene->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 
 		// Resize
@@ -335,6 +340,9 @@ namespace Wizzard
 
 	void EditorLayer::OnEvent(Event& event)
 	{
+		Audio::GetEventListener()->OnEvent(event);
+		ScreenReaderLogger::OnEvent(event);
+
 		orthoCamController.OnEvent(event);
 
 		if(activeScene->GetState() == SceneState::EDIT)
@@ -345,6 +353,8 @@ namespace Wizzard
 		eventHandler.HandleEvent<MouseButtonPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 		eventHandler.HandleEvent<UIWindowFocusEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnUIWindowFocus));
 		eventHandler.HandleEvent<ViewportSelectionChangedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionChanged));
+		eventHandler.HandleEvent<AudioTrackStartedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnAudioTrackStarted));
+		eventHandler.HandleEvent<AudioTrackEndedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnAudioTrackEnded));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
@@ -384,6 +394,16 @@ namespace Wizzard
 
 		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
 
+		return false;
+	}
+
+	bool EditorLayer::OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent)
+	{
+		return false;
+	}
+
+	bool EditorLayer::OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent)
+	{
 		return false;
 	}
 
