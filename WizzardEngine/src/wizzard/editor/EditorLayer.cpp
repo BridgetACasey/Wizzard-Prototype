@@ -281,11 +281,43 @@ namespace Wizzard
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
+		if (windowFocusUpdated && focusedWindow == 0)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("SCENE HIERARCHY");
+			//Input::SetMousePosition(0.0f, 0.0f);
+			windowFocusUpdated = false;
+		}
 		sceneHierarchyPanel.OnImGuiRender();
+
+		if (windowFocusUpdated && focusedWindow == 1)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("OBJECT PROPERTIES");
+			//Input::SetMousePosition(0.0f, 0.0f);
+			windowFocusUpdated = false;
+		}
+		sceneHierarchyPanel.OnRenderPropertiesPanel();
+
+		if (windowFocusUpdated && focusedWindow == 2)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("PROJECT SETTINGS");
+			//Input::SetMousePosition(0.0f, 0.0f);
+			windowFocusUpdated = false;
+		}
 		appSettingsPanel.OnImGuiRender();
+
 		//propertiesPanel.OnImGuiRender();
 
 		//-----RENDERING THE VIEWPORT-----
+
+		if (windowFocusUpdated && focusedWindow == 3)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("VIEWPORT");
+			//Input::SetMousePosition(0.0f, 0.0f);
+		}
 
 			static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
@@ -301,7 +333,14 @@ namespace Wizzard
 			isViewportHovered = ImGui::IsWindowHovered();
 
 			editorCamera.SetEnableUserControl(isViewportHovered && isViewportFocused);
-			Application::Get().GetImGuiLayer()->BlockImGuiEvents(!isViewportHovered);
+			Application::Get().GetImGuiLayer()->BlockImGuiEvents(false);
+			//Application::Get().GetImGuiLayer()->BlockImGuiEvents(isViewportHovered && isViewportFocused);
+
+			if(windowFocusUpdated)
+			{
+				Input::SetMousePosition(viewportOffset.x + (viewportSize.x / 2.0f), viewportOffset.y + (viewportSize.y / 2.0f));
+				windowFocusUpdated = false;
+			}
 
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 			viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -375,6 +414,13 @@ namespace Wizzard
 				}
 			}
 
+			if (windowFocusUpdated && focusedWindow == 4)
+			{
+				ImGui::SetNextWindowFocus();
+				ScreenReaderLogger::ForceQueueOutput("TOOLBAR");
+				//Input::SetMousePosition(0.0f, 0.0f);
+				windowFocusUpdated = false;
+			}
 			OnViewportToolbarRender();
 
 			ImGui::End();	//End Viewport
@@ -431,6 +477,13 @@ namespace Wizzard
 				ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
 		}
 
+		if(keyEvent.GetKeyCode() == Key::LeftShift)
+		{
+			windowFocusUpdated = true;
+			focusedWindow = (focusedWindow >= 4) ? 0 : focusedWindow + 1;
+			//Input::SetMousePosition(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+		}
+
 		return false;
 	}
 
@@ -464,7 +517,9 @@ namespace Wizzard
 	{
 		editorCamera.FocusOnPoint(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
 
-		//ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
+		if(hoveredEntity != sceneEvent.GetSelectionContext())
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
+
 		Audio::Play(selectSFX);
 
 		return false;

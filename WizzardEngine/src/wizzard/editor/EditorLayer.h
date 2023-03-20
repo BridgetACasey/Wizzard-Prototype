@@ -67,6 +67,9 @@ namespace Wizzard
 
 		int gizmoType = -1;
 
+		bool windowFocusUpdated = false;
+		int focusedWindow = 0;
+
 		bool lockSelectionToCamera = false;
 
 		bool isViewportFocused = false;

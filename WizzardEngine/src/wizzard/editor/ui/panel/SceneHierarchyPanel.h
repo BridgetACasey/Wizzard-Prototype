@@ -17,6 +17,8 @@ namespace Wizzard
 
 		void OnImGuiRender() override;
 
+		void OnRenderPropertiesPanel();	//TODO: Temp, move to separate panel class later
+
 		Entity GetSelectedEntity() const { return selectionContext; }
 		void SetSelectedEntity(Entity entity);
 		void SetSelectedEntityToDefault();

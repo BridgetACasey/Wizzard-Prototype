@@ -69,7 +69,10 @@ namespace Wizzard
 			}
 		}
 		ImGui::End();
+	}
 
+	void SceneHierarchyPanel::OnRenderPropertiesPanel()
+	{
 		ImGuiSR::Begin("PROPERTIES", nullptr, 0, "Object properties.", true);
 		if (selectionContext)
 		{
