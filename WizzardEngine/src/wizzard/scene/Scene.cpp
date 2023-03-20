@@ -21,6 +21,7 @@
 #include "component/BoxCollider2DComponent.h"
 #include "component/CharacterControllerComponent.h"
 #include "component/AudioListenerComponent.h"
+#include "wizzard/input/Input.h"
 
 namespace Wizzard
 {
@@ -99,6 +100,39 @@ namespace Wizzard
 					transform.Translation.x = position.x;
 					transform.Translation.y = position.y;
 					transform.Rotation.z = body->GetAngle();
+
+					if (entity.HasComponent<CharacterControllerComponent>())
+					{
+						auto& ccc = entity.GetComponent<CharacterControllerComponent>();
+
+						body->SetFixedRotation(true);
+
+						if (Input::IsKeyDown(Key::D))
+							//transform.Translation.x += 500.0f * timeStep;
+						body->SetLinearVelocity(b2Vec2(250.0f * timeStep, body->GetLinearVelocity().y));
+						if (Input::IsKeyDown(Key::A))
+							//transform.Translation.x -= 500.0f * timeStep;
+						body->SetLinearVelocity(b2Vec2(-250.0f * timeStep, body->GetLinearVelocity().y));
+
+						if (!ccc.disableGravity)
+						{
+							body->SetGravityScale(1.0f);
+
+							if (ccc.canJump)
+							{
+								if (Input::IsKeyDown(Key::Space))
+								{
+									body->ApplyForceToCenter(b2Vec2(0.0f, 50000.0f * timeStep), true);
+									ccc.canJump = false;
+								}
+							}
+
+							if (body->GetLinearVelocity().y > -0.001f && body->GetLinearVelocity().y < 0.001f)
+								ccc.canJump = true;
+						}
+						else
+							body->SetGravityScale(0.0f);
+					}
 				}
 			}
 		}

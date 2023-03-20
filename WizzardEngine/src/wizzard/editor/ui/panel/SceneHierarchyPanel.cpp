@@ -172,7 +172,7 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGui::Button("X", buttonSize))
+		if (ImGuiSR::Button("X", buttonSize, label + "X", true))
 			values.x = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
@@ -186,7 +186,7 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Y", buttonSize))
+		if (ImGuiSR::Button("Y", buttonSize, label + "Y", true))
 			values.y = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
@@ -200,7 +200,7 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Z", buttonSize))
+		if (ImGuiSR::Button("Z", buttonSize, label + "Z", true))
 			values.z = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
@@ -305,9 +305,9 @@ namespace Wizzard
 
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 		{
-			DrawVec3Control("Translation", component.Translation);
+			DrawVec3Control("Translate", component.Translation);
 		glm::vec3 rotation = glm::degrees(component.Rotation);
-		DrawVec3Control("Rotation", rotation);
+		DrawVec3Control("Rotate", rotation);
 		component.Rotation = glm::radians(rotation);
 		DrawVec3Control("Scale", component.Scale, 1.0f);
 		});
@@ -316,7 +316,7 @@ namespace Wizzard
 		{
 			auto& camera = component.Camera;
 
-		ImGui::Checkbox("Primary", &component.Primary);
+		ImGuiSR::Checkbox("Primary", &component.Primary);
 
 		const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
@@ -413,12 +413,12 @@ namespace Wizzard
 
 		DrawComponent<CharacterControllerComponent>("Character Controller", entity, [](auto& component)
 		{
-			ImGui::Checkbox("Disable Gravity", &component.disableGravity);
+			ImGuiSR::Checkbox("Disable Gravity", &component.disableGravity);
 		});
 
 		DrawComponent<AudioListenerComponent>("Audio Listener", entity, [](auto& component)
 		{
-			ImGui::Checkbox("Active", &component.isActive);
+			ImGuiSR::Checkbox("Active", &component.isActive);
 		});
 	}
 }

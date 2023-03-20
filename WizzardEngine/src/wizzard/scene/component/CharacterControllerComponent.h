@@ -10,5 +10,6 @@ namespace Wizzard
 		CharacterControllerComponent(const CharacterControllerComponent&) = default;
 
 		bool disableGravity = false;
+		bool canJump = true;
 	};
 }

@@ -39,6 +39,7 @@ namespace Wizzard
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
 		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
+		bool OnViewportSelectionHovered(ViewportSelectionHoveredEvent& sceneEvent);
 		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
 		bool OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent);
 		bool OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent);
@@ -66,6 +67,8 @@ namespace Wizzard
 
 		int gizmoType = -1;
 
+		bool lockSelectionToCamera = false;
+
 		bool isViewportFocused = false;
 		bool isViewportHovered = false;
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
@@ -75,6 +78,7 @@ namespace Wizzard
 
 		AudioSource levelMusic;
 		AudioSource editorLaunchSFX;
+		AudioSource selectSFX;
 		AudioSource errorSFX;
 
 		ApplicationSettingsPanel appSettingsPanel;

@@ -17,6 +17,32 @@ namespace Wizzard
 		SceneEvent() = default;
 	};
 
+	class ViewportSelectionHoveredEvent : public SceneEvent
+	{
+	public:
+		ViewportSelectionHoveredEvent(Entity handle, UUID selectionID, bool selected) :
+			selectionContext(handle), selectionID(selectionID), selected(selected) {}
+
+		Entity GetSelectionContext() const { return selectionContext; }
+		UUID GetSelectionID() const { return selectionID; }
+		bool IsSelected() const { return selected; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "ViewportSelectionHoveredEvent: Selection(" << selectionID << "), " << selected;
+			return ss.str();
+		}
+
+		EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryInput)
+			EVENT_CLASS_TYPE(ViewportSelectionHovered)
+
+	protected:
+		Entity selectionContext;
+		UUID selectionID;
+		bool selected;
+	};
+
 	class ViewportSelectionChangedEvent : public SceneEvent
 	{
 	public:

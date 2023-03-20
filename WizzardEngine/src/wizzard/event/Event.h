@@ -47,6 +47,7 @@ namespace Wizzard
 		UIElementHovered,
 		UIElementSelected,
 
+		ViewportSelectionHovered,
 		ViewportSelectionChanged,
 
 		AudioTrackStarted,
