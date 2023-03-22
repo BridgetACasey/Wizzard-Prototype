@@ -31,16 +31,16 @@ namespace Wizzard
 		static const uint32_t maxIndices = maxQuads * 6;
 		static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
 
-		Ref<VertexArray> quadVertexArray;
-		Ref<VertexBuffer> quadVertexBuffer;
-		Ref<Shader> textureShader;
-		Ref<Texture2D> whiteTexture;
+		WizRef<VertexArray> quadVertexArray;
+		WizRef<VertexBuffer> quadVertexBuffer;
+		WizRef<Shader> textureShader;
+		WizRef<Texture2D> whiteTexture;
 
 		uint32_t quadIndexCount = 0;
 		QuadVertex* quadVertexBufferBase = nullptr;
 		QuadVertex* quadVertexBufferPtr = nullptr;
 
-		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+		std::array<WizRef<Texture2D>, MaxTextureSlots> TextureSlots;
 		uint32_t TextureSlotIndex = 1; // 0 = white texture
 
 		glm::vec4 QuadVertexPositions[4];
@@ -87,7 +87,7 @@ namespace Wizzard
 			offset += 4;
 		}
 
-		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, data->maxIndices);
+		WizRef<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, data->maxIndices);
 		data->quadVertexArray->SetIndexBuffer(quadIB);
 		delete[] quadIndices;
 
@@ -254,14 +254,14 @@ namespace Wizzard
 		data->statistics.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const WizRef<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const WizRef<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -273,7 +273,7 @@ namespace Wizzard
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
 		{
-			if (data->TextureSlots[i].get() == texture.get())
+			if (data->TextureSlots[i].Get() == texture.Get())
 			{
 				textureIndex = (float)i;
 				break;
@@ -350,7 +350,7 @@ namespace Wizzard
 		data->statistics.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const WizRef<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -363,7 +363,7 @@ namespace Wizzard
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
 		{
-			if (*data->TextureSlots[i].get() == *texture.get())
+			if (*data->TextureSlots[i].Get() == *texture.Get())
 			{
 				textureIndex = (float)i;
 				break;
@@ -450,14 +450,14 @@ namespace Wizzard
 		data->statistics.quadCount++;
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const WizRef<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const WizRef<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -469,7 +469,7 @@ namespace Wizzard
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < data->TextureSlotIndex; i++)
 		{
-			if (*data->TextureSlots[i].get() == *texture.get())
+			if (*data->TextureSlots[i].Get() == *texture.Get())
 			{
 				textureIndex = (float)i;
 				break;

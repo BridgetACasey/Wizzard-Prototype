@@ -12,11 +12,11 @@ namespace Wizzard
 	public:
 		EditorPanel() = default;
 
-		virtual void SetSceneContext(const Ref<Scene>& scene);
+		virtual void SetSceneContext(const WizRef<Scene>& scene);
 		virtual void OnEvent(Event& event);
 		virtual void OnImGuiRender();
 
 	protected:
-		Ref<Scene> sceneContext;
+		WizRef<Scene> sceneContext;
 	};
 }

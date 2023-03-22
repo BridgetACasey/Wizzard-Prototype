@@ -9,14 +9,14 @@
 
 namespace Wizzard
 {
-	Ref<Shader> Shader::Create(const std::string& filePath)
+	WizRef<Shader> Shader::Create(const std::string& filePath)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLShader>(filePath);
+			case RendererAPI::API::OpenGL:  return WizRef<OpenGLShader>::CreateRef(filePath);
 		}
 
 		WIZ_ASSERT(false, "Unknown RendererAPI!");
@@ -24,14 +24,14 @@ namespace Wizzard
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+	WizRef<Shader> Shader::Create(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLShader>(name, vertexSource, fragmentSource);
+			case RendererAPI::API::OpenGL:  return WizRef<OpenGLShader>::CreateRef(name, vertexSource, fragmentSource);
 		}
 
 		WIZ_ASSERT(false, "Unknown RendererAPI!");
@@ -39,7 +39,7 @@ namespace Wizzard
 		return nullptr;
 	}
 
-	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
+	void ShaderLibrary::Add(const std::string& name, const WizRef<Shader>& shader)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -47,7 +47,7 @@ namespace Wizzard
 		shaders[name] = shader;
 	}
 
-	void ShaderLibrary::Add(const Ref<Shader>& shader)
+	void ShaderLibrary::Add(const WizRef<Shader>& shader)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -55,7 +55,7 @@ namespace Wizzard
 		Add(name, shader);
 	}
 
-	Ref<Shader> ShaderLibrary::Load(const std::string& filepath)
+	WizRef<Shader> ShaderLibrary::Load(const std::string& filepath)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -64,7 +64,7 @@ namespace Wizzard
 		return shader;
 	}
 
-	Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& filepath)
+	WizRef<Shader> ShaderLibrary::Load(const std::string& name, const std::string& filepath)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -73,7 +73,7 @@ namespace Wizzard
 		return shader;
 	}
 
-	Ref<Shader> ShaderLibrary::Get(const std::string& name)
+	WizRef<Shader> ShaderLibrary::Get(const std::string& name)
 	{
 		WIZ_PROFILE_FUNCTION();
 

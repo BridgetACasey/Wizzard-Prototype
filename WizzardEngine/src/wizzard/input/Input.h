@@ -3,13 +3,16 @@
 #pragma once
 
 #include "wizzard/base/Base.h"
+#include "wizzard/base/Maths.h"
 #include "wizzard/input/KeyCode.h"
 #include "wizzard/input/MouseCode.h"
+#include "wizzard/input/ControllerCode.h"
 
 namespace Wizzard
 {
 	constexpr int TOTAL_KEY_CODES = Key::TotalCodeCount;
 	constexpr int TOTAL_MOUSE_CODES = Mouse::TotalCodeCount;
+	constexpr int TOTAL_CONTROLLER_CODES = Controller::TotalCodeCount;
 
 	enum InputState
 	{
@@ -50,17 +53,22 @@ namespace Wizzard
 		static bool SetMouseButtonUp(MouseCode mouseCode);
 		static bool SetMouseButtonDown(MouseCode mouseCode);
 
+		static bool SetMouseButtonState(MouseCode mouseCode, InputState state);
+		static InputState GetMouseButtonState(MouseCode mouseCode);
+
+		//static bool IsControllerButtonPressed(ControllerCode controllerCode);
+		//static bool IsControllerButtonReleased(ControllerCode controllerCode);
+		//static bool IsControllerButtonUp(ControllerCode controllerCode);
+		//static bool IsControllerButtonDown(ControllerCode controllerCode);
+		//
+		//static bool SetControllerButtonUp(ControllerCode controllerCode);
+		//static bool SetControllerButtonDown(ControllerCode controllerCode);
+
 		static bool SetMousePosition(float x, float y);
 		static bool SetMousePositionX(float x);
 		static bool SetMousePositionY(float y);
 
-		static bool SetMouseButtonState(MouseCode mouseCode, InputState state);
-		static InputState GetMouseButtonState(MouseCode mouseCode);
-
-		static std::pair<float, float> GetMousePosition();
-
-		static float GetMousePositionX();
-		static float GetMousePositionY();
+		static Maths::WizVector2f GetMousePosition();
 
 		inline static bool queryInput = false;
 
@@ -220,6 +228,15 @@ namespace Wizzard
 				case Mouse::Button6:		return "Button6";
 
 				default:					return "None";
+			}
+		}
+
+		//TODO
+		static std::string GetControllerCodeAsString(ControllerCode controllerCode)
+		{
+			switch(controllerCode)
+			{
+				default: return "None";
 			}
 		}
 

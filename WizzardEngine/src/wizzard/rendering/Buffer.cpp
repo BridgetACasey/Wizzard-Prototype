@@ -9,42 +9,42 @@
 
 namespace Wizzard
 {
-	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+	WizRef<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateRef<OpenGLVertexBuffer>(size);
+		case RendererAPI::API::OpenGL:  return WizRef<OpenGLVertexBuffer>::CreateRef(size);
 		}
 
 		WIZ_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
-	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+	WizRef<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateRef<OpenGLVertexBuffer>(vertices, size);
+		case RendererAPI::API::OpenGL:  return WizRef<OpenGLVertexBuffer>::CreateRef(vertices, size);
 		}
 
 		WIZ_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
+	WizRef<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    WIZ_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateRef<OpenGLIndexBuffer>(indices, size);
+		case RendererAPI::API::OpenGL:  return WizRef<OpenGLIndexBuffer>::CreateRef(indices, size);
 		}
 
 		WIZ_ASSERT(false, "Unknown RendererAPI!");

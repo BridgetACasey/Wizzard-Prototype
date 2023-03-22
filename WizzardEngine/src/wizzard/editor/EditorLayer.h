@@ -16,6 +16,8 @@
 #include "wizzard/rendering/VertexArray.h"
 
 #include "EditorCamera.h"
+
+#include "ui/panel/PanelManager.h"
 #include "ui/panel/ApplicationSettingsPanel.h"
 #include "ui/panel/SceneHierarchyPanel.h"
 #include "ui/panel/PropertiesPanel.h"
@@ -44,7 +46,7 @@ namespace Wizzard
 		bool OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent);
 		bool OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent);
 
-		void OnOverlayRender() const;
+		void OnOverlayRender();
 		void OnViewportToolbarRender();
 
 		void NewScene();
@@ -55,13 +57,15 @@ namespace Wizzard
 
 		void OnSceneBeginPlay();
 		void OnSceneEndPlay();
-		void OnScenePausePlay() const;
+		void OnScenePausePlay();
 
 		OrthographicCameraController orthoCamController;
 		EditorCamera editorCamera;
 
-		Ref<Scene> activeScene;
-		Ref<Scene> editorScene;
+		//WizScope<PanelManager> panelManager;
+
+		WizRef<Scene> activeScene;
+		WizRef<Scene> editorScene;
 
 		Entity playerEntity;
 
@@ -77,15 +81,15 @@ namespace Wizzard
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];
 
-		Ref<Framebuffer> frameBuffer;
+		WizRef<Framebuffer> frameBuffer;
 
 		AudioSource levelMusic;
 		AudioSource editorLaunchSFX;
 		AudioSource selectSFX;
 		AudioSource errorSFX;
 
-		ApplicationSettingsPanel appSettingsPanel;
-		SceneHierarchyPanel sceneHierarchyPanel;
+		WizRef<ApplicationSettingsPanel> appSettingsPanel;
+		WizRef<SceneHierarchyPanel> sceneHierarchyPanel;
 		//PropertiesPanel propertiesPanel;
 
 		Entity hoveredEntity;

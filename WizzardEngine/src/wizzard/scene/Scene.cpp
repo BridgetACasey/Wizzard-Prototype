@@ -109,10 +109,10 @@ namespace Wizzard
 
 						if (Input::IsKeyDown(Key::D))
 							//transform.Translation.x += 500.0f * timeStep;
-						body->SetLinearVelocity(b2Vec2(250.0f * timeStep, body->GetLinearVelocity().y));
+						body->SetLinearVelocity(b2Vec2(100.0f * timeStep, body->GetLinearVelocity().y));
 						if (Input::IsKeyDown(Key::A))
 							//transform.Translation.x -= 500.0f * timeStep;
-						body->SetLinearVelocity(b2Vec2(-250.0f * timeStep, body->GetLinearVelocity().y));
+						body->SetLinearVelocity(b2Vec2(-100.0f * timeStep, body->GetLinearVelocity().y));
 
 						if (!ccc.disableGravity)
 						{
@@ -122,8 +122,8 @@ namespace Wizzard
 							{
 								if (Input::IsKeyDown(Key::Space))
 								{
-									body->ApplyForceToCenter(b2Vec2(0.0f, 50000.0f * timeStep), true);
-									ccc.canJump = false;
+									body->ApplyForceToCenter(b2Vec2(0.0f, 2000.0f * timeStep), true);
+									//ccc.canJump = false;
 								}
 							}
 
@@ -243,9 +243,9 @@ namespace Wizzard
 		return {};
 	}
 
-	Ref<Scene> Scene::Copy(Ref<Scene> other)
+	WizRef<Scene> Scene::Copy(WizRef<Scene> other)
 	{
-		Ref<Scene> newScene = CreateRef<Scene>();
+		WizRef<Scene> newScene = WizRef<Scene>::CreateRef();
 
 		newScene->viewportWidth = other->viewportWidth;
 		newScene->viewportHeight = other->viewportHeight;

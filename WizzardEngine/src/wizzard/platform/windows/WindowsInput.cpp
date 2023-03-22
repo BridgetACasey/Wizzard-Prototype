@@ -315,7 +315,7 @@ namespace Wizzard
 		return mouseStates.at(mouseCode);
 	}
 
-	std::pair<float, float> Input::GetMousePosition()
+	Maths::WizVector2f Input::GetMousePosition()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
@@ -324,20 +324,6 @@ namespace Wizzard
 		glfwGetCursorPos(window, &posX, &posY);
 
 		return { (float)posX, (float)posY };
-	}
-
-	float Input::GetMousePositionX()
-	{
-		auto [x, y] = GetMousePosition();
-
-		return x;
-	}
-
-	float Input::GetMousePositionY()
-	{
-		auto [x, y] = GetMousePosition();
-
-		return y;
 	}
 
 	void Input::Init()

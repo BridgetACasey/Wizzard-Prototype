@@ -35,7 +35,7 @@ namespace Wizzard
 
 		void Step(int step = 1) { stepFrames = step; }
 
-		static Ref<Scene> Copy(Ref<Scene> other);
+		static WizRef<Scene> Copy(WizRef<Scene> other);
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());

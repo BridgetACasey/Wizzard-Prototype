@@ -26,8 +26,8 @@ namespace Wizzard
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 
-		static Ref<Shader> Create(const std::string& filePath);
-		static Ref<Shader> Create(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
+		static WizRef<Shader> Create(const std::string& filePath);
+		static WizRef<Shader> Create(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
 
 		virtual const std::string& GetName() const = 0;
 	};
@@ -35,17 +35,17 @@ namespace Wizzard
 	class ShaderLibrary
 	{
 	public:
-		void Add(const std::string& name, const Ref<Shader>& shader);
-		void Add(const Ref<Shader>& shader);
+		void Add(const std::string& name, const WizRef<Shader>& shader);
+		void Add(const WizRef<Shader>& shader);
 
-		Ref<Shader> Load(const std::string& filePath);
-		Ref<Shader> Load(const std::string& name, const std::string& filePath);
+		WizRef<Shader> Load(const std::string& filePath);
+		WizRef<Shader> Load(const std::string& name, const std::string& filePath);
 
-		Ref<Shader> Get(const std::string& name);
+		WizRef<Shader> Get(const std::string& name);
 
 		bool Exists(const std::string& name) const;
 
 	private:
-		std::unordered_map<std::string, Ref<Shader>> shaders;
+		std::unordered_map<std::string, WizRef<Shader>> shaders;
 	};
 }

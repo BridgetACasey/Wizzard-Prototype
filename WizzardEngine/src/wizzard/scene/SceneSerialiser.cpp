@@ -140,7 +140,7 @@ namespace Wizzard
 		return RigidBody2DComponent::BodyType::Static;
 	}
 
-	SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene) : scene(scene)
+	SceneSerialiser::SceneSerialiser(const WizRef<Scene>& scene) : scene(scene)
 	{
 	}
 
@@ -152,7 +152,7 @@ namespace Wizzard
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		scene->registry.each([&](auto entityID)
 		{
-			Entity entity = { entityID, scene.get() };
+			Entity entity = { entityID, scene.Get() };
 		if (!entity)
 			return;
 
@@ -404,7 +404,7 @@ namespace Wizzard
 		out << YAML::EndMap; // Entity
 	}
 
-	void SceneSerialiser::DeserialiseEntities(YAML::Node& entitiesNode, Ref<Scene> scene)
+	void SceneSerialiser::DeserialiseEntities(YAML::Node& entitiesNode, WizRef<Scene> scene)
 	{
 		//Not yet implemented
 	}

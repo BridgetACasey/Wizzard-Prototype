@@ -90,7 +90,7 @@ namespace Wizzard
 		{
 			if (Input::IsKeyDown(Key::LeftAlt))
 			{
-				const glm::vec2& mouse{ Input::GetMousePositionX(), Input::GetMousePositionY() };
+				const glm::vec2& mouse{ Input::GetMousePosition().x, Input::GetMousePosition().y };
 				glm::vec2 delta = (mouse - initialMousePosition) * 0.003f;
 				initialMousePosition = mouse;
 

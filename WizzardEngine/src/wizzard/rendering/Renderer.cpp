@@ -42,13 +42,13 @@ namespace Wizzard
 		WIZ_PROFILE_FUNCTION();
 	}
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+	void Renderer::Submit(const WizRef<Shader>& shader, const WizRef<VertexArray>& vertexArray, const glm::mat4& transform)
 	{
 		WIZ_PROFILE_FUNCTION();
 
 		shader->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", sceneData->viewProjectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_Transform", transform);
+		shader.GetAs<OpenGLShader>()->UploadUniformMat4("u_ViewProjection", sceneData->viewProjectionMatrix);
+		shader.GetAs<OpenGLShader>()->UploadUniformMat4("u_Transform", transform);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);

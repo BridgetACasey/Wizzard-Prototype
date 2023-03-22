@@ -6,7 +6,7 @@
 
 namespace Wizzard
 {
-	void EditorPanel::SetSceneContext(const Ref<Scene>& scene)
+	void EditorPanel::SetSceneContext(const WizRef<Scene>& scene)
 	{
 		sceneContext = scene;
 	}

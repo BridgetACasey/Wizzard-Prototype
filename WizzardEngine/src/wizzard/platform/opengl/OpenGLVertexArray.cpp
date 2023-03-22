@@ -59,7 +59,7 @@ namespace Wizzard
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const WizRef<VertexBuffer>& vertexBuffer)
 	{
 		WIZ_PROFILE_FUNCTION();
 
@@ -129,7 +129,7 @@ namespace Wizzard
 		vertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
+	void OpenGLVertexArray::SetIndexBuffer(const WizRef<IndexBuffer>& buffer)
 	{
 		WIZ_PROFILE_FUNCTION();
 

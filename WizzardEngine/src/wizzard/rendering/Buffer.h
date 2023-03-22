@@ -113,8 +113,8 @@ namespace Wizzard
 
 		virtual void SetData(const void* data, uint32_t size) = 0;
 
-		static Ref<VertexBuffer> Create(uint32_t size);
-		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+		static WizRef<VertexBuffer> Create(uint32_t size);
+		static WizRef<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
 	class IndexBuffer
@@ -127,6 +127,6 @@ namespace Wizzard
 
 		virtual uint32_t GetCount() const = 0;
 
-		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+		static WizRef<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 	};
 }

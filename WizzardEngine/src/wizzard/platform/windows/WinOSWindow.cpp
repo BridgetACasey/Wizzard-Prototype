@@ -92,6 +92,8 @@ namespace Wizzard
 			glfwInitialised = true;
 		}
 
+		//glfwWindowHint(GLFW_MAXIMIZED, true);
+
 		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
@@ -200,6 +202,11 @@ namespace Wizzard
 			MouseMovedEvent event((float)xPos, (float)yPos);
 			data.eventCallback(event);
 		});
+
+		//glfwSetJoystickCallback(glfwWindow, [](GLFWwindow* window, unsigned int pp)
+		//{
+		//	
+		//});
 	}
 
 	void WinOSWindow::Shutdown()

@@ -32,7 +32,7 @@ namespace Wizzard
 		{
 			sceneContext->registry.each([&](auto entityID)
 			{
-				Entity entity{ entityID , sceneContext.get() };
+				Entity entity{ entityID , sceneContext.Get() };
 				DrawEntityNode(entity);
 
 				//TODO: Check if default entity has been deleted from scene, then reset
@@ -235,7 +235,7 @@ namespace Wizzard
 			ImGui::PopStyleVar(
 			);
 			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-			if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
+			if (ImGuiSR::Button("+", ImVec2{ lineHeight, lineHeight }))
 			{
 				ImGui::OpenPopup("ComponentSettings");
 			}
