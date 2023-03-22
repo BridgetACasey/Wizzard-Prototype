@@ -3,7 +3,7 @@
 #pragma once
 
 #include "EditorPanel.h"
-#include "wizzard/event/SceneEvent.h"
+#include "wizzard/event/EditorEvent.h"
 #include "wizzard/scene/Entity.h"
 
 namespace Wizzard

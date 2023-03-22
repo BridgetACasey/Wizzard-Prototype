@@ -50,6 +50,13 @@ namespace Wizzard
 		ViewportSelectionHovered,
 		ViewportSelectionChanged,
 
+		SceneBeginPlay,
+		ScenePreBeginPlay,
+		ScenePostBeginPlay,
+		ScenePreEndPlay,
+		ScenePostEndPlay,
+		SceneEndPlay,
+
 		AudioTrackStarted,
 		AudioTrackEnded,
 		ScreenReaderMessageStarted,

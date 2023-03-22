@@ -4,7 +4,7 @@
 
 #include "wizzard/event/UIEvent.h"
 #include "wizzard/event/KeyEvent.h"
-#include "wizzard/event/SceneEvent.h"
+#include "wizzard/event/EditorEvent.h"
 #include "wizzard/event/AudioEvent.h"
 #include "wizzard/audio/AudioSource.h"
 
@@ -21,6 +21,7 @@
 #include "ui/panel/ApplicationSettingsPanel.h"
 #include "ui/panel/SceneHierarchyPanel.h"
 #include "ui/panel/PropertiesPanel.h"
+#include "ui/panel/ViewportPanel.h"
 
 namespace Wizzard
 {
@@ -62,7 +63,7 @@ namespace Wizzard
 		OrthographicCameraController orthoCamController;
 		EditorCamera editorCamera;
 
-		//WizScope<PanelManager> panelManager;
+		WizScope<PanelManager> panelManager;
 
 		WizRef<Scene> activeScene;
 		WizRef<Scene> editorScene;
@@ -90,7 +91,8 @@ namespace Wizzard
 
 		WizRef<ApplicationSettingsPanel> appSettingsPanel;
 		WizRef<SceneHierarchyPanel> sceneHierarchyPanel;
-		//PropertiesPanel propertiesPanel;
+		WizRef<PropertiesPanel> propertiesPanel;
+		WizRef<ViewportPanel> viewportPanel;
 
 		Entity hoveredEntity;
 	};

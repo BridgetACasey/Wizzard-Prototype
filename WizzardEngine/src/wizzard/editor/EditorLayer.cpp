@@ -33,6 +33,8 @@ namespace Wizzard
 {
 #define PANELID_SCENE_HIERARCHY "SceneHierarchyPanel"
 #define PANELID_APP_SETTINGS "ApplicationSettingsPanel"
+#define PANELID_PROPERTIES "PropertiesPanel"
+#define PANELID_VIEWPORT "ViewportPanel"
 
 	EditorLayer::EditorLayer() : Layer("Editor"), orthoCamController(1920.0f / 1080.0f)
 	{
@@ -55,9 +57,6 @@ namespace Wizzard
 
 		editorScene = WizRef<Scene>::CreateRef();
 		activeScene = editorScene;
-
-		appSettingsPanel = WizRef<ApplicationSettingsPanel>::CreateRef();
-		sceneHierarchyPanel = WizRef<SceneHierarchyPanel>::CreateRef();
 
 		// Entity - playable character, hence camera attached
 		auto square = activeScene->CreateEntity("Green Square");
@@ -97,12 +96,14 @@ namespace Wizzard
 		
 		playerEntity = square;
 
-		//appSettingsPanel = panelManager->AddPanel<ApplicationSettingsPanel>({ PANELID_APP_SETTINGS, "PROJECT" });
-		//sceneHierarchyPanel = panelManager->AddPanel<SceneHierarchyPanel>({PANELID_SCENE_HIERARCHY, "SCENE"});
+		panelManager = CreateScope<PanelManager>();
 
-		appSettingsPanel->SetSceneContext(activeScene);
-		sceneHierarchyPanel->SetSceneContext(activeScene);
-		//propertiesPanel.SetSceneContext(activeScene);
+		appSettingsPanel = panelManager->AddPanel<ApplicationSettingsPanel>( PANELID_APP_SETTINGS, "PROJECT");
+		sceneHierarchyPanel = panelManager->AddPanel<SceneHierarchyPanel>(PANELID_SCENE_HIERARCHY, "SCENE");
+		propertiesPanel = panelManager->AddPanel<PropertiesPanel>(PANELID_PROPERTIES, "PROPERTIES");
+		viewportPanel = panelManager->AddPanel<ViewportPanel>(PANELID_VIEWPORT, "VIEWPORT");
+
+		panelManager->SetSceneContext(activeScene);
 
 		sceneHierarchyPanel->SetEventCallback(WIZ_BIND_EVENT_FN(EditorLayer::OnEvent));
 
@@ -297,7 +298,7 @@ namespace Wizzard
 			//Input::SetMousePosition(0.0f, 0.0f);
 			windowFocusUpdated = false;
 		}
-		sceneHierarchyPanel->OnImGuiRender();
+		//sceneHierarchyPanel->OnImGuiRender();
 
 		if (windowFocusUpdated && focusedWindow == 1)
 		{
@@ -317,10 +318,10 @@ namespace Wizzard
 			windowFocusUpdated = false;
 		}
 
-		appSettingsPanel->OnImGuiRender();
+		//appSettingsPanel->OnImGuiRender();
 		//propertiesPanel->OnImGuiRender();
 
-		//panelManager->OnImGuiRender();
+		panelManager->OnImGuiRender();
 
 		//-----RENDERING THE VIEWPORT-----
 
@@ -450,7 +451,7 @@ namespace Wizzard
 		if(activeScene->GetState() == SceneState::EDIT)
 		editorCamera.OnEvent(event);
 
-		//panelManager->OnEvent(event);
+		panelManager->OnEvent(event);
 
 		EventHandler eventHandler(event);
 		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));

@@ -41,6 +41,18 @@ namespace Wizzard
 			return WizRef<T2>(*this);
 		}
 
+		WizRef& operator=(std::nullptr_t)
+		{
+			refInstance = nullptr;
+			return *this;
+		}
+
+		WizRef& operator=(const WizRef<T>& other)
+		{
+			refInstance = other.refInstance;
+			return *this;
+		}
+
 		template<typename T2>
 		WizRef& operator=(const WizRef<T2>& other)
 		{

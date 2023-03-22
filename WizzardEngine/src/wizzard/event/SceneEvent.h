@@ -3,69 +3,110 @@
 #pragma once
 
 #include "Event.h"
-#include "wizzard/scene/Entity.h"
-#include "wizzard/common/UUID.h"
+#include "wizzard/scene/Scene.h"
 
 namespace Wizzard
 {
 	class SceneEvent : public Event
 	{
 	public:
-		EVENT_CLASS_CATEGORY(EventCategoryScene)
+		const WizRef<Scene>& GetScene() const { return scene; }
+		WizRef<Scene> GetScene() { return scene; }
 
+		EVENT_CLASS_CATEGORY(EventCategoryEditor | EventCategoryScene)
 	protected:
-		SceneEvent() = default;
+		SceneEvent(const WizRef<Scene>& scene) : scene(scene) {}
+
+		WizRef<Scene> scene;
 	};
 
-	class ViewportSelectionHoveredEvent : public SceneEvent
+	class SceneBeginPlayEvent : public SceneEvent
 	{
 	public:
-		ViewportSelectionHoveredEvent(Entity handle, UUID selectionID, bool selected) :
-			selectionContext(handle), selectionID(selectionID), selected(selected) {}
-
-		Entity GetSelectionContext() const { return selectionContext; }
-		UUID GetSelectionID() const { return selectionID; }
-		bool IsSelected() const { return selected; }
+		SceneBeginPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "ViewportSelectionHoveredEvent: Selection(" << selectionID << "), " << selected;
+			ss << "SceneBeginPlayEvent: ";
 			return ss.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryInput)
-			EVENT_CLASS_TYPE(ViewportSelectionHovered)
-
-	protected:
-		Entity selectionContext;
-		UUID selectionID;
-		bool selected;
+		EVENT_CLASS_TYPE(SceneBeginPlay)
 	};
 
-	class ViewportSelectionChangedEvent : public SceneEvent
+	class ScenePreBeginPlayEvent : public SceneEvent
 	{
 	public:
-		ViewportSelectionChangedEvent(Entity handle, UUID selectionID, bool selected) :
-		selectionContext(handle), selectionID(selectionID), selected(selected){}
-
-		Entity GetSelectionContext() const { return selectionContext; }
-		UUID GetSelectionID() const { return selectionID; }
-		bool IsSelected() const { return selected; }
+		ScenePreBeginPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "ViewportSelectionChangedEvent: Selection(" << selectionID << "), " << selected;
+			ss << "ScenePreBeginPlayEvent: ";
 			return ss.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryInput)
-		EVENT_CLASS_TYPE(ViewportSelectionChanged)
+		EVENT_CLASS_TYPE(ScenePreBeginPlay)
+	};
 
-	protected:
-		Entity selectionContext;
-		UUID selectionID;
-		bool selected;
+	class ScenePostBeginPlayEvent : public SceneEvent
+	{
+	public:
+		ScenePostBeginPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "ScenePostBeginPlayEvent: ";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(ScenePostBeginPlay)
+	};
+
+	class ScenePreEndPlayEvent : public SceneEvent
+	{
+	public:
+		ScenePreEndPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "ScenePreEndPlayEvent: ";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(ScenePreEndPlay)
+	};
+
+	class ScenePostEndPlayEvent : public SceneEvent
+	{
+	public:
+		ScenePostEndPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "ScenePostEndPlayEvent: ";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(ScenePostEndPlay)
+	};
+
+	class SceneEndPlayEvent : public SceneEvent
+	{
+	public:
+		SceneEndPlayEvent(const WizRef<Scene>& scene) : SceneEvent(scene) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "SceneEndPlayEvent: ";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(SceneEndPlay)
 	};
 }

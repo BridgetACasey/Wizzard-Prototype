@@ -29,4 +29,14 @@ namespace Wizzard
 	private:
 		Event& event;
 	};
+
+	template<typename T>
+	class MulticastEventHandler
+	{
+	public:
+		void Bind(void* func);
+
+	private:
+		std::array<std::function<T>> eventFuncs;
+	};
 }

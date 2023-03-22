@@ -8,7 +8,7 @@
 #include "wizzard/input/KeyCode.h"
 #include "wizzard/input/MouseCode.h"
 #include "wizzard/event/EventHandler.h"
-#include "wizzard/event/SceneEvent.h"
+#include "wizzard/event/EditorEvent.h"
 
 #include "audio/Audio.h"
 #include "audio/AudioSource.h"

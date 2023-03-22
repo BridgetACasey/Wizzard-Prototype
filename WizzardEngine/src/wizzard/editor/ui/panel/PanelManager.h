@@ -32,9 +32,6 @@ namespace Wizzard
 		template<typename TPanel>
 		WizRef<TPanel> AddPanel(const PanelData& panelData)
 		{
-			//TODO: Creating hash values for panels
-			//auto id = std::hash<const char*>{}(panelData.id);
-
 			if (panels.find(panelData.id) != panels.end())
 			{
 				WIZ_ERROR("A panel with this id already exists");
@@ -42,13 +39,13 @@ namespace Wizzard
 			}
 
 			panels[panelData.id] = panelData;
-			return panels[panelData.id].panel.GetAs<TPanel>();
+			return panelData.panel.GetAs<TPanel>();
 		}
 
 		template<typename TPanel, typename... TArgs>
-		WizRef<TPanel> AddPanel(const char* nameID, const char* displayName)
+		WizRef<TPanel> AddPanel(const char* nameID, const char* displayName, TArgs&&... args)
 		{
-			return AddPanel<TPanel>(PanelData{ nameID, displayName, WizRef<TPanel>::CreateRef(std::forward<TArgs>()...) });
+			return AddPanel<TPanel>(PanelData{ nameID, displayName, WizRef<TPanel>::CreateRef(std::forward<TArgs>(args)...) });
 		}
 
 	private:
