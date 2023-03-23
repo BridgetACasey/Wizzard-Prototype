@@ -48,6 +48,15 @@ namespace Wizzard
 	};
 
 
+	class AppStartupEvent : public Event
+	{
+	public:
+		AppStartupEvent() {}
+
+		EVENT_CLASS_TYPE(ApplicationStartup)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
+
 	class AppTickEvent : public Event
 	{
 	public:
@@ -73,5 +82,14 @@ namespace Wizzard
 
 		EVENT_CLASS_TYPE(ApplicationRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
+
+	class AppShutdownEvent : public Event
+	{
+	public:
+		AppShutdownEvent() {}
+
+		EVENT_CLASS_TYPE(ApplicationShutdown)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 }

@@ -6,6 +6,7 @@
 
 #include <comdef.h>
 #include "Tolk.h"
+#include "wizzard/common/Application.h"
 #include "wizzard/event/EventHandler.h"
 
 namespace Wizzard
@@ -43,6 +44,8 @@ namespace Wizzard
 				preferSAPI = true;
 				Tolk_TrySAPI(preferSAPI);
 			}
+
+			Application::Get().GetAppShutdownDelegate().Bind(OnAppShutdown);
 		}
 		else
 			WIZ_ERROR("Failed to initialise Tolk Screen Reader Abstraction Library!");
@@ -84,6 +87,7 @@ namespace Wizzard
 			{
 				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front());
 				OnScreenReaderMessageEnded(srEvent);
+
 				startedMessage = false;
 				messageBackLog.pop_front();		//Pop off queen! (painting nails emoji)
 			}
@@ -227,5 +231,11 @@ namespace Wizzard
 		WIZ_TRACE(srEvent);
 
 		return false;
+	}
+	bool ScreenReaderLogger::OnAppShutdown(AppShutdownEvent& appEvent)
+	{
+		ForceQueueOutput("Exiting editor application.");
+
+		return true;
 	}
 }

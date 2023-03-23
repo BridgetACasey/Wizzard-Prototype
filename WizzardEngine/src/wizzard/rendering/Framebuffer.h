@@ -47,7 +47,7 @@ namespace Wizzard
 		bool swapChainTarget = false;
 	};
 
-	class Framebuffer
+	class Framebuffer : public WizRefCounter
 	{
 	public:
 		virtual void Bind() = 0;

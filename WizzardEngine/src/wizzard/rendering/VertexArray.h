@@ -7,7 +7,7 @@
 
 namespace Wizzard
 {
-	class VertexArray
+	class VertexArray : public WizRefCounter
 	{
 	public:
 		virtual ~VertexArray() {}

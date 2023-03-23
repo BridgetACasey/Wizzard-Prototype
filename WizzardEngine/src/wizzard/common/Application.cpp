@@ -35,8 +35,6 @@ namespace Wizzard
 	Application::~Application()
 	{
 		WIZ_PROFILE_FUNCTION();
-
-		OnApplicationShutdown();
 	}
 
 	void Application::Run()
@@ -70,6 +68,15 @@ namespace Wizzard
 
 			window->OnUpdate();
 			graphicsContext->SwapBuffers();	//TODO: Find a better home for this instead of the run function
+
+			if(appShutdownDelegate.HasHandledAll())
+			{
+				if (!ScreenReaderLogger::IsSpeaking() && ScreenReaderLogger::MessageQueueCount() == 0)
+				{
+					Close();
+					OnApplicationShutdown();
+				}
+			}
 		}
 	}
 

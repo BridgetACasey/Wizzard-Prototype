@@ -7,7 +7,7 @@
 
 namespace Wizzard
 {
-	class Texture
+	class Texture : public WizRefCounter
 	{
 	public:
 		virtual ~Texture() = default;

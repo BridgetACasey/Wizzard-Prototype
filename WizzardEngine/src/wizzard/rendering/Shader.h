@@ -11,7 +11,7 @@
 
 namespace Wizzard
 {
-	class Shader
+	class Shader : public WizRefCounter
 	{
 	public:
 		virtual ~Shader() = default;

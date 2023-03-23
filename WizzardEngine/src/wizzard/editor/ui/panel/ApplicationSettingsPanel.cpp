@@ -11,12 +11,18 @@
 #include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/editor/ui/imgui/ImGuiScreenReading.h"
 
+#include "wizzard/event/MulticastDelegate.h"
+
 namespace Wizzard
 {
+	ApplicationSettingsPanel::ApplicationSettingsPanel()
+	{
+		Application::Get().GetAppShutdownDelegate().Bind(WIZ_BIND_EVENT_FN(ApplicationSettingsPanel::OnAppShutdown));
+	}
+
 	void ApplicationSettingsPanel::OnEvent(Event& event)
 	{
-		EventHandler eventHandler(event);
-		eventHandler.HandleEvent<ScreenReaderMessageEndedEvent>(WIZ_BIND_EVENT_FN(ApplicationSettingsPanel::OnScreenReaderMessageEnded));
+		//EventHandler eventHandler(event);
 	}
 
 	void ApplicationSettingsPanel::OnImGuiRender()
@@ -66,23 +72,29 @@ namespace Wizzard
 		}
 
 		if (ImGuiSR::Button("EXIT", ImVec2(161.0f, 80.5f)))
+		{
 			openExitMenu = !openExitMenu;
+
+			if (openExitMenu)
+			{
+				ImGuiIO io = ImGui::GetIO();
+				ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+			}
+		}
 
 		if (openExitMenu)
 		{
 			ImGuiWindowFlags exitFlags = ImGuiWindowFlags_NoResize;
 
-			if (ImGuiSR::Begin("EXIT MENU", nullptr, exitFlags))
+			if (ImGuiSR::Begin("EXIT MENU", nullptr, exitFlags, "Quit application?", true))
 			{
 				ImGui::Text("Quit application?");
 
 				if (ImGuiSR::Button("Yes", ImVec2(240.0f, 80.0f), "Yes, I want to exit", true))
 				{
+					AppShutdownEvent appEvent;
+					Application::Get().GetAppShutdownDelegate().TriggerAll(appEvent);
 					//TODO: Fix message being cut off by exiting app before speech has finished
-					ScreenReaderLogger::QueueOutput("Exiting editor application.");
-
-					if (!ScreenReaderLogger::IsSpeaking())
-						Application::Get().Close();
 				}
 
 				ImGui::SameLine();
@@ -97,8 +109,9 @@ namespace Wizzard
         ImGui::End();
     }
 
-	bool ApplicationSettingsPanel::OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent)
+	bool ApplicationSettingsPanel::OnAppShutdown(AppShutdownEvent& appEvent)
 	{
-		return false;
+		WIZ_TRACE("Test message from app panel");
+		return true;
 	}
 }

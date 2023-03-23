@@ -187,7 +187,7 @@ project "GameApplication"
 		postbuildcommands
 		{
 			"{COPY} %{wks.location}/WizzardEngine/lib/tolk/libs/x64/**.dll %{cfg.targetdir}",
-			"{COPY} %{wks.location}/Assets %{cfg.targetdir}/Assets"
+			"{COPY} %{wks.location}/Assets %{cfg.targetdir}/../Assets"
 		}
 
 	filter "configurations:Debug"

@@ -15,7 +15,7 @@ namespace Wizzard
 		uint32_t width;
 		uint32_t height;
 
-		WindowProps(const std::string& title = "WIZZARD", uint32_t width = 1920, uint32_t height = 1080)
+		WindowProps(const std::string& title = "WIZZARD", uint32_t width = 1, uint32_t height = 1)	//1 by default to detect max resolution size
 			: title(title), width(width), height(height){}
 	};
 

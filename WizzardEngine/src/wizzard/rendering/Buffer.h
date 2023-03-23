@@ -102,7 +102,7 @@ namespace Wizzard
 		uint32_t stride = 0;
 	};
 
-	class VertexBuffer
+	class VertexBuffer : public WizRefCounter
 	{
 	public:
 		virtual void Bind() const = 0;
@@ -117,7 +117,7 @@ namespace Wizzard
 		static WizRef<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public WizRefCounter
 	{
 	public:
 		virtual ~IndexBuffer() {}

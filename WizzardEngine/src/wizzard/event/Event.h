@@ -25,9 +25,11 @@ namespace Wizzard
 		WindowNotFocused,
 		WindowMoved,
 
+		ApplicationStartup,
 		ApplicationTick,
 		ApplicationUpdate,
 		ApplicationRender,
+		ApplicationShutdown,
 
 		KeyPressed,
 		KeyDown,

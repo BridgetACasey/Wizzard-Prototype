@@ -79,7 +79,7 @@ namespace Wizzard
 		float distance = 10.0f;
 		float pitch = 0.0f, yaw = 0.0f;
 
-		float viewportWidth = 1920, viewportHeight = 1080;
+		float viewportWidth = 0.0f, viewportHeight = 0.0f;
 
 		bool enableUserControl = true;
 

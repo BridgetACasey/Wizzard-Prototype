@@ -36,8 +36,15 @@ namespace Wizzard
 #define PANELID_PROPERTIES "PropertiesPanel"
 #define PANELID_VIEWPORT "ViewportPanel"
 
-	EditorLayer::EditorLayer() : Layer("Editor"), orthoCamController(1920.0f / 1080.0f)
+	static int WINDOW_WIDTH = 0;
+	static int WINDOW_HEIGHT = 0;
+
+	EditorLayer::EditorLayer() : Layer("Editor"), orthoCamController(0.0f, 0.0f)
 	{
+		WINDOW_WIDTH = Application::Get().GetWindow().GetWidth();
+		WINDOW_HEIGHT = Application::Get().GetWindow().GetHeight();
+
+		orthoCamController = OrthographicCameraController((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT);
 	}
 
 	void EditorLayer::OnAttach()
@@ -50,8 +57,8 @@ namespace Wizzard
 		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"));
 
 		FramebufferSpecification fbSpec;
-		fbSpec.width = 1920;
-		fbSpec.height = 1080;
+		fbSpec.width = WINDOW_WIDTH;
+		fbSpec.height = WINDOW_HEIGHT;
 		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		frameBuffer = Framebuffer::Create(fbSpec);
 

@@ -3,19 +3,19 @@
 #pragma once
 
 #include "EditorPanel.h"
-#include "wizzard/event/AudioEvent.h"
+#include "wizzard/event/ApplicationEvent.h"
 
 namespace Wizzard
 {
 	class ApplicationSettingsPanel : public EditorPanel
 	{
 	public:
-		ApplicationSettingsPanel() = default;
+		ApplicationSettingsPanel();
 
 		void OnEvent(Event& event) override;
 		void OnImGuiRender() override;
 
 	private:
-		static bool OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent);
+		static bool OnAppShutdown(AppShutdownEvent& appEvent);
 	};
 }

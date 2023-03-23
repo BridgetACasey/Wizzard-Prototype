@@ -7,7 +7,7 @@
 
 namespace Wizzard
 {
-	class EditorPanel
+	class EditorPanel : public WizRefCounter
 	{
 	public:
 		EditorPanel() = default;

@@ -21,7 +21,7 @@ namespace Wizzard
 		PAUSED
 	};
 
-	class Scene
+	class Scene : public WizRefCounter
 	{
 	public:
 		Scene();

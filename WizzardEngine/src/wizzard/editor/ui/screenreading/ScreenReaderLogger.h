@@ -4,6 +4,7 @@
 
 #include <list>
 
+#include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/event/AudioEvent.h"
 
 namespace Wizzard
@@ -30,9 +31,12 @@ namespace Wizzard
 
 		static bool IsSpeaking();
 
+		static int MessageQueueCount() { return messageBackLog.size(); }
+
 	private:
 		static bool OnScreenReaderMessageStarted(ScreenReaderMessageStartedEvent& srEvent);
 		static bool OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent);
+		static bool OnAppShutdown(AppShutdownEvent& appEvent);
 
 		static bool OutputAll(const std::string& message, bool shouldInterrupt);
 		static bool OutputSpeech(const std::string& message, bool shouldInterrupt);

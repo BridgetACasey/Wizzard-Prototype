@@ -76,12 +76,6 @@ namespace Wizzard
 	{
 		WIZ_PROFILE_FUNCTION();
 
-		windowData.title = props.title;
-		windowData.width = props.width;
-		windowData.height = props.height;
-
-		WIZ_TRACE("Creating window {0} ({1}, {2})", windowData.title, windowData.width, windowData.height);
-
 		if(!glfwInitialised)
 		{
 			int glfwStatus = glfwInit();
@@ -92,9 +86,26 @@ namespace Wizzard
 			glfwInitialised = true;
 		}
 
-		//glfwWindowHint(GLFW_MAXIMIZED, true);
+		windowData.title = props.title;
 
-		glfwWindow = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), windowData.title.c_str(), nullptr, nullptr);
+		if(props.width == 1 && props.height == 1)
+		{
+			const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+			windowData.width = mode->width;
+			windowData.height = mode->height;
+		}
+		else
+		{
+			windowData.width = props.width;
+			windowData.height = props.height;
+		}
+
+		WIZ_TRACE("Creating window {0} ({1}, {2})", windowData.title, windowData.width, windowData.height);
+
+		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+
+		glfwWindow = glfwCreateWindow(static_cast<int>(windowData.width), static_cast<int>(windowData.height), windowData.title.c_str(), nullptr, nullptr);
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 

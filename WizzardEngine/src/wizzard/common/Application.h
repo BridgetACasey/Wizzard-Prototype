@@ -7,6 +7,8 @@
 #include "LayerStack.h"
 #include "wizzard/event/Event.h"
 #include "wizzard/event/EventHandler.h"
+#include "wizzard/event/MulticastDelegate.h"
+#include "wizzard/event/AudioEvent.h"
 #include "wizzard/event/ApplicationEvent.h"
 #include "wizzard/editor/ui/imgui/ImGuiLayer.h"
 #include "wizzard/base/Timestep.h"
@@ -32,6 +34,9 @@ namespace Wizzard
 		void PushOverlay(Layer* overlay);
 		void PopOverlay(Layer* overlay);
 
+		bool HasTriggeredShutdown() const { return triggeredShutdown; }
+		MulticastDelegate<AppShutdownEvent>& GetAppShutdownDelegate() { return appShutdownDelegate; }
+
 		ImGuiLayer* GetImGuiLayer() { return imguiLayer; }
 
 		Window& GetWindow() { return *window; }
@@ -54,6 +59,7 @@ namespace Wizzard
 		GraphicsContext* graphicsContext;
 
 		bool running = true;
+		bool triggeredShutdown = false;
 		bool minimised = false;
 
 		LayerStack layerStack;
@@ -63,6 +69,10 @@ namespace Wizzard
 		ImGuiLayer* imguiLayer;
 
 		float lastFrameTime = 0.0f;
+
+		MulticastDelegate<AppShutdownEvent> appShutdownDelegate;
+
+		friend class ApplicationSettingsPanel;
 	};
 
 	Application* CreateApplication();	//To be defined in the client
