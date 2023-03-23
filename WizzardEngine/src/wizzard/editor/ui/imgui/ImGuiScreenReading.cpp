@@ -10,7 +10,7 @@
 
 #include "ImGuiScreenReading.h"
 
-#include "ImGuiCustom.h"
+#include "imgui_internal.h"
 #include "audio/Audio.h"
 #include "audio/AudioSource.h"
 #include "base/ResourcePathFinder.h"

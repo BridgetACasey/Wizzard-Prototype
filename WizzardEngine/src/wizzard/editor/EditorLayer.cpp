@@ -31,11 +31,6 @@
 
 namespace Wizzard
 {
-#define PANELID_SCENE_HIERARCHY "SceneHierarchyPanel"
-#define PANELID_APP_SETTINGS "ApplicationSettingsPanel"
-#define PANELID_PROPERTIES "PropertiesPanel"
-#define PANELID_VIEWPORT "ViewportPanel"
-
 	static int WINDOW_WIDTH = 0;
 	static int WINDOW_HEIGHT = 0;
 

@@ -6,6 +6,11 @@
 
 namespace Wizzard
 {
+#define PANELID_SCENE_HIERARCHY "SceneHierarchyPanel"
+#define PANELID_APP_SETTINGS "ApplicationSettingsPanel"
+#define PANELID_PROPERTIES "PropertiesPanel"
+#define PANELID_VIEWPORT "ViewportPanel"
+
 	struct PanelData
 	{
 		const char* id = "";

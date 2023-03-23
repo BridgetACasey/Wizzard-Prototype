@@ -7,7 +7,6 @@
 #include "GLFW/glfw3.h"
 #include <glad/glad.h>
 
-#include "ImGuiCustom.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -18,6 +17,7 @@
 
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "imgui_internal.h"
 #include "editor/ui/screenreading/ScreenReaderLogger.h"
 
 namespace Wizzard

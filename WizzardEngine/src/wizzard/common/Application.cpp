@@ -187,6 +187,7 @@ namespace Wizzard
 		WIZ_PROFILE_FUNCTION();
 
 		running = false;
+		OnApplicationShutdown();
 
 		return true;
 	}
