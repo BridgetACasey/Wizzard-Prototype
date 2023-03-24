@@ -17,8 +17,8 @@ namespace Wizzard
 	enum class SceneState
 	{
 		EDIT = 0,
-		PLAY,
-		PAUSED
+		PLAY
+		//,PAUSED	//TODO: Pause functionality to be reimplemented at a later date
 	};
 
 	class Scene : public WizRefCounter

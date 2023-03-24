@@ -8,15 +8,13 @@ namespace Wizzard
 {
 	static std::unordered_set<void*> activeReferences;
 
-	template <typename T>
-	void WizRef<T>::AddActiveReference(void* instance)
+	void WizRefManager::AddActiveReference(void* instance)
 	{
-		if(instance)
-		activeReferences.insert(instance);
+		if (instance)
+			activeReferences.insert(instance);
 	}
 
-	template<typename T>
-	void WizRef<T>::EraseActiveReference(void* instance)
+	void WizRefManager::EraseActiveReference(void* instance)
 	{
 		if (instance)
 		{
@@ -25,8 +23,7 @@ namespace Wizzard
 		}
 	}
 
-	template<typename T>
-	bool WizRef<T>::IsActive(void* instance)
+	bool WizRefManager::IsActive(void* instance)
 	{
 		return activeReferences.find(instance) != activeReferences.end();
 	}

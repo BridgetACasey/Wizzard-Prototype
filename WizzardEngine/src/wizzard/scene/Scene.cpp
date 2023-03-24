@@ -79,8 +79,8 @@ namespace Wizzard
 
 	void Scene::OnUpdatePlay(TimeStep timeStep)
 	{
-		if (sceneState != SceneState::PAUSED || stepFrames-- > 0)
-		{
+		//if (stepFrames-- > 0)
+		//{
 			// Physics
 			{
 				const int32_t velocityIterations = 6;
@@ -135,7 +135,7 @@ namespace Wizzard
 					}
 				}
 			}
-		}
+		//}
 
 		// Render 2D
 		Camera* mainCamera = nullptr;

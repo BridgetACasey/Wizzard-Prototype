@@ -29,6 +29,8 @@ namespace Wizzard
 
 		void SetSceneContext(const WizRef<Scene>& context);
 
+		void CycleActivePanel();
+
 		PanelData GetPanelData(const char* panelID);
 		std::unordered_map<const char*, PanelData>& GetPanels() { return panels; }
 
@@ -44,6 +46,9 @@ namespace Wizzard
 			}
 
 			panels[panelData.id] = panelData;
+			//if (focusedPanel == nullptr)
+			//	focusedPanel = &panelData.name;
+
 			return panelData.panel.GetAs<TPanel>();
 		}
 
@@ -55,5 +60,6 @@ namespace Wizzard
 
 	private:
 		std::unordered_map<const char*, PanelData> panels;
+		char* focusedPanel = nullptr;
 	};
 }

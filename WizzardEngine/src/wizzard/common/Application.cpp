@@ -30,6 +30,9 @@ namespace Wizzard
 
 		imguiLayer = new ImGuiLayer();
 		PushOverlay(imguiLayer);
+
+		editorLayer = new EditorLayer();
+		PushLayer(editorLayer);
 	}
 
 	Application::~Application()

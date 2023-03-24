@@ -10,6 +10,7 @@
 #include "wizzard/event/MulticastDelegate.h"
 #include "wizzard/event/AudioEvent.h"
 #include "wizzard/event/ApplicationEvent.h"
+#include "wizzard/editor/EditorLayer.h"
 #include "wizzard/editor/ui/imgui/ImGuiLayer.h"
 #include "wizzard/base/Timestep.h"
 
@@ -38,6 +39,7 @@ namespace Wizzard
 		MulticastDelegate<AppShutdownEvent>& GetAppShutdownDelegate() { return appShutdownDelegate; }
 
 		ImGuiLayer* GetImGuiLayer() { return imguiLayer; }
+		EditorLayer* GetEditorLayer() { return editorLayer; }
 
 		Window& GetWindow() { return *window; }
 
@@ -67,6 +69,7 @@ namespace Wizzard
 		static Application* appInstance;
 
 		ImGuiLayer* imguiLayer;
+		EditorLayer* editorLayer;
 
 		float lastFrameTime = 0.0f;
 

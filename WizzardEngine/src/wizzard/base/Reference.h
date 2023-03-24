@@ -4,6 +4,14 @@
 
 namespace Wizzard
 {
+	class WizRefManager
+	{
+	public:
+		static void AddActiveReference(void* instance);
+		static void EraseActiveReference(void* instance);
+		static bool IsActive(void* instance);
+	};
+
 	class WizRefCounter
 	{
 	public:
@@ -26,7 +34,7 @@ namespace Wizzard
 
 		WizRef(T* instance) : refInstance(instance)
 		{
-			static_assert(std::is_base_of<WizRefCounter, T>::value, "Class is not WizRefCounter!");
+			static_assert(std::is_base_of<WizRefCounter, T>::value, "Class is not of base type WizRefCounter!");
 
 			IncrementReference();
 		}
@@ -123,32 +131,27 @@ namespace Wizzard
 		const T& operator*() const { return *refInstance; }
 
 	private:
-		void AddActiveReference(void* instance);
-		void EraseActiveReference(void* instance);
-		bool IsActive(void* instance);
-
-		//TODO: Fix this!
 		void IncrementReference() const
 		{
-			//if (refInstance)
-			//{
-			//	refInstance->IncrementReferenceTotal();
-			//	AddActiveReference(refInstance);
-			//}
+			if (refInstance)
+			{
+				refInstance->IncrementReferenceTotal();
+				WizRefManager::AddActiveReference(refInstance);
+			}
 		}
 
 		void DecrementReference() const
 		{
-			//if (refInstance)
-			//{
-			//	refInstance->DecrementReferenceTotal();
-			//	if (refInstance->GetReferencesTotal() == 0)
-			//	{
-			//		delete refInstance;
-			//		EraseActiveReference(refInstance);
-			//		refInstance = nullptr;
-			//	}
-			//}
+			if (refInstance)
+			{
+				refInstance->DecrementReferenceTotal();
+				if (refInstance->GetReferencesTotal() == 0)
+				{
+					delete refInstance;
+					WizRefManager::EraseActiveReference(refInstance);
+					refInstance = nullptr;
+				}
+			}
 		}
 
 		template<class T2>

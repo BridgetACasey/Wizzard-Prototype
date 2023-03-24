@@ -16,7 +16,13 @@ namespace Wizzard
 		virtual void OnEvent(Event& event);
 		virtual void OnImGuiRender();
 
+		bool IsHovered() const { return isHovered; }
+		bool IsFocused() const { return isFocused; }
+
 	protected:
 		WizRef<Scene> sceneContext;
+
+		bool isHovered = false;
+		bool isFocused = false;
 	};
 }

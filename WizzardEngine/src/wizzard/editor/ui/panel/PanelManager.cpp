@@ -33,6 +33,11 @@ namespace Wizzard
 			panelData.panel->SetSceneContext(context);
 	}
 
+	void PanelManager::CycleActivePanel()
+	{
+		//panels.at(focusedPanel)
+	}
+
 	PanelData PanelManager::GetPanelData(const char* panelID)
 	{
 		return panels.at(panelID);
@@ -40,8 +45,6 @@ namespace Wizzard
 
 	void PanelManager::RemovePanel(const char* panelID)
 	{
-		//auto id = std::hash<const char*>{}(panelID);
-
 		if (panels.find(panelID) == panels.end())
 			panels.erase(panelID);
 		else

@@ -3,29 +3,24 @@
 #include <Wizzard.h>
 #include <wizzard/base/EntryPoint.h>
 
-#include "SceneApp2D.h"
+#include "GameApplicationLayer.h"
 
 class GameApplication : public Wizzard::Application
 {
 public:
 	GameApplication()
 	{
-		editorLayer = new Wizzard::EditorLayer();
-		PushLayer(editorLayer);
-
-		//sceneApp = new SceneApp2D();
-		//PushLayer(sceneApp);
+		sceneApp = new GameApplicationLayer();
+		PushLayer(sceneApp);
 	}
 
 	~GameApplication()
 	{
-		//PopLayer(sceneApp);
-		PopLayer(editorLayer);
+		PopLayer(sceneApp);
 	}
 
 private:
-	Wizzard::EditorLayer* editorLayer = nullptr;
-	//SceneApp2D* sceneApp = nullptr;
+	GameApplicationLayer* sceneApp = nullptr;
 };
 
 Wizzard::Application* Wizzard::CreateApplication()

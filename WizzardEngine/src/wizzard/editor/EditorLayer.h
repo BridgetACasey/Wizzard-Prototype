@@ -38,17 +38,24 @@ namespace Wizzard
 		void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
 
+		//Temp functions
+		void SetActiveScene(WizRef<Scene> scene);
+		EditorCamera& GetEditorCamera() { return editorCamera; }
+		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
+		Entity GetSelectedEntity() { return sceneHierarchyPanel->GetSelectedEntity(); }
+		bool GetLockOnSelection() { return lockSelectionToCamera; }
+
+		void OnSceneBeginPlay();
+		void OnSceneEndPlay();
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
 		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
 		bool OnViewportSelectionHovered(ViewportSelectionHoveredEvent& sceneEvent);
 		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
-		bool OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent);
-		bool OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent);
 
 		void OnOverlayRender();
-		void OnViewportToolbarRender();
 
 		void NewScene();
 		void OpenScene();
@@ -56,24 +63,21 @@ namespace Wizzard
 		void SaveScene();
 		void SaveSceneAs();
 
-		void OnSceneBeginPlay();
-		void OnSceneEndPlay();
-		void OnScenePausePlay();
-
 		OrthographicCameraController orthoCamController;
 		EditorCamera editorCamera;
 
 		WizScope<PanelManager> panelManager;
+		WizRef<ApplicationSettingsPanel> appSettingsPanel;
+		WizRef<SceneHierarchyPanel> sceneHierarchyPanel;
+		WizRef<PropertiesPanel> propertiesPanel;
+		WizRef<ViewportPanel> viewportPanel;
+
+		Entity hoveredEntity;
 
 		WizRef<Scene> activeScene;
 		WizRef<Scene> editorScene;
 
 		Entity playerEntity;
-
-		int gizmoType = -1;
-
-		bool windowFocusUpdated = false;
-		int focusedWindow = 0;
 
 		bool lockSelectionToCamera = false;
 
@@ -88,12 +92,5 @@ namespace Wizzard
 		AudioSource editorLaunchSFX;
 		AudioSource selectSFX;
 		AudioSource errorSFX;
-
-		WizRef<ApplicationSettingsPanel> appSettingsPanel;
-		WizRef<SceneHierarchyPanel> sceneHierarchyPanel;
-		WizRef<PropertiesPanel> propertiesPanel;
-		WizRef<ViewportPanel> viewportPanel;
-
-		Entity hoveredEntity;
 	};
 }
