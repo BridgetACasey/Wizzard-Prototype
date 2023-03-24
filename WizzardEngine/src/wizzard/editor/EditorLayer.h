@@ -42,7 +42,7 @@ namespace Wizzard
 		void SetActiveScene(WizRef<Scene> scene);
 		EditorCamera& GetEditorCamera() { return editorCamera; }
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
-		Entity GetSelectedEntity() { return sceneHierarchyPanel->GetSelectedEntity(); }
+		Entity GetSelectedEntity() { return propertiesPanel->GetSelectedEntity(); }
 		bool GetLockOnSelection() { return lockSelectionToCamera; }
 
 		void OnSceneBeginPlay();

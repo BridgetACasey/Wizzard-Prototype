@@ -6,31 +6,32 @@
 
 namespace Wizzard
 {
-	void EntitySelection::SelectEntity(UUID entityID)
+	void EntitySelection::SelectEntity(Entity entity)
 	{
-		if (IsSelected(entityID))
+		if (IsSelected(entity))
 			return;
 
-		selectedEnityIDs.push_back(entityID);
+		selectedEntities.push_back(entity);
 	}
 
-	bool EntitySelection::IsSelected(UUID entityID)
+	bool EntitySelection::IsSelected(Entity entity)
 	{
-		return std::find(selectedEnityIDs.begin(), selectedEnityIDs.end(), entityID) != selectedEnityIDs.end();
+		return std::find(selectedEntities.begin(), selectedEntities.end(), entity) != selectedEntities.end();
 	}
 
-	void EntitySelection::DeselectEntity(UUID entityID)
+	void EntitySelection::DeselectEntity(Entity entity)
 	{
-		auto itr = std::find(selectedEnityIDs.begin(), selectedEnityIDs.end(), entityID);
+		auto itr = std::find(selectedEntities.begin(), selectedEntities.end(), entity);
 
-		if (itr == selectedEnityIDs.end())
+		if (itr == selectedEntities.end())
 			return;
 
-		selectedEnityIDs.erase(itr);
+		selectedEntities.erase(itr);
 	}
 
 	void EntitySelection::DeselectAll()
 	{
-		selectedEnityIDs.clear();
+		if(!selectedEntities.empty())
+		selectedEntities.clear();
 	}
 }

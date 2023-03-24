@@ -28,6 +28,7 @@
 #include "scene/component/CharacterControllerComponent.h"
 #include "scene/component/RigidBody2DComponent.h"
 #include "scene/component/TagComponent.h"
+#include "EntitySelection.h"
 
 namespace Wizzard
 {
@@ -68,7 +69,6 @@ namespace Wizzard
 		viewportPanel = panelManager->AddPanel<ViewportPanel>(PANELID_VIEWPORT, "VIEWPORT");
 
 		panelManager->SetSceneContext(activeScene);
-		sceneHierarchyPanel->SetEventCallback(WIZ_BIND_EVENT_FN(EditorLayer::OnEvent));
 
 		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -256,7 +256,6 @@ namespace Wizzard
 		}
 
 		panelManager->OnImGuiRender();
-		sceneHierarchyPanel->OnRenderPropertiesPanel();
 
 		ImGui::End();	//End Dockspace Demo
 	}
@@ -292,17 +291,17 @@ namespace Wizzard
 	{
 		if(keyEvent.GetKeyCode() == Key::F)
 		{
-			Entity selectedEntity = sceneHierarchyPanel->GetSelectedEntity();
+			Entity selectedEntity = propertiesPanel->GetSelectedEntity();
 			if (selectedEntity)
 				editorCamera.FocusOnPoint(selectedEntity.GetComponent<TransformComponent>().Translation);
 		}
 
 		if(keyEvent.GetKeyCode() == Key::Escape)
 		{
-			Entity selectedEntity = sceneHierarchyPanel->GetSelectedEntity();
+			Entity selectedEntity = propertiesPanel->GetSelectedEntity();
 			if (selectedEntity)
 			{
-				sceneHierarchyPanel->SetSelectedEntity({});
+				propertiesPanel->SetSelectedEntity({});
 				ScreenReaderLogger::ForceQueueOutput("Deselected " + selectedEntity.GetName());
 			}
 		}
@@ -325,7 +324,8 @@ namespace Wizzard
 		if (keyEvent.GetKeyCode() == Key::Space)
 		{
 			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-				sceneHierarchyPanel->SetSelectedEntity(hoveredEntity);
+				EntitySelection::SelectEntity(hoveredEntity);
+				propertiesPanel->SetSelectedEntity(hoveredEntity);
 		}
 
 		return false;
@@ -336,7 +336,7 @@ namespace Wizzard
 		if (mouseEvent.GetMouseButton() == Mouse::LeftButton)
 		{
 			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-				sceneHierarchyPanel->SetSelectedEntity(hoveredEntity);
+				propertiesPanel->SetSelectedEntity(hoveredEntity);
 		}
 
 		return false;
@@ -344,8 +344,8 @@ namespace Wizzard
 
 	bool EditorLayer::OnUIWindowFocus(UIWindowFocusEvent& uiEvent)
 	{
-		if (viewportPanel->IsFocused() && sceneHierarchyPanel->GetSelectedEntity().GetName().empty())
-			sceneHierarchyPanel->SetSelectedEntityToDefault();
+		//if (viewportPanel->IsFocused() && propertiesPanel->GetSelectedEntity().GetName().empty())
+		//	propertiesPanel->SetSelectedEntityToDefault();
 
 		return false;
 	}
@@ -414,7 +414,7 @@ namespace Wizzard
 
 		panelManager->SetSceneContext(activeScene);
 		//sceneHierarchyPanel->SetSceneContext(activeScene);
-		sceneHierarchyPanel->SetSelectedEntity({});
+		propertiesPanel->SetSelectedEntity({});
 
 		Audio::Play(levelMusic);
 	}

@@ -2,20 +2,25 @@
 
 #pragma once
 
-#include "wizzard/common/UUID.h"
+#include <vector>
+#include "wizzard/scene/Entity.h"
 
 namespace Wizzard
 {
 	class EntitySelection
 	{
 	public:
-		static void SelectEntity(UUID entityID);
-		static bool IsSelected(UUID entityID);
-		static void DeselectEntity(UUID entityID);
+		static void SelectEntity(Entity entity);
+		static bool IsSelected(Entity entity);
+		static void DeselectEntity(Entity entity);
 		static void DeselectAll();
-		static std::vector<UUID>& GetSelections() { return selectedEnityIDs; }
+		static std::vector<Entity>& GetSelections() { return selectedEntities; }
+
+		static void ToggleMultiSelectMode() { multiSelectMode = !multiSelectMode; }
+		static bool IsMultiSelect() { return multiSelectMode; }
 
 	private:
-		static std::vector<UUID> selectedEnityIDs;
+		inline static std::vector<Entity> selectedEntities;
+		inline static bool multiSelectMode = false;
 	};
 }
