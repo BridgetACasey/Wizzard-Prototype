@@ -31,7 +31,7 @@ namespace Wizzard
 
 		[[nodiscard]] std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
 
-		static AudioSource LoadFromFile(const std::string& file, bool spatial = false);
+		static AudioSource LoadFromFile(const std::string& file, bool spatial = false, bool forEditor = false, const char* assetName = nullptr);
 
 		AudioSource& operator=(AudioSource source) noexcept
 		{

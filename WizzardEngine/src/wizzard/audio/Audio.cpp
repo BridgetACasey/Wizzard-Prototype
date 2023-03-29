@@ -169,6 +169,16 @@ namespace Wizzard
 		return { 0, false, 0 };
 	}
 
+	AudioSource Audio::LoadAudioSourceForEditor(const char* assetName, const std::string& fileName)
+	{
+		AudioSource source = LoadAudioSource(fileName);
+
+		if (source.IsLoaded())
+			editorAudioSources.emplace(assetName, source);
+
+		return source;
+	}
+
 	void Audio::Play(const AudioSource& audioSource)
 	{
 		WIZ_PROFILE_FUNCTION();

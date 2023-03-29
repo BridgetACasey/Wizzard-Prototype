@@ -5,6 +5,7 @@
 #include "ApplicationSettingsPanel.h"
 
 #include "imgui.h"
+#include "wizzard/audio/Audio.h"
 #include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/common/Application.h"
 #include "wizzard/scene/SceneSerialiser.h"
@@ -28,6 +29,14 @@ namespace Wizzard
 	void ApplicationSettingsPanel::OnImGuiRender()
     {
 		static bool openExitMenu = false;
+
+		if (shouldTriggerFocus)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("PROJECT SETTINGS");
+			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
+			shouldTriggerFocus = false;
+		}
 
         ImGuiSR::Begin("PROJECT", nullptr, 0, "Project settings.", true);
 

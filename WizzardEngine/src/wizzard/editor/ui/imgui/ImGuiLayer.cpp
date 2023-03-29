@@ -121,7 +121,7 @@ namespace Wizzard
 
 		if(Audio::IsActive())
 		{
-			windowChangeSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "page-flip-01a.mp3"), false);
+			windowChangeSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "page-flip-01a.mp3"), false, true, WIZ_AUDIO_UIWINDOWCHANGED);
 		}
 	}
 
@@ -247,7 +247,7 @@ namespace Wizzard
 		//logWindowMessage = true;
 
 		//TODO: Still have to fix this playing over elements sometimes
-		if(currentActiveID != currentActiveWindow->TabId)
+		if(currentActiveWindow != nullptr && currentActiveID != currentActiveWindow->TabId)
 		Audio::Play(windowChangeSFX);
 
 		return false;

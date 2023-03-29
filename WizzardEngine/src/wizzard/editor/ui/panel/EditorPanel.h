@@ -4,6 +4,7 @@
 
 #include "wizzard/base/Base.h"
 #include "wizzard/scene/Scene.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 
 namespace Wizzard
 {
@@ -18,11 +19,15 @@ namespace Wizzard
 
 		bool IsHovered() const { return isHovered; }
 		bool IsFocused() const { return isFocused; }
+		//bool ShouldTriggerFocus() const { return shouldTriggerFocus; }
+
+		void SetShouldTriggerFocus(bool focus) { shouldTriggerFocus = focus; }
 
 	protected:
 		WizRef<Scene> sceneContext;
 
 		bool isHovered = false;
 		bool isFocused = false;
+		bool shouldTriggerFocus = false;
 	};
 }

@@ -48,7 +48,7 @@ namespace Wizzard
 		levelMusic = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(MUSIC, "game-comedy-interesting-playful-sweet-bright-childish-music-57040.mp3"), false);
 		levelMusic.SetGain(0.25f);
 
-		editorLaunchSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "start-computeraif-14572.mp3"));
+		editorLaunchSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "start-computeraif-14572.mp3"), false, true, WIZ_AUDIO_EDITORSTARTUP);
 		selectSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "mixkit-cool-interface-click-tone-2568.mp3"));
 		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"));
 
@@ -67,6 +67,7 @@ namespace Wizzard
 		sceneHierarchyPanel = panelManager->AddPanel<SceneHierarchyPanel>(PANELID_SCENE_HIERARCHY, "SCENE");
 		propertiesPanel = panelManager->AddPanel<PropertiesPanel>(PANELID_PROPERTIES, "PROPERTIES");
 		viewportPanel = panelManager->AddPanel<ViewportPanel>(PANELID_VIEWPORT, "VIEWPORT");
+		toolbarPanel = panelManager->AddPanel<ViewportToolbarPanel>(PANELID_VIEWPORTTOOLBAR, "TOOLBAR");
 
 		panelManager->SetSceneContext(activeScene);
 
@@ -196,11 +197,25 @@ namespace Wizzard
 				}
 			}
 		}
-		if (Input::IsKeyPressed(Key::Z))
+		//if (Input::IsKeyPressed(Key::Z))
+		if (Input::IsActionTriggered(WIZ_IA_RETRYDETECTSCREENREADER))
 		{
 			WIZ_TRACE("Attempting to detect screen reader at runtime.");
 			ScreenReaderLogger::DetectScreenReader();
 		}
+
+		if(Input::IsActionTriggered(WIZ_IA_TOGGLECAMENTITYLOCK))
+		{
+			lockSelectionToCamera = !lockSelectionToCamera;
+		
+			if (lockSelectionToCamera)
+				ScreenReaderLogger::ForceQueueOutput("Enabled camera lock on selections");
+			else
+				ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
+		}
+
+		//if (Input::IsActionTriggered(WIZ_IA_CYCLEUIWINDOW))
+		//	panelManager->CycleActivePanel();
 
 		OnOverlayRender();
 
@@ -306,15 +321,15 @@ namespace Wizzard
 			}
 		}
 
-		if(keyEvent.GetKeyCode() == Key::CapsLock)
-		{
-			lockSelectionToCamera = !lockSelectionToCamera;
-
-			if (lockSelectionToCamera)
-				ScreenReaderLogger::ForceQueueOutput("Enabled camera lock on selections");
-			else
-				ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
-		}
+		//if(keyEvent.GetKeyCode() == Key::CapsLock)
+		//{
+		//	lockSelectionToCamera = !lockSelectionToCamera;
+		//
+		//	if (lockSelectionToCamera)
+		//		ScreenReaderLogger::ForceQueueOutput("Enabled camera lock on selections");
+		//	else
+		//		ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
+		//}
 
 		if(keyEvent.GetKeyCode() == Key::LeftShift)
 		{

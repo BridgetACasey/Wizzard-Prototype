@@ -6,6 +6,8 @@
 
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "imgui_internal.h"
+#include "wizzard/audio/Audio.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "wizzard/base/Maths.h"
 #include "wizzard/scene/component/TransformComponent.h"
@@ -26,9 +28,16 @@ namespace Wizzard
 	void ViewportPanel::OnImGuiRender()
 	{
 		static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
-		
+
+		if (shouldTriggerFocus)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("VIEWPORT");
+			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
+		}
+
 		ImGuiSR::Begin("VIEWPORT", nullptr, viewportFlags);
-		
+
 		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 		auto viewportOffset = ImGui::GetWindowPos();
@@ -42,12 +51,12 @@ namespace Wizzard
 		Application::Get().GetEditorLayer()->GetEditorCamera().SetEnableUserControl(isHovered && isFocused);
 		Application::Get().GetImGuiLayer()->BlockImGuiEvents(false);
 		////Application::Get().GetImGuiLayer()->BlockImGuiEvents(isViewportHovered && isViewportFocused);
-		
-		////if (windowFocusUpdated && focusedWindow == 3)
-		////{
-		////	Input::SetMousePosition(viewportOffset.x + (viewportSize.x / 2.0f), viewportOffset.y + (viewportSize.y / 2.0f));
-		////	windowFocusUpdated = false;
-		////}
+
+		if(shouldTriggerFocus)
+		{
+			Input::SetMousePosition(viewportOffset.x + (viewportSize.x / 2.0f), viewportOffset.y + (viewportSize.y / 2.0f));
+			shouldTriggerFocus = false;
+		}
 		
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -120,17 +129,7 @@ namespace Wizzard
 				}
 			}
 		}
-		
-		////if (windowFocusUpdated && focusedWindow == 4)
-		////{
-		////	ImGui::SetNextWindowFocus();
-		////	ScreenReaderLogger::ForceQueueOutput("TOOLBAR");
-		////	//Input::SetMousePosition(0.0f, 0.0f);
-		////	windowFocusUpdated = false;
-		////}
-		
-		OnViewportToolbarRender();
-		
+
 		ImGui::End();	//End Viewport
 	}
 
@@ -139,38 +138,53 @@ namespace Wizzard
 		return false;
 	}
 
-	void ViewportPanel::OnViewportToolbarRender()
+	
+	ViewportToolbarPanel::~ViewportToolbarPanel()
 	{
-		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-		
+	}
+	void ViewportToolbarPanel::OnEvent(Event& event)
+	{
+	}
+	void ViewportToolbarPanel::OnImGuiRender()
+	{
+		if (shouldTriggerFocus)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("VIEWPORT TOOLBAR");
+			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
+			shouldTriggerFocus = false;
+		}
+
+		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse, "VIEWPORT TOOLBAR", true);
+
 		//ImGui::SetKeyboardFocusHere();
-		
+
 		//Temp??
 		static std::string playButtonLabel = "PLAY";
 		static std::string playButtonDesc = "Play scene.";
-		
+
 		if (ImGuiSR::Button(playButtonLabel, ImVec2(175.0f, 80.5f), playButtonDesc, true))
 		{
 			switch (sceneContext->GetState())
 			{
-				case SceneState::EDIT:
-				{
-					Application::Get().GetEditorLayer()->OnSceneBeginPlay();
-					playButtonLabel = "STOP";
-					playButtonDesc = "Stop scene.";
-				}
-				break;
-				case SceneState::PLAY:	//Removed pause functionality for now as it requires further testing
-				{
-					Application::Get().GetEditorLayer()->OnSceneEndPlay();
-					playButtonLabel = "PLAY";
-					playButtonDesc = "Play scene.";
-				}
+			case SceneState::EDIT:
+			{
+				Application::Get().GetEditorLayer()->OnSceneBeginPlay();
+				playButtonLabel = "STOP";
+				playButtonDesc = "Stop scene.";
+			}
+			break;
+			case SceneState::PLAY:	//Removed pause functionality for now as it requires further testing
+			{
+				Application::Get().GetEditorLayer()->OnSceneEndPlay();
+				playButtonLabel = "PLAY";
+				playButtonDesc = "Play scene.";
+			}
 			}
 		}
-		
+
 		ImGui::SetItemDefaultFocus();
-		
+
 		ImGui::End();
 	}
 }

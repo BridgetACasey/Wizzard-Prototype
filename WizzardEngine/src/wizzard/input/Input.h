@@ -14,6 +14,11 @@ namespace Wizzard
 	constexpr int TOTAL_MOUSE_CODES = Mouse::TotalCodeCount;
 	constexpr int TOTAL_CONTROLLER_CODES = Controller::TotalCodeCount;
 
+	//Input action names for editor key bindings
+#define WIZ_IA_TOGGLECAMENTITYLOCK "ToggleCameraLockOnEntity"
+#define WIZ_IA_RETRYDETECTSCREENREADER "RetryDetectScreenReader"
+#define WIZ_IA_CYCLEUIWINDOW "CycleUIWindow"
+
 	enum InputState
 	{
 		NONE = -1,
@@ -70,12 +75,45 @@ namespace Wizzard
 
 		static Maths::WizVector2f GetMousePosition();
 
+		static bool IsActionTriggered(const char* actionName)
+		{
+			if (inputActions.find(actionName) == inputActions.end())
+				return false;
+
+			uint32_t actionKey = inputActions.at(actionName).first;
+			std::function<bool(uint32_t)> actionFunc = inputActions.at(actionName).second;
+
+			return actionFunc(actionKey);
+		}
+
+	private:
+		inline static bool initInput = false;
 		inline static bool queryInput = false;
+
+		inline static std::unordered_map<const char*, std::pair<int32_t, std::function<bool(uint32_t)>>> inputActions;	//Editor key bindings/actions, implemented per platform
+
+		static bool IsQueryingInput()
+		{
+			if (!initInput)
+			{
+				WIZ_ERROR("Wizzard::Input class not initialised! Call Input::Init before attempting to query input.");
+				return false;
+			}
+
+			if (!queryInput)
+			{
+				WIZ_WARN("Trying to query input when 'queryInput' flag is set to FALSE! This flag is found in the Wizzard::Input class.");
+				return false;
+			}
+
+			return true;
+		}
 
 		/*
 		 * TODO: Find a way to make printing code values to the log less verbose than calling Get...CodeAsString from client side every time.
 		 */
 
+	public:
 		static std::string GetKeyCodeAsString(KeyCode keyCode)
 		{
 			switch(keyCode)
@@ -251,26 +289,6 @@ namespace Wizzard
 
 				default:		return "NONE";
 			}
-		}
-
-	private:
-		inline static bool initInput = false;
-
-		static bool IsQueryingInput()
-		{
-			if (!initInput)
-			{
-				WIZ_ERROR("Wizzard::Input class not initialised! Call Input::Init before attempting to query input.");
-				return false;
-			}
-
-			if (!queryInput)
-			{
-				WIZ_WARN("Trying to query input when 'queryInput' flag is set to FALSE! This flag is found in the Wizzard::Input class.");
-				return false;
-			}
-
-			return true;
 		}
 	};
 }

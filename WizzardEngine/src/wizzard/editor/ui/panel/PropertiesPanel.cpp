@@ -5,6 +5,7 @@
 #include "PropertiesPanel.h"
 
 #include "imgui_internal.h"
+#include "wizzard/audio/Audio.h"
 #include "wizzard/event/EventHandler.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "input/Input.h"
@@ -22,6 +23,14 @@ namespace Wizzard
 {
 	void PropertiesPanel::OnImGuiRender()
 	{
+		if (shouldTriggerFocus)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("OBJECT PROPERTIES");
+			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
+			shouldTriggerFocus = false;
+		}
+
 		ImGuiSR::Begin("PROPERTIES", nullptr, 0, "Object properties.", true);
 		if (selectionContext)
 		{

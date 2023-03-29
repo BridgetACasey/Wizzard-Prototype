@@ -10,6 +10,7 @@ namespace Wizzard
 #define PANELID_APP_SETTINGS "ApplicationSettingsPanel"
 #define PANELID_PROPERTIES "PropertiesPanel"
 #define PANELID_VIEWPORT "ViewportPanel"
+#define PANELID_VIEWPORTTOOLBAR "ViewportToolbarPanel"
 
 	struct PanelData
 	{
@@ -32,7 +33,7 @@ namespace Wizzard
 		void CycleActivePanel();
 
 		PanelData GetPanelData(const char* panelID);
-		std::unordered_map<const char*, PanelData>& GetPanels() { return panels; }
+		std::map<const char*, PanelData>& GetPanels() { return panels; }
 
 		void RemovePanel(const char* panelID);
 
@@ -46,8 +47,6 @@ namespace Wizzard
 			}
 
 			panels[panelData.id] = panelData;
-			//if (focusedPanel == nullptr)
-			//	focusedPanel = &panelData.name;
 
 			return panelData.panel.GetAs<TPanel>();
 		}
@@ -59,7 +58,7 @@ namespace Wizzard
 		}
 
 	private:
-		std::unordered_map<const char*, PanelData> panels;
-		char* focusedPanel = nullptr;
+		std::map<const char*, PanelData> panels;
+		int focusedPanelIndex = 0;
 	};
 }

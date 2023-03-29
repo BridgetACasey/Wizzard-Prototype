@@ -23,11 +23,19 @@ namespace Wizzard
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 
-		void OnViewportToolbarRender();
-
 		int gizmoType = -1;
 
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];
+	};
+
+	class ViewportToolbarPanel : public EditorPanel
+	{
+	public:
+		ViewportToolbarPanel() = default;
+		~ViewportToolbarPanel();
+
+		void OnEvent(Event& event) override;
+		void OnImGuiRender() override;
 	};
 }

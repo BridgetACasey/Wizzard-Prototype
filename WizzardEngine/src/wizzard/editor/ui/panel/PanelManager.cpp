@@ -35,7 +35,9 @@ namespace Wizzard
 
 	void PanelManager::CycleActivePanel()
 	{
-		//panels.at(focusedPanel)
+		focusedPanelIndex = (focusedPanelIndex >= (panels.size() - 1)) ? 0 : focusedPanelIndex+1;
+
+		std::next(panels.begin(), focusedPanelIndex)->second.panel->SetShouldTriggerFocus(true);
 	}
 
 	PanelData PanelManager::GetPanelData(const char* panelID)

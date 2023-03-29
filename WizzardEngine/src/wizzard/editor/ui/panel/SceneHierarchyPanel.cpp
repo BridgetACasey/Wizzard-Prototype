@@ -7,6 +7,8 @@
 #include <imgui.h>
 
 #include "imgui_internal.h"
+#include "wizzard/common/Application.h"
+#include "wizzard/audio/Audio.h"
 #include "wizzard/event/EventHandler.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "input/Input.h"
@@ -28,6 +30,14 @@ namespace Wizzard
 	}
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
+		if (shouldTriggerFocus)
+		{
+			ImGui::SetNextWindowFocus();
+			ScreenReaderLogger::ForceQueueOutput("SCENE HIERARCHY");
+			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
+			shouldTriggerFocus = false;
+		}
+
 		ImGuiSR::Begin("SCENE", nullptr, 0, "Scene hierarchy.", true);
 
 		ImGui::SetItemDefaultFocus();
@@ -89,7 +99,7 @@ namespace Wizzard
 			if (EntitySelection::GetSelections().empty() || EntitySelection::GetSelections().back() != entity)
 			{
 				ViewportSelectionChangedEvent selectionEvent(entity, entity.GetUUID(), true);
-
+				Application::Get().GetEditorLayer()->OnEvent(selectionEvent);
 				//selectionData.eventCallback(selectionEvent);
 			}
 

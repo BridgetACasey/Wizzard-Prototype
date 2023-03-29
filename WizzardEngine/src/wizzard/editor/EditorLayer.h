@@ -71,6 +71,7 @@ namespace Wizzard
 		WizRef<SceneHierarchyPanel> sceneHierarchyPanel;
 		WizRef<PropertiesPanel> propertiesPanel;
 		WizRef<ViewportPanel> viewportPanel;
+		WizRef<ViewportToolbarPanel> toolbarPanel;
 
 		Entity hoveredEntity;
 

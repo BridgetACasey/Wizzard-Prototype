@@ -88,9 +88,9 @@ namespace Wizzard
 		return { (uint32_t)(totalDuration / 60.0f), (uint32_t)totalDuration % 60 };
 	}
 
-	AudioSource AudioSource::LoadFromFile(const std::string& file, bool spatial)
+	AudioSource AudioSource::LoadFromFile(const std::string& file, bool spatial, bool forEditor, const char* assetName)
 	{
-		AudioSource result = Audio::LoadAudioSource(file);
+		AudioSource result = forEditor ? Audio::LoadAudioSourceForEditor(assetName, file) : Audio::LoadAudioSource(file);
 		result.SetSpatial(spatial);
 
 		return result;
