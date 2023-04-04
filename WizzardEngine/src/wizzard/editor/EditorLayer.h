@@ -44,7 +44,7 @@ namespace Wizzard
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
 		WizRef<PropertiesPanel>& GetPropertiesPanel() { return propertiesPanel; }
 		Entity GetSelectedEntity() { return propertiesPanel->GetSelectedEntity(); }
-		bool GetLockOnSelection() { return lockSelectionToCamera; }
+		bool GetLockOnSelection() const { return lockSelectionToCamera; }
 
 		void OnSceneBeginPlay();
 		void OnSceneEndPlay();
@@ -52,7 +52,6 @@ namespace Wizzard
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
-		bool OnUIWindowFocus(UIWindowFocusEvent& uiEvent);
 		bool OnViewportSelectionHovered(ViewportSelectionHoveredEvent& sceneEvent);
 		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
 
@@ -83,8 +82,6 @@ namespace Wizzard
 
 		bool lockSelectionToCamera = true;
 
-		bool isViewportFocused = false;
-		bool isViewportHovered = false;
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];
 

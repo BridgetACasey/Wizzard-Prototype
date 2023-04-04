@@ -126,4 +126,29 @@ namespace Wizzard
 
 		return pressed;
 	}
+
+	bool ImGuiSR::MenuItem(const std::string& label, const char* shortcut, bool selected, bool enabled, const std::string& description, bool preferDesc)
+	{
+		bool pressed = ImGui::MenuItem(label.c_str());
+
+		ImGuiLayer* imguiLayer = Application::Get().GetImGuiLayer();
+
+		if (imguiLayer->GetLogElementMessage())
+		{
+			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
+			{
+				if (preferDesc && !description.empty())
+					ScreenReaderLogger::QueueOutput(description);
+				else if (!preferDesc)
+					ScreenReaderLogger::QueueOutput(label);
+
+				imguiLayer->SetLogElementMessage(false);
+			}
+		}
+
+		if (pressed)
+			Audio::Play(clickSFX);
+
+		return pressed;
+	}
 }

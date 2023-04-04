@@ -21,6 +21,7 @@ namespace Wizzard
 
 		static bool Button(const std::string& buttonLabel, const ImVec2& sizeArg, const std::string& description = "", bool preferDesc = false);
 		static bool Checkbox(const std::string& label, bool* flags, const std::string& description = "", bool preferDesc = false);
+		static bool MenuItem(const std::string& label, const char* shortcut = NULL, bool selected = false, bool enabled = true, const std::string& description = "", bool preferDesc = false);
 
 		static void SetButtonFontScale(float scale) { buttonFontScale = scale; }
 		static float GetButtonFontScale() { return buttonFontScale; }

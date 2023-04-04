@@ -3,7 +3,6 @@
 #pragma once
 
 #include "EditorPanel.h"
-#include "wizzard/event/EditorEvent.h"
 #include "wizzard/scene/Entity.h"
 
 namespace Wizzard
@@ -19,9 +18,8 @@ namespace Wizzard
 	private:
 		void DrawEntityNode(Entity entity);
 
-		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
+		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 
-		//Entity selectionContext = {};
-		Entity defaultEntity = {};
+		bool openEntityCreationWindow = false;
 	};
 }

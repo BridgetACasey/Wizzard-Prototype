@@ -8,6 +8,9 @@ namespace Wizzard
 {
 	void EntitySelection::SelectEntity(Entity entity)
 	{
+		if (!entity)
+			return;
+
 		if (IsSelected(entity))
 			return;
 

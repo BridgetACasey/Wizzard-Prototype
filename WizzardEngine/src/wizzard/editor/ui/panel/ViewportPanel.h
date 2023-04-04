@@ -22,7 +22,11 @@ namespace Wizzard
 		void SetGizmoType(int type) { gizmoType = type; }
 		glm::vec2& GetViewportSize() { return viewportSize; }
 		glm::vec2* GetViewportBounds() { return viewportBounds; }
-		void SetEntityOrigin(glm::vec3& pos) { entityOrigin = pos; }
+
+		void SetMoveUnitCount(int unitCount) { moveUnitCount = unitCount; }
+		void SetEntityBaseTranslation(glm::vec3& translation) { entityBaseTranslation = translation; }
+		void SetEntityBaseRotation(glm::vec3& rotation) { entityBaseRotation = rotation; }
+		void SetEntityBaseScale(glm::vec3& scale) { entityBaseScale = scale; }
 
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
@@ -36,7 +40,11 @@ namespace Wizzard
 		bool isTransformActive = false;
 		float snapValue = 0.5f;// Snap to 0.5m for translation/scale
 
-		glm::vec3 entityOrigin = {0.0f, 0.0f, 0.0f};
+		int moveUnitCount = 0;	//How many units we have moved our selected entities, used for updating position info to screen reader
+
+		glm::vec3 entityBaseTranslation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 entityBaseRotation = {0.0f, 0.0f, 0.0f};
+		glm::vec3 entityBaseScale = { 0.0f, 0.0f, 0.0f };
 	};
 
 	class ViewportToolbarPanel : public EditorPanel

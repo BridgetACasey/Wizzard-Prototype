@@ -27,6 +27,9 @@ namespace Wizzard
 {
 	void SceneHierarchyPanel::OnEvent(Event& event)
 	{
+		EventHandler eventHandler(event);
+
+		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(OnKeyPressed));
 	}
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
@@ -54,37 +57,117 @@ namespace Wizzard
 				//	defaultEntity = entity;
 			});
 
-			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-			{
-				//selectionContext = {};
-				EntitySelection::DeselectAll();
-				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
-				ScreenReaderLogger::QueueOutput("Deselected all");
-			}
-
-			static bool openCreatePopup = false;
-
 			// Right-click on blank space
 			//TODO: Fix later. Probably use event callbacks instead and pass to editor layer to handle.
 			//if (Input::IsKeyPressed(Key::Enter) || Input::IsMouseButtonPressed(Mouse::RightButton))
 				
 
 			if(ImGuiSR::Button("CREATE ENTITY", ImVec2(440.0f, 80.5f)))
+				openEntityCreationWindow = !openEntityCreationWindow;
+
+			if (openEntityCreationWindow)
 			{
-				openCreatePopup = !openCreatePopup;
+				if (ImGuiSR::Begin("Entity Creation"))
+				{
+					//ImGui::SetKeyboardFocusHere();
+
+					if (ImGuiSR::MenuItem("Create Floor (Short)"))
+					{
+						auto floor = sceneContext->CreateEntity("Floor (Short)");
+						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
+						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
+						floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
+						floor.GetComponent<TransformComponent>().Scale.x *= 3.0f;
+						floor.AddComponent<RigidBody2DComponent>();
+						floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+						floor.AddComponent<BoxCollider2DComponent>();
+						openEntityCreationWindow = false;
+					}
+
+					if (ImGuiSR::MenuItem("Create Floor (Long)"))
+					{
+						auto floor = sceneContext->CreateEntity("Floor (Long)");
+						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
+						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
+						floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
+						floor.GetComponent<TransformComponent>().Scale.x *= 6.0f;
+						floor.AddComponent<RigidBody2DComponent>();
+						floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+						floor.AddComponent<BoxCollider2DComponent>();
+						openEntityCreationWindow = false;
+					}
+
+					if (ImGuiSR::MenuItem("Create Wall (Short)"))
+					{
+						auto wall = sceneContext->CreateEntity("Wall (Short)");
+						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
+						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
+						wall.GetComponent<TransformComponent>().Scale.y *= 1.5f;
+						wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
+						wall.AddComponent<RigidBody2DComponent>();
+						wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+						wall.AddComponent<BoxCollider2DComponent>();
+						openEntityCreationWindow = false;
+					}
+
+					if (ImGuiSR::MenuItem("Create Wall (Tall)"))
+					{
+						auto wall = sceneContext->CreateEntity("Wall (Tall)");
+						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
+						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
+						wall.GetComponent<TransformComponent>().Scale.y *= 3.0f;
+						wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
+						wall.AddComponent<RigidBody2DComponent>();
+						wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+						wall.AddComponent<BoxCollider2DComponent>();
+						openEntityCreationWindow = false;
+					}
+
+					if (ImGuiSR::MenuItem("Create Player Character"))
+					{
+						if (!sceneContext->GetPrimaryCameraEntity())
+						{
+							auto player = sceneContext->CreateEntity("Player Character");
+							player.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+							player.GetComponent<TransformComponent>().Translation.x = 0.0f;
+							player.GetComponent<TransformComponent>().Translation.y = 0.0f;
+							player.AddComponent<RigidBody2DComponent>();
+							player.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
+							player.AddComponent<BoxCollider2DComponent>();
+							player.AddComponent<CameraComponent>();
+							player.AddComponent<CharacterControllerComponent>();
+							openEntityCreationWindow = false;
+						}
+						else
+							ScreenReaderLogger::QueueOutput("Scene already contains player entity called: " + sceneContext->GetPrimaryCameraEntity().GetName());
+					}
+
+					if (ImGuiSR::MenuItem("Create Empty Entity"))
+					{
+						sceneContext->CreateEntity("Empty Entity");
+						openEntityCreationWindow = false;
+					}
+
+
+					if (ImGuiSR::MenuItem("Close Window"))
+					{
+						ScreenReaderLogger::QueueOutput("Closed entity creation window");
+						openEntityCreationWindow = false;
+					}
+
+					ImGuiSR::End();
+				}
 			}
 
-			if (openCreatePopup)
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
-				if (ImGui::BeginPopup(0))
-				{
-					ImGui::SetKeyboardFocusHere();
-
-					if (ImGui::MenuItem("Create Empty Entity"))
-						sceneContext->CreateEntity("Empty Entity");
-
-					ImGui::EndPopup();
-				}
+				EntitySelection::DeselectAll();
+				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
+				ScreenReaderLogger::QueueOutput("Deselected all");
 			}
 		}
 		ImGui::End();
@@ -104,10 +187,8 @@ namespace Wizzard
 			{
 				ViewportSelectionChangedEvent selectionEvent(entity, entity.GetUUID(), true);
 				Application::Get().GetEditorLayer()->OnEvent(selectionEvent);
-				//selectionData.eventCallback(selectionEvent);
 			}
 
-			//selectionContext = entity;
 			if(!EntitySelection::IsMultiSelect())
 			EntitySelection::DeselectAll();
 
@@ -140,7 +221,6 @@ namespace Wizzard
 			sceneContext->DestroyEntity(entity);
 			if (EntitySelection::IsSelected(entity))
 			{
-				//selectionContext = {};
 				EntitySelection::DeselectEntity(entity);
 				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
 				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName());
@@ -148,9 +228,21 @@ namespace Wizzard
 		}
 	}
 
-	bool SceneHierarchyPanel::OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent)
+	bool SceneHierarchyPanel::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
-		WIZ_TRACE(sceneEvent);
+		if (keyEvent.GetKeyCode() == Key::C)
+			openEntityCreationWindow = !openEntityCreationWindow;
+
+		if (keyEvent.GetKeyCode() == Key::LeftShift)
+			openEntityCreationWindow = false;
+
+		if (keyEvent.GetKeyCode() == Key::C || keyEvent.GetKeyCode() == Key::LeftShift)
+		{
+			if (openEntityCreationWindow)
+				ScreenReaderLogger::QueueOutput("Opened entity creation window");
+			else
+				ScreenReaderLogger::QueueOutput("Closed entity creation window");
+		}
 
 		return false;
 	}

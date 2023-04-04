@@ -293,7 +293,6 @@ namespace Wizzard
 		EventHandler eventHandler(event);
 		eventHandler.HandleEvent<KeyPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 		eventHandler.HandleEvent<MouseButtonPressedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
-		eventHandler.HandleEvent<UIWindowFocusEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnUIWindowFocus));
 		eventHandler.HandleEvent<ViewportSelectionHoveredEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionHovered));
 		eventHandler.HandleEvent<ViewportSelectionChangedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionChanged));
 	}
@@ -317,23 +316,33 @@ namespace Wizzard
 		if(keyEvent.GetKeyCode() == Key::Escape)
 		{
 			Entity selectedEntity = propertiesPanel->GetSelectedEntity();
+
 			if (selectedEntity)
 			{
 				propertiesPanel->SetSelectedEntity({});
-				EntitySelection::DeselectEntity(selectedEntity);
-				ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName());
+
+				if(EntitySelection::IsMultiSelect())
+				{
+					EntitySelection::DeselectAll();
+					ScreenReaderLogger::QueueOutput("Deselected all");
+				}
+				else
+				{
+					EntitySelection::DeselectEntity(selectedEntity);
+					ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName());
+				}
 			}
 		}
 
-		//if(keyEvent.GetKeyCode() == Key::CapsLock)
-		//{
-		//	lockSelectionToCamera = !lockSelectionToCamera;
-		//
-		//	if (lockSelectionToCamera)
-		//		ScreenReaderLogger::ForceQueueOutput("Enabled camera lock on selections");
-		//	else
-		//		ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
-		//}
+		if(keyEvent.GetKeyCode() == Key::LeftControl)
+		{
+			EntitySelection::ToggleMultiSelectMode();
+
+			if (EntitySelection::IsMultiSelect())
+				ScreenReaderLogger::QueueOutput("Enabled entity multiselect mode");
+			else
+				ScreenReaderLogger::QueueOutput("Disabled entity multiselect mode");
+		}
 
 		if(keyEvent.GetKeyCode() == Key::LeftShift)
 		{
@@ -364,14 +373,6 @@ namespace Wizzard
 		return false;
 	}
 
-	bool EditorLayer::OnUIWindowFocus(UIWindowFocusEvent& uiEvent)
-	{
-		//if (viewportPanel->IsFocused() && propertiesPanel->GetSelectedEntity().GetName().empty())
-		//	propertiesPanel->SetSelectedEntityToDefault();
-
-		return false;
-	}
-
 	bool EditorLayer::OnViewportSelectionHovered(ViewportSelectionHoveredEvent& sceneEvent)
 	{
 		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
@@ -386,7 +387,10 @@ namespace Wizzard
 		if(hoveredEntity != sceneEvent.GetSelectionContext())
 		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
 
-		viewportPanel->SetEntityOrigin(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
+		viewportPanel->SetEntityBaseTranslation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
+		viewportPanel->SetEntityBaseRotation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Rotation);
+		viewportPanel->SetEntityBaseScale(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Scale);
+		viewportPanel->SetMoveUnitCount(0);
 		Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED).SetPitch(1.0f);
 
 		Audio::Play(selectSFX);
@@ -438,8 +442,9 @@ namespace Wizzard
 		activeScene->OnBeginPlay();
 
 		panelManager->SetSceneContext(activeScene);
-		//sceneHierarchyPanel->SetSceneContext(activeScene);
 		propertiesPanel->SetSelectedEntity({});
+
+		viewportPanel->SetShouldTriggerFocus(true);
 
 		Audio::Play(levelMusic);
 	}
@@ -449,11 +454,9 @@ namespace Wizzard
 		if (activeScene->GetState() == SceneState::PLAY)
 			activeScene->OnEndPlay();
 
+		activeScene = editorScene;
+
 		activeScene->SetState(SceneState::EDIT);
-
-		//activeScene = editorScene;
-		activeScene = Scene::Copy(editorScene);
-
 		panelManager->SetSceneContext(activeScene);
 
 		Audio::Stop(levelMusic);
