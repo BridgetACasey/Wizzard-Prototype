@@ -11,6 +11,14 @@ namespace Wizzard
 		panels.clear();
 	}
 
+	void PanelManager::OnUpdate(TimeStep timeStep)
+	{
+		for (auto& [id, panelData] : panels)
+		{
+			panelData.panel->OnUpdate(timeStep);
+		}
+	}
+
 	void PanelManager::OnEvent(Event& event)
 	{
 		for (auto& [id, panelData] : panels)

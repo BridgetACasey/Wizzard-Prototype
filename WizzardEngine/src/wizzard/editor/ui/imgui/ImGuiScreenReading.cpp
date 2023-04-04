@@ -50,9 +50,9 @@ namespace Wizzard
 			if(imguiLayer->GetUIWindowMessageID() == ImGui::GetCurrentWindow()->ID)
 			{
 				if (preferDesc && !description.empty())
-					ScreenReaderLogger::ForceQueueOutput(description);
+					ScreenReaderLogger::QueueOutput(description, true, true);
 				else if (!preferDesc)
-					ScreenReaderLogger::ForceQueueOutput(windowLabel);
+					ScreenReaderLogger::QueueOutput(windowLabel, true, true);
 
 				imguiLayer->SetLogWindowMessage(false);
 			}

@@ -25,6 +25,7 @@ namespace Wizzard
 		PanelManager() = default;
 		~PanelManager();
 
+		void OnUpdate(TimeStep timeStep);
 		void OnEvent(Event& event);
 		void OnImGuiRender();
 

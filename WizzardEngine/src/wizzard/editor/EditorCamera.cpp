@@ -118,7 +118,10 @@ namespace Wizzard
 				if (delta.x || delta.y)
 					MousePan(delta);
 			}
+		}
 
+		if(zoomOnlyControl || enableUserControl)
+		{
 			if (Input::IsKeyDown(Key::LeftBracket))
 			{
 				float delta = -1.5f * ts;	//TODO: Set default values for keyboard zoom/pan/rotate speeds
@@ -163,7 +166,7 @@ namespace Wizzard
 
 	bool EditorCamera::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
-		if (enableUserControl)
+		if (zoomOnlyControl || enableUserControl)
 		{
 			if (keyEvent.GetKeyCode() == Key::LeftBracket)
 			{

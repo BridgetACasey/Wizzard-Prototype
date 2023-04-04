@@ -33,7 +33,7 @@ namespace Wizzard
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::ForceQueueOutput("PROJECT SETTINGS");
+			ScreenReaderLogger::QueueOutput("PROJECT SETTINGS");
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}

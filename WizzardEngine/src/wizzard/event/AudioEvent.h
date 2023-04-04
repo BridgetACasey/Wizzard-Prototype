@@ -57,7 +57,7 @@ namespace Wizzard
 	class ScreenReaderMessageStartedEvent : public AudioEvent
 	{
 	public:
-		ScreenReaderMessageStartedEvent(std::string& message) : message(message){}
+		ScreenReaderMessageStartedEvent(std::string& message, bool priority) : message(message), isPriority(priority){}
 
 		EVENT_CLASS_TYPE(ScreenReaderMessageStarted)
 
@@ -69,15 +69,17 @@ namespace Wizzard
 		}
 
 		const std::string& GetSRMessage() { return message; }
+		bool GetIsPriority() const { return isPriority; }
 
 	protected:
 		std::string message;
+		bool isPriority;
 	};
 
 	class ScreenReaderMessageEndedEvent : public AudioEvent
 	{
 	public:
-		ScreenReaderMessageEndedEvent(std::string& message) : message(message){}
+		ScreenReaderMessageEndedEvent(std::string& message, bool priority) : message(message), isPriority(priority) {}
 
 		EVENT_CLASS_TYPE(ScreenReaderMessageEnded)
 
@@ -89,8 +91,10 @@ namespace Wizzard
 		}
 
 		const std::string& GetSRMessage() { return message; }
+		bool GetIsPriority() const { return isPriority; }
 
 	protected:
 		std::string message;
+		bool isPriority;
 	};
 }

@@ -42,6 +42,7 @@ namespace Wizzard
 		void SetActiveScene(WizRef<Scene> scene);
 		EditorCamera& GetEditorCamera() { return editorCamera; }
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
+		WizRef<PropertiesPanel>& GetPropertiesPanel() { return propertiesPanel; }
 		Entity GetSelectedEntity() { return propertiesPanel->GetSelectedEntity(); }
 		bool GetLockOnSelection() { return lockSelectionToCamera; }
 
@@ -80,7 +81,7 @@ namespace Wizzard
 
 		Entity playerEntity;
 
-		bool lockSelectionToCamera = false;
+		bool lockSelectionToCamera = true;
 
 		bool isViewportFocused = false;
 		bool isViewportHovered = false;
@@ -93,5 +94,6 @@ namespace Wizzard
 		AudioSource editorLaunchSFX;
 		AudioSource selectSFX;
 		AudioSource errorSFX;
+		AudioSource moveEntitySFX;
 	};
 }

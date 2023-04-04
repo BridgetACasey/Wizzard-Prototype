@@ -14,6 +14,8 @@ namespace Wizzard
 		EditorPanel() = default;
 
 		virtual void SetSceneContext(const WizRef<Scene>& scene);
+
+		virtual void OnUpdate(TimeStep timeStep);
 		virtual void OnEvent(Event& event);
 		virtual void OnImGuiRender();
 

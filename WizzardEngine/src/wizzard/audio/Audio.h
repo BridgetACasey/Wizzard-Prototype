@@ -14,6 +14,7 @@ namespace Wizzard
 #define WIZ_AUDIO_EDITORSTARTUP "EditorStartUp"
 #define WIZ_AUDIO_EDITORSHUTDOWN "EditorShutDown"
 #define WIZ_AUDIO_ENTITYSELECTED "EntitySelected"
+#define WIZ_AUDIO_ENTITYMOVED "EntityMoved"
 
 	class Audio
 	{

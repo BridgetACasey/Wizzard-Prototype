@@ -11,6 +11,10 @@ namespace Wizzard
 		sceneContext = scene;
 	}
 
+	void EditorPanel::OnUpdate(TimeStep timeStep)
+	{
+	}
+
 	void EditorPanel::OnEvent(Event& event)
 	{
 	}

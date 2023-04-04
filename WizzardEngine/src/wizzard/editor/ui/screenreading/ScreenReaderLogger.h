@@ -20,8 +20,7 @@ namespace Wizzard
 		static void OnUpdate();
 		static void OnEvent(Event& event);
 
-		static void ForceQueueOutput(const std::string& message);
-		static void QueueOutput(const std::string& message, bool shouldInterrupt = true);
+		static void QueueOutput(const std::string& message, bool shouldInterrupt = true, bool isPriority = false);
 
 		static bool DetectScreenReader();
 		static std::string GetActiveScreenReaderName();
@@ -38,6 +37,8 @@ namespace Wizzard
 		static bool OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent);
 		static bool OnAppShutdown(AppShutdownEvent& appEvent);
 
+		static void ForceQueueOutput(const std::string& message);
+
 		static bool OutputAll(const std::string& message, bool shouldInterrupt);
 		static bool OutputSpeech(const std::string& message, bool shouldInterrupt);
 		static bool OutputBraille(const std::string& message);
@@ -45,6 +46,7 @@ namespace Wizzard
 		inline static std::list<std::string> messageBackLog;
 
 		inline static bool startedMessage = false;
+		inline static bool priorityMessageTriggered = false;
 		inline static bool preferSAPI = false;	//Flag to determine if Tolk should look for SAPI first or last.
 	};
 }

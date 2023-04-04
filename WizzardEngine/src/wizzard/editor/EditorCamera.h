@@ -46,6 +46,9 @@ namespace Wizzard
 		void SetEnableUserControl(bool status) { enableUserControl = status; }
 		bool GetEnableUserControl() const { return enableUserControl; }
 
+		void SetZoomOnlyControl(bool status) { zoomOnlyControl = status; }
+		bool GetZoomOnlyControl() const { return zoomOnlyControl; }
+
 	private:
 		void UpdateProjection();
 		void UpdateView();
@@ -82,6 +85,7 @@ namespace Wizzard
 		float viewportWidth = 0.0f, viewportHeight = 0.0f;
 
 		bool enableUserControl = true;
+		bool zoomOnlyControl = false;
 
 		float smoothPanSpeed = 1.5f;
 	};

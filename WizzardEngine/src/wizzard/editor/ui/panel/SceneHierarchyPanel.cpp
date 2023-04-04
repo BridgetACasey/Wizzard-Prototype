@@ -33,7 +33,7 @@ namespace Wizzard
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::ForceQueueOutput("SCENE HIERARCHY");
+			ScreenReaderLogger::QueueOutput("SCENE HIERARCHY");
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}
@@ -55,8 +55,12 @@ namespace Wizzard
 			});
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			{
 				//selectionContext = {};
 				EntitySelection::DeselectAll();
+				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
+				ScreenReaderLogger::QueueOutput("Deselected all");
+			}
 
 			static bool openCreatePopup = false;
 
@@ -108,6 +112,7 @@ namespace Wizzard
 			EntitySelection::DeselectAll();
 
 			EntitySelection::SelectEntity(entity);
+			Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity(entity);
 		}
 
 		bool entityDeleted = false;
@@ -134,8 +139,12 @@ namespace Wizzard
 		{
 			sceneContext->DestroyEntity(entity);
 			if (EntitySelection::IsSelected(entity))
+			{
 				//selectionContext = {};
 				EntitySelection::DeselectEntity(entity);
+				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
+				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName());
+			}
 		}
 	}
 

@@ -29,6 +29,8 @@ namespace Wizzard
 		void SetSpatial(bool s);
 		void SetLoop(bool loop);
 
+		float GetPitch() const { return pitch; }
+
 		[[nodiscard]] std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
 
 		static AudioSource LoadFromFile(const std::string& file, bool spatial = false, bool forEditor = false, const char* assetName = nullptr);

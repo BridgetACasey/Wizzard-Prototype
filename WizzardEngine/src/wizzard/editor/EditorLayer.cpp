@@ -51,6 +51,7 @@ namespace Wizzard
 		editorLaunchSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "start-computeraif-14572.mp3"), false, true, WIZ_AUDIO_EDITORSTARTUP);
 		selectSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "mixkit-cool-interface-click-tone-2568.mp3"));
 		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"));
+		moveEntitySFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "sound97.mp3"), true, true, WIZ_AUDIO_ENTITYMOVED);
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = WINDOW_WIDTH;
@@ -80,7 +81,7 @@ namespace Wizzard
 
 		std::string title = "Game Editor - Example Scene";
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
-		ScreenReaderLogger::ForceQueueOutput(title);
+		ScreenReaderLogger::QueueOutput(title, true, true);
 	}
 
 	void EditorLayer::OnDetach()
@@ -127,6 +128,8 @@ namespace Wizzard
 
 				editorCamera.OnUpdate(timeStep);
 
+				panelManager->OnUpdate(timeStep);
+
 				activeScene->OnUpdateEditor(timeStep, editorCamera);
 				break;
 			}
@@ -169,17 +172,17 @@ namespace Wizzard
 			if (Input::IsKeyPressed(Key::W))
 			{
 				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
-				ScreenReaderLogger::ForceQueueOutput("Transform type: Translate");
+				ScreenReaderLogger::QueueOutput("Transform type: Translate");
 			}
 			if (Input::IsKeyPressed(Key::E))
 			{
 				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
-				ScreenReaderLogger::ForceQueueOutput("Transform type: Rotate");
+				ScreenReaderLogger::QueueOutput("Transform type: Rotate");
 			}
 			if (Input::IsKeyPressed(Key::R))
 			{
 				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::SCALE);
-				ScreenReaderLogger::ForceQueueOutput("Transform type: Scale");
+				ScreenReaderLogger::QueueOutput("Transform type: Scale");
 			}
 		}
 
@@ -209,9 +212,9 @@ namespace Wizzard
 			lockSelectionToCamera = !lockSelectionToCamera;
 		
 			if (lockSelectionToCamera)
-				ScreenReaderLogger::ForceQueueOutput("Enabled camera lock on selections");
+				ScreenReaderLogger::QueueOutput("Enabled camera lock on selections");
 			else
-				ScreenReaderLogger::ForceQueueOutput("Disabled camera lock on selections");
+				ScreenReaderLogger::QueueOutput("Disabled camera lock on selections");
 		}
 
 		//if (Input::IsActionTriggered(WIZ_IA_CYCLEUIWINDOW))
@@ -317,7 +320,8 @@ namespace Wizzard
 			if (selectedEntity)
 			{
 				propertiesPanel->SetSelectedEntity({});
-				ScreenReaderLogger::ForceQueueOutput("Deselected " + selectedEntity.GetName());
+				EntitySelection::DeselectEntity(selectedEntity);
+				ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName());
 			}
 		}
 
@@ -338,7 +342,7 @@ namespace Wizzard
 
 		if (keyEvent.GetKeyCode() == Key::Space)
 		{
-			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+			if (viewportPanel->IsHovered() /* && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt)*/)
 				EntitySelection::SelectEntity(hoveredEntity);
 				propertiesPanel->SetSelectedEntity(hoveredEntity);
 		}
@@ -351,7 +355,10 @@ namespace Wizzard
 		if (mouseEvent.GetMouseButton() == Mouse::LeftButton)
 		{
 			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+			{
 				propertiesPanel->SetSelectedEntity(hoveredEntity);
+				EntitySelection::SelectEntity(hoveredEntity);
+			}
 		}
 
 		return false;
@@ -367,7 +374,7 @@ namespace Wizzard
 
 	bool EditorLayer::OnViewportSelectionHovered(ViewportSelectionHoveredEvent& sceneEvent)
 	{
-		ScreenReaderLogger::ForceQueueOutput(sceneEvent.GetSelectionContext().GetName());
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
 
 		return false;
 	}
@@ -378,6 +385,9 @@ namespace Wizzard
 
 		if(hoveredEntity != sceneEvent.GetSelectionContext())
 		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
+
+		viewportPanel->SetEntityOrigin(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
+		Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED).SetPitch(1.0f);
 
 		Audio::Play(selectSFX);
 

@@ -77,7 +77,7 @@ namespace Wizzard
 				{
 					OutputAll(messageBackLog.front(), false);
 
-					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front());
+					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front(), priorityMessageTriggered);
 					OnScreenReaderMessageStarted(srEvent);
 
 					startedMessage = true;
@@ -85,10 +85,11 @@ namespace Wizzard
 			}
 			else if (startedMessage)
 			{
-				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front());
+				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front(), priorityMessageTriggered);
 				OnScreenReaderMessageEnded(srEvent);
 
 				startedMessage = false;
+				priorityMessageTriggered = false;
 				messageBackLog.pop_front();		//Pop off queen! (painting nails emoji)
 			}
 		}
@@ -107,10 +108,15 @@ namespace Wizzard
 		messageBackLog.clear();
 		messageBackLog.emplace_back(std::string(message));
 		startedMessage = false;
+
+		if(!priorityMessageTriggered)
+		Stop();
 	}
 
-	void ScreenReaderLogger::QueueOutput(const std::string& message, bool shouldInterrupt)
+	void ScreenReaderLogger::QueueOutput(const std::string& message, bool shouldInterrupt, bool isPriority)
 	{
+		priorityMessageTriggered = isPriority;
+
 		if (shouldInterrupt)
 			ForceQueueOutput(message);
 		else if (!shouldInterrupt && IsSpeaking())
