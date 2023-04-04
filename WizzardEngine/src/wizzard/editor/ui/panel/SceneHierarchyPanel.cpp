@@ -223,7 +223,8 @@ namespace Wizzard
 			{
 				EntitySelection::DeselectEntity(entity);
 				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
-				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName());
+				glm::vec3 trans = entity.GetComponent<TransformComponent>().Translation;
+				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), true, true);
 			}
 		}
 	}

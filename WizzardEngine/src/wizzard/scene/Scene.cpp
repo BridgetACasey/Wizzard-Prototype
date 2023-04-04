@@ -212,7 +212,7 @@ namespace Wizzard
 		return entity;
 	}
 
-	void Scene::DuplicateEntity(Entity entity)
+	Entity Scene::DuplicateEntity(Entity entity)
 	{
 		std::string name = entity.GetName();
 		Entity newEntity = CreateEntity(name);
@@ -224,6 +224,8 @@ namespace Wizzard
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
 		CopyComponentIfExists<CharacterControllerComponent>(newEntity, entity);
 		CopyComponentIfExists<AudioListenerComponent>(newEntity, entity);
+
+		return newEntity;
 	}
 
 	void Scene::DestroyEntity(Entity entity)

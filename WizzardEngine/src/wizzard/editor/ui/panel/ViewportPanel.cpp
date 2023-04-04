@@ -235,7 +235,7 @@ namespace Wizzard
 											moveUnitCount++;
 
 											if (moveUnitCount % 25 == 0)
-												ScreenReaderLogger::QueueOutput(selectedEntity.GetName() + " at X " + std::to_string((int)tc.Translation.x) + " Y " + std::to_string((int)tc.Translation.y));
+												ScreenReaderLogger::QueueOutput(selectedEntity.GetName() + " at X " + std::to_string((int)tc.Translation.x) + ", Y " + std::to_string((int)tc.Translation.y));
 										}
 									}
 									else
@@ -306,7 +306,8 @@ namespace Wizzard
 
 		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse, "VIEWPORT TOOLBAR", true);
 
-		//ImGui::SetKeyboardFocusHere();
+		//if(sceneContext->GetState() == SceneState::PLAY)
+		//	ImGui::SetKeyboardFocusHere();
 
 		//Temp??
 		static std::string playButtonLabel = "PLAY";
@@ -314,6 +315,8 @@ namespace Wizzard
 
 		if (ImGuiSR::Button(playButtonLabel, ImVec2(175.0f, 80.5f), playButtonDesc, true))
 		{
+			ImGui::SetItemDefaultFocus();
+
 			switch (sceneContext->GetState())
 			{
 			case SceneState::EDIT:
@@ -331,8 +334,6 @@ namespace Wizzard
 			}
 			}
 		}
-
-		ImGui::SetItemDefaultFocus();
 
 		ImGui::End();
 	}

@@ -142,7 +142,7 @@ namespace Wizzard
 			bool removeComponent = false;
 			if (ImGui::BeginPopup("ComponentSettings"))
 			{
-				if (ImGui::MenuItem("Remove component"))
+				if (ImGuiSR::MenuItem("Remove component"))
 					removeComponent = true;
 
 				ImGui::EndPopup();
@@ -175,7 +175,6 @@ namespace Wizzard
 		}
 
 		//TODO: Re-add at a later date
-		/*
 		ImGui::SameLine();
 		ImGui::PushItemWidth(-1);
 
@@ -189,13 +188,12 @@ namespace Wizzard
 			DisplayAddComponentEntry<RigidBody2DComponent>("RigidBody 2D");
 			DisplayAddComponentEntry<BoxCollider2DComponent>("Box Collider 2D");
 			DisplayAddComponentEntry<CharacterControllerComponent>("Character Controller");
-			DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
+			//DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
 
 			ImGui::EndPopup();
 		}
 
 		ImGui::PopItemWidth();
-		*/
 
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 			{

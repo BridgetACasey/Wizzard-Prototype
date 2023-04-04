@@ -329,19 +329,47 @@ namespace Wizzard
 				else
 				{
 					EntitySelection::DeselectEntity(selectedEntity);
-					ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName());
+					glm::vec3 trans = selectedEntity.GetComponent<TransformComponent>().Translation;
+					ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string((int)trans.x) + " Y " + std::to_string((int)trans.y));
 				}
 			}
 		}
 
-		if(keyEvent.GetKeyCode() == Key::LeftControl)
+		if (keyEvent.GetKeyCode() == Key::S)
+		{
+			if (propertiesPanel->GetSelectedEntity())
+			{
+				ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
+				activeScene->DestroyEntity(propertiesPanel->GetSelectedEntity());
+			}
+		}
+
+		if (keyEvent.GetKeyCode() == Key::D)
+		{
+			if (propertiesPanel->GetSelectedEntity())
+			{
+				ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetName());
+				Entity duplicatedEntity = activeScene->DuplicateEntity(propertiesPanel->GetSelectedEntity());
+
+				if (!EntitySelection::IsMultiSelect())
+					EntitySelection::DeselectAll();
+
+				EntitySelection::SelectEntity(duplicatedEntity);
+				propertiesPanel->SetSelectedEntity(duplicatedEntity);
+			}
+		}
+
+		if(keyEvent.GetKeyCode() == Key::M)
 		{
 			EntitySelection::ToggleMultiSelectMode();
 
 			if (EntitySelection::IsMultiSelect())
 				ScreenReaderLogger::QueueOutput("Enabled entity multiselect mode");
 			else
+			{
+				EntitySelection::DeselectAll();
 				ScreenReaderLogger::QueueOutput("Disabled entity multiselect mode");
+			}
 		}
 
 		if(keyEvent.GetKeyCode() == Key::LeftShift)
@@ -352,8 +380,10 @@ namespace Wizzard
 		if (keyEvent.GetKeyCode() == Key::Space)
 		{
 			if (viewportPanel->IsHovered() /* && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt)*/)
+			{
 				EntitySelection::SelectEntity(hoveredEntity);
 				propertiesPanel->SetSelectedEntity(hoveredEntity);
+			}
 		}
 
 		return false;
@@ -365,6 +395,9 @@ namespace Wizzard
 		{
 			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 			{
+				if (!EntitySelection::IsMultiSelect())
+					EntitySelection::DeselectAll();
+
 				propertiesPanel->SetSelectedEntity(hoveredEntity);
 				EntitySelection::SelectEntity(hoveredEntity);
 			}
@@ -382,10 +415,11 @@ namespace Wizzard
 
 	bool EditorLayer::OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent)
 	{
-		editorCamera.FocusOnPoint(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
+		glm::vec3 trans = sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation;
+		editorCamera.FocusOnPoint(trans);
 
-		if(hoveredEntity != sceneEvent.GetSelectionContext())
-		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName());
+		//if(hoveredEntity != sceneEvent.GetSelectionContext())
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), true, true);
 
 		viewportPanel->SetEntityBaseTranslation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
 		viewportPanel->SetEntityBaseRotation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Rotation);
@@ -442,6 +476,7 @@ namespace Wizzard
 		activeScene->OnBeginPlay();
 
 		panelManager->SetSceneContext(activeScene);
+		EntitySelection::DeselectAll();
 		propertiesPanel->SetSelectedEntity({});
 
 		viewportPanel->SetShouldTriggerFocus(true);
