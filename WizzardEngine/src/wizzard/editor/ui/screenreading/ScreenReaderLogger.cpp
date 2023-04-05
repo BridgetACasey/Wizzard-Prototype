@@ -119,7 +119,7 @@ namespace Wizzard
 
 		if (shouldInterrupt)
 			ForceQueueOutput(message);
-		else if (!shouldInterrupt && IsSpeaking())
+		else if (!shouldInterrupt || (isPriority && IsSpeaking()))
 			messageBackLog.emplace_back(std::string(message));
 		else
 			OutputAll(message, shouldInterrupt);

@@ -348,7 +348,7 @@ namespace Wizzard
 		{
 			if (propertiesPanel->GetSelectedEntity())
 			{
-				ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetName());
+				ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
 				Entity duplicatedEntity = activeScene->DuplicateEntity(propertiesPanel->GetSelectedEntity());
 
 				if (!EntitySelection::IsMultiSelect())
@@ -370,6 +370,16 @@ namespace Wizzard
 				EntitySelection::DeselectAll();
 				ScreenReaderLogger::QueueOutput("Disabled entity multiselect mode");
 			}
+		}
+
+		if(keyEvent.GetKeyCode() == Key::O)
+		{
+			EntitySelection::DescribeSelectionsIsolated();
+		}
+
+		if (keyEvent.GetKeyCode() == Key::P)
+		{
+			EntitySelection::DescribeSelectionsRelational();
 		}
 
 		if(keyEvent.GetKeyCode() == Key::LeftShift)

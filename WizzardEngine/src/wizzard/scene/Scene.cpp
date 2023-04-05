@@ -207,14 +207,15 @@ namespace Wizzard
 		entity.AddComponent<UUIDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		auto& tagComponent = entity.AddComponent<TagComponent>();
-		tagComponent.tag = name.empty() ? "Entity" : name;
+		tagComponent.baseTag = name.empty() ? "Entity" : name;
+		tagComponent.tag = name.empty() ? "Entity" : name + std::to_string(registry.size());
 
 		return entity;
 	}
 
 	Entity Scene::DuplicateEntity(Entity entity)
 	{
-		std::string name = entity.GetName();
+		std::string name = entity.GetBaseName().empty() ? entity.GetName() : entity.GetBaseName();
 		Entity newEntity = CreateEntity(name);
 
 		CopyComponentIfExists<TransformComponent>(newEntity, entity);

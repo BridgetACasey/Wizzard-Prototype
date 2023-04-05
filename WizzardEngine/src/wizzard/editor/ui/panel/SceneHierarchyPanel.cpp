@@ -74,6 +74,7 @@ namespace Wizzard
 					if (ImGuiSR::MenuItem("Create Floor (Short)"))
 					{
 						auto floor = sceneContext->CreateEntity("Floor (Short)");
+						floor.GetComponent<TagComponent>().baseTag = "Floor (Short)";
 						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
 						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
@@ -88,6 +89,7 @@ namespace Wizzard
 					if (ImGuiSR::MenuItem("Create Floor (Long)"))
 					{
 						auto floor = sceneContext->CreateEntity("Floor (Long)");
+						floor.GetComponent<TagComponent>().baseTag = "Floor (Long)";
 						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
 						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
@@ -102,6 +104,7 @@ namespace Wizzard
 					if (ImGuiSR::MenuItem("Create Wall (Short)"))
 					{
 						auto wall = sceneContext->CreateEntity("Wall (Short)");
+						wall.GetComponent<TagComponent>().baseTag = "Wall (Short)";
 						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
 						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
@@ -116,6 +119,7 @@ namespace Wizzard
 					if (ImGuiSR::MenuItem("Create Wall (Tall)"))
 					{
 						auto wall = sceneContext->CreateEntity("Wall (Tall)");
+						wall.GetComponent<TagComponent>().baseTag = "Wall (Tall)";
 						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
 						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
@@ -132,6 +136,7 @@ namespace Wizzard
 						if (!sceneContext->GetPrimaryCameraEntity())
 						{
 							auto player = sceneContext->CreateEntity("Player Character");
+							player.GetComponent<TagComponent>().baseTag = "Player Character";
 							player.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 							player.GetComponent<TransformComponent>().Translation.x = 0.0f;
 							player.GetComponent<TransformComponent>().Translation.y = 0.0f;

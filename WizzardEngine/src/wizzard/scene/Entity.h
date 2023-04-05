@@ -73,6 +73,8 @@ namespace Wizzard
 
 		UUID GetUUID() { return GetComponent<UUIDComponent>().uuid; }
 		const std::string& GetName() { return GetComponent<TagComponent>().tag; }
+		const std::string& GetBaseName() { return GetComponent<TagComponent>().baseTag; }
+		entt::entity& GetEntityHandle() { return entityHandle; }
 
 	private:
 		entt::entity entityHandle{ entt::null };
