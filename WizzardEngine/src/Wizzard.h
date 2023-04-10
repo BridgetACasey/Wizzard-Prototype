@@ -39,6 +39,7 @@
 #include "wizzard/scene/component/CharacterControllerComponent.h"
 #include "wizzard/scene/component/AudioListenerComponent.h"
 #include "wizzard/scene/Scene.h"
+#include "wizzard/scene/SceneManager.h"
 
 //Audio
 #include "wizzard/audio/Audio.h"

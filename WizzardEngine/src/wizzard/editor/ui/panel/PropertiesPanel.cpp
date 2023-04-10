@@ -44,7 +44,7 @@ namespace Wizzard
 	{
 		if (!selectionContext.HasComponent<T>())
 		{
-			if (ImGui::MenuItem(entryName.c_str()))
+			if (ImGuiSR::MenuItem(entryName.c_str()))
 			{
 				selectionContext.AddComponent<T>();
 				ImGui::CloseCurrentPopup();
@@ -74,13 +74,13 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGuiSR::Button("X", buttonSize, label + "X", true))
+		if (ImGuiSR::Button("X", buttonSize, "Reset " + label + "X", true))
 			values.x = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGuiSR::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f", 0, label + " X", true);
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -88,13 +88,13 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGuiSR::Button("Y", buttonSize, label + "Y", true))
+		if (ImGuiSR::Button("Y", buttonSize, "Reset " + label + "Y", true))
 			values.y = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGuiSR::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f", 0, label + " Y", true);
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -102,13 +102,13 @@ namespace Wizzard
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 		ImGui::PushFont(boldFont);
-		if (ImGuiSR::Button("Z", buttonSize, label + "Z", true))
+		if (ImGuiSR::Button("Z", buttonSize, "Reset " + label + "Z", true))
 			values.z = resetValue;
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGuiSR::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f", 0, label + " Z", true);
 		ImGui::PopItemWidth();
 
 		ImGui::PopStyleVar();
@@ -121,32 +121,35 @@ namespace Wizzard
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
 	{
-		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+		const ImGuiTreeNodeFlags treeNodeFlags = /*ImGuiTreeNodeFlags_DefaultOpen |*/ ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 		if (entity.HasComponent<T>())
 		{
 			auto& component = entity.GetComponent<T>();
-			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
-
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-			ImGui::Separator();
-			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
-			ImGui::PopStyleVar(
-			);
-			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-			if (ImGuiSR::Button("+", ImVec2{ lineHeight, lineHeight }))
-			{
-				ImGui::OpenPopup("ComponentSettings");
-			}
+			//ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			bool removeComponent = false;
-			if (ImGui::BeginPopup("ComponentSettings"))
+			if (ImGui::BeginPopup("RemoveComponent"))
 			{
-				if (ImGuiSR::MenuItem("Remove component"))
+				if (ImGuiSR::MenuItem("Remove " + name + " component"))
 					removeComponent = true;
 
 				ImGui::EndPopup();
+				ImGui::SetNextItemOpen(false);
 			}
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+			//float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+			ImGui::Separator();
+			bool open = ImGuiSR::TreeNodeEx(name.c_str(), (void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+
+			ImGui::PopStyleVar();
+			//ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+			//if (ImGuiSR::Button("-", ImVec2{ lineHeight, lineHeight }, "Remove Component", true))
+			//{
+			//	ImGui::OpenPopup("ComponentSettings");
+			//}
+
+			//ImGui::TreeNodeSetOpen((void*)typeid(T).hash_code(), treeFocused);
 
 			if (open)
 			{
@@ -168,9 +171,19 @@ namespace Wizzard
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
 			strncpy_s(buffer, sizeof(buffer), tag.c_str(), sizeof(buffer));
-			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+			if (ImGuiSR::InputText("##Tag", buffer, sizeof(buffer), 0, 0, NULL, ("Rename " + tag), true))
 			{
 				tag = std::string(buffer);
+			}
+
+			if(ImGui::IsItemFocused()/* || ImGui::IsItemHovered()*/)
+			{
+				Input::SetQueryInput(false);
+			}
+			else
+			{
+				if (!Input::IsQueryingInput())
+					Input::SetQueryInput(true);
 			}
 		}
 
@@ -178,8 +191,17 @@ namespace Wizzard
 		ImGui::SameLine();
 		ImGui::PushItemWidth(-1);
 
-		if (ImGui::Button("Add Component"))
+		float lineWidth = GImGui->Font->FontSize + GImGui->Style.FramePadding.x * 2.0f;
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+
+		if (ImGuiSR::Button("+", ImVec2{lineWidth, lineHeight}, "Add Component", true))
 			ImGui::OpenPopup("AddComponent");
+
+		ImGui::SameLine();
+		if (ImGuiSR::Button("-", ImVec2{ lineWidth, lineHeight }, "Remove Component", true))
+		{
+			ImGui::OpenPopup("RemoveComponent");
+		}
 
 		if (ImGui::BeginPopup("AddComponent"))
 		{
@@ -212,12 +234,12 @@ namespace Wizzard
 
 				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
 				const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+				if (ImGuiSR::BeginCombo("Projection", currentProjectionTypeString))
 				{
 					for (int i = 0; i < 2; i++)
 					{
 						bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-						if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
+						if (ImGuiSR::Selectable(projectionTypeStrings[i], ImVec2{}, isSelected))
 						{
 							currentProjectionTypeString = projectionTypeStrings[i];
 							camera.SetProjectionType((SceneCamera::ProjectionType)i);
@@ -233,51 +255,51 @@ namespace Wizzard
 				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 				{
 					float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-					if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
+					if (ImGuiSR::DragFloat("Vertical FOV", &perspectiveVerticalFov))
 						camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
 
 					float perspectiveNear = camera.GetPerspectiveNearClip();
-					if (ImGui::DragFloat("Near", &perspectiveNear))
+					if (ImGuiSR::DragFloat("Near", &perspectiveNear))
 						camera.SetPerspectiveNearClip(perspectiveNear);
 
 					float perspectiveFar = camera.GetPerspectiveFarClip();
-					if (ImGui::DragFloat("Far", &perspectiveFar))
+					if (ImGuiSR::DragFloat("Far", &perspectiveFar))
 						camera.SetPerspectiveFarClip(perspectiveFar);
 				}
 
 				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 				{
 					float orthoSize = camera.GetOrthographicSize();
-					if (ImGui::DragFloat("Size", &orthoSize))
+					if (ImGuiSR::DragFloat("Size", &orthoSize))
 						camera.SetOrthographicSize(orthoSize);
 
 					float orthoNear = camera.GetOrthographicNearClip();
-					if (ImGui::DragFloat("Near", &orthoNear))
+					if (ImGuiSR::DragFloat("Near", &orthoNear))
 						camera.SetOrthographicNearClip(orthoNear);
 
 					float orthoFar = camera.GetOrthographicFarClip();
-					if (ImGui::DragFloat("Far", &orthoFar))
+					if (ImGuiSR::DragFloat("Far", &orthoFar))
 						camera.SetOrthographicFarClip(orthoFar);
 
-					ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
+					ImGuiSR::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
 				}
 			});
 
 		DrawComponent<SpriteComponent>("Sprite", entity, [](auto& component)
 			{
-				ImGui::ColorEdit4("Color", glm::value_ptr(component.color));
+				ImGuiSR::ColorEdit4("Color", glm::value_ptr(component.color));
 			});
 
 		DrawComponent<RigidBody2DComponent>("RigidBody 2D", entity, [](auto& component)
 			{
 				const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
 				const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
-				if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+				if (ImGuiSR::BeginCombo("Body Type", currentBodyTypeString))
 				{
 					for (int i = 0; i < 2; i++)
 					{
 						bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
-						if (ImGui::Selectable(bodyTypeStrings[i], isSelected))
+						if (ImGuiSR::Selectable(bodyTypeStrings[i], ImVec2{}, isSelected))
 						{
 							currentBodyTypeString = bodyTypeStrings[i];
 							component.Type = (RigidBody2DComponent::BodyType)i;
@@ -290,17 +312,17 @@ namespace Wizzard
 					ImGui::EndCombo();
 				}
 
-				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+				ImGuiSR::Checkbox("Fixed Rotation", &component.FixedRotation);
 			});
 
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
 			{
-				ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
-				ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
-				ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+				ImGuiSR::DragFloat2("Offset", glm::value_ptr(component.Offset));
+				ImGuiSR::DragFloat2("Size", glm::value_ptr(component.Size));
+				ImGuiSR::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+				ImGuiSR::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+				ImGuiSR::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+				ImGuiSR::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 			});
 
 		DrawComponent<CharacterControllerComponent>("Character Controller", entity, [](auto& component)

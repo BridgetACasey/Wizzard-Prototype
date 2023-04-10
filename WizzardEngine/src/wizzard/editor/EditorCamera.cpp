@@ -166,15 +166,18 @@ namespace Wizzard
 
 	bool EditorCamera::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
-		if (zoomOnlyControl || enableUserControl)
+		if (Input::IsQueryingInput())
 		{
-			if (keyEvent.GetKeyCode() == Key::LeftBracket)
+			if (zoomOnlyControl || enableUserControl)
 			{
-				Audio::Play(zoomInSFX);
-			}
-			else if (keyEvent.GetKeyCode() == Key::RightBracket)
-			{
-				Audio::Play(zoomOutSFX);
+				if (keyEvent.GetKeyCode() == Key::LeftBracket)
+				{
+					Audio::Play(zoomInSFX);
+				}
+				else if (keyEvent.GetKeyCode() == Key::RightBracket)
+				{
+					Audio::Play(zoomOutSFX);
+				}
 			}
 		}
 

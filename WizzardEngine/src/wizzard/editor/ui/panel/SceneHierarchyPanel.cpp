@@ -168,6 +168,43 @@ namespace Wizzard
 				}
 			}
 
+			//if (ImGuiSR::Button("CREATE GROUP", ImVec2(440.0f, 80.5f)))
+			//	openEntityGroupWindow = !openEntityGroupWindow;
+
+			if (openEntityGroupWindow)
+			{
+				if (ImGuiSR::Begin("Group Entities"))
+				{
+					static std::string groupName = "EntityGroup";
+					char buffer[256];
+					memset(buffer, 0, sizeof(buffer));
+					strncpy_s(buffer, sizeof(buffer), groupName.c_str(), sizeof(buffer));
+					if (ImGuiSR::InputText("##Tag", buffer, sizeof(buffer), 0, 0, NULL, ("Rename " + groupName), true))
+					{
+						groupName = std::string(buffer);
+					}
+
+					if (ImGuiSR::Button("Create", ImVec2(440.0f, 80.5f)))
+					{
+						if (!EntitySelection::GetSelections().empty())
+						{
+							auto group = sceneContext->CreateEntity(groupName);
+
+							for (Entity selection : EntitySelection::GetSelections())
+								group.AddChild(selection);
+
+							groupName = "EntityGroup";
+							openEntityGroupWindow = false;
+						}
+					}
+
+					if (ImGuiSR::Button("Exit", ImVec2(440.0f, 80.5f)))
+						openEntityGroupWindow = false;
+
+					ImGuiSR::End();
+				}
+			}
+
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
 				EntitySelection::DeselectAll();
@@ -184,7 +221,7 @@ namespace Wizzard
 
 		ImGuiTreeNodeFlags flags = !EntitySelection::GetSelections().empty() ? ((EntitySelection::GetSelections().back() == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_DefaultOpen;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+		bool opened = ImGuiSR::TreeNodeEx(tag.c_str(), (void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
 		if (ImGui::IsItemClicked() || ImGui::IsItemFocused())
 		{
@@ -204,7 +241,7 @@ namespace Wizzard
 		bool entityDeleted = false;
 		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Delete Entity"))
+			if (ImGuiSR::MenuItem("Delete Entity"))
 				entityDeleted = true;
 
 			ImGui::EndPopup();
@@ -214,10 +251,18 @@ namespace Wizzard
 		{
 			//TODO: Repurpose this when implementing group tagging
 
-			//ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			//bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-			//if (opened)
-			//	ImGui::TreePop();
+			if (!entity.GetChildren().empty())
+			{
+				for (Entity child : entity.GetChildren())
+				{
+					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+					bool open = ImGuiSR::TreeNodeEx(tag.c_str(), (void*)9817239, flags, tag.c_str());
+					if (open)
+					{
+						ImGui::TreePop();
+					}
+				}
+			}
 			ImGui::TreePop();
 		}
 
@@ -236,18 +281,50 @@ namespace Wizzard
 
 	bool SceneHierarchyPanel::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
-		if (keyEvent.GetKeyCode() == Key::C)
-			openEntityCreationWindow = !openEntityCreationWindow;
-
-		if (keyEvent.GetKeyCode() == Key::LeftShift)
-			openEntityCreationWindow = false;
-
-		if (keyEvent.GetKeyCode() == Key::C || keyEvent.GetKeyCode() == Key::LeftShift)
+		if (Input::IsQueryingInput())
 		{
-			if (openEntityCreationWindow)
-				ScreenReaderLogger::QueueOutput("Opened entity creation window");
-			else
-				ScreenReaderLogger::QueueOutput("Closed entity creation window");
+			if (keyEvent.GetKeyCode() == Key::C)
+			{
+				openEntityCreationWindow = !openEntityCreationWindow;
+				openEntityGroupWindow = false;
+
+				if (openEntityCreationWindow)
+					ScreenReaderLogger::QueueOutput("Opened entity creation window");
+				else
+					ScreenReaderLogger::QueueOutput("Closed entity creation window");
+			}
+
+			//TODO: Re-implement entity grouping at a later date
+			//if (keyEvent.GetKeyCode() == Key::G)
+			//{
+			//	openEntityGroupWindow = !openEntityGroupWindow;
+			//	openEntityCreationWindow = false;
+			//
+			//	if (openEntityGroupWindow)
+			//	{
+			//		ScreenReaderLogger::QueueOutput("Opened entity grouping window");
+			//
+			//		if (EntitySelection::GetSelections().empty())
+			//			ScreenReaderLogger::QueueOutput("No entities currently selected");
+			//
+			//		if (!EntitySelection::IsMultiSelect())
+			//			ScreenReaderLogger::QueueOutput("Entity multi selection currently disabled");
+			//	}
+			//	else
+			//		ScreenReaderLogger::QueueOutput("Closed entity grouping window");
+			//}
+
+			if (keyEvent.GetKeyCode() == Key::LeftShift)
+			{
+				if (openEntityCreationWindow)
+					ScreenReaderLogger::QueueOutput("Closed entity creation window");
+
+				if (openEntityGroupWindow)
+					ScreenReaderLogger::QueueOutput("Closed entity grouping window");
+
+				openEntityCreationWindow = false;
+				openEntityGroupWindow = false;
+			}
 		}
 
 		return false;

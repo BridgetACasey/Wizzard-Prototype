@@ -39,7 +39,6 @@ namespace Wizzard
 		void OnEvent(Event& event) override;
 
 		//Temp functions
-		void SetActiveScene(WizRef<Scene> scene);
 		EditorCamera& GetEditorCamera() { return editorCamera; }
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
 		WizRef<PropertiesPanel>& GetPropertiesPanel() { return propertiesPanel; }
@@ -75,7 +74,6 @@ namespace Wizzard
 
 		Entity hoveredEntity;
 
-		WizRef<Scene> activeScene;
 		WizRef<Scene> editorScene;
 
 		Entity playerEntity;

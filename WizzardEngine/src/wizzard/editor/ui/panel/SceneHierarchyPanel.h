@@ -21,5 +21,6 @@ namespace Wizzard
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 
 		bool openEntityCreationWindow = false;
+		bool openEntityGroupWindow = false;
 	};
 }

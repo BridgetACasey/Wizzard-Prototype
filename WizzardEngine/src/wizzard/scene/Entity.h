@@ -76,10 +76,25 @@ namespace Wizzard
 		const std::string& GetBaseName() { return GetComponent<TagComponent>().baseTag; }
 		entt::entity& GetEntityHandle() { return entityHandle; }
 
+		void AddChild(Entity& entity) { entityChildren.push_back(entity); }
+		void RemoveChild(const Entity& entity)
+		{
+			auto itr = std::find(entityChildren.begin(), entityChildren.end(), entity);
+
+			if (itr == entityChildren.end())
+				return;
+
+			entityChildren.erase(itr);
+		}
+
+		std::vector<Entity>& GetChildren() { return entityChildren; }
+
 	private:
 		entt::entity entityHandle{ entt::null };
 
 		Scene* scene = nullptr;
+
+		std::vector<Entity> entityChildren;
 	};
 
 }

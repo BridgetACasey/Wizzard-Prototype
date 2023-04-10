@@ -35,10 +35,10 @@ namespace Wizzard
 
 		void Step(int step = 1) { stepFrames = step; }
 
-		static WizRef<Scene> Copy(WizRef<Scene> other);
+		static WizRef<Scene> CopyContentsTo(WizRef<Scene> other);
 
 		Entity CreateEntity(const std::string& name = std::string());
-		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string(), bool useBaseTag = false);
 		Entity DuplicateEntity(Entity entity);
 		void DestroyEntity(Entity entity);
 

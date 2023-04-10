@@ -20,6 +20,7 @@
 
 #include "wizzard/base/ResourcePathFinder.h"
 #include "wizzard/base/Maths.h"
+#include "wizzard/scene/SceneManager.h"
 #include "wizzard/scene/SceneSerialiser.h"
 #include <scene/component/TransformComponent.h>
 
@@ -60,7 +61,7 @@ namespace Wizzard
 		frameBuffer = Framebuffer::Create(fbSpec);
 
 		editorScene = WizRef<Scene>::CreateRef();
-		activeScene = editorScene;
+		SceneManager::SetActiveScene(editorScene);
 
 		panelManager = CreateScope<PanelManager>();
 
@@ -70,14 +71,13 @@ namespace Wizzard
 		viewportPanel = panelManager->AddPanel<ViewportPanel>(PANELID_VIEWPORT, "VIEWPORT");
 		toolbarPanel = panelManager->AddPanel<ViewportToolbarPanel>(PANELID_VIEWPORTTOOLBAR, "TOOLBAR");
 
-		panelManager->SetSceneContext(activeScene);
+		panelManager->SetSceneContext(SceneManager::GetActiveScene());
 
 		editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
 
 		Audio::QueuePlay(editorLaunchSFX);
-		//Audio::Play(editorLaunchSFX);
 
 		std::string title = "Game Editor - Example Scene";
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
@@ -98,7 +98,7 @@ namespace Wizzard
 		viewportBounds[0] = viewportPanel->GetViewportBounds()[0];
 		viewportBounds[1] = viewportPanel->GetViewportBounds()[1];
 
-		activeScene->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+		SceneManager::GetActiveScene()->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 
 		// Resize
 		if (FramebufferSpecification spec = frameBuffer->GetSpecification();
@@ -119,7 +119,7 @@ namespace Wizzard
 		// Clear our entity ID attachment to -1
 		frameBuffer->ClearAttachment(1, -1);
 
-		switch (activeScene->GetState())
+		switch (SceneManager::GetActiveScene()->GetState())
 		{
 			case SceneState::EDIT:
 			{
@@ -130,12 +130,12 @@ namespace Wizzard
 
 				panelManager->OnUpdate(timeStep);
 
-				activeScene->OnUpdateEditor(timeStep, editorCamera);
+				SceneManager::GetActiveScene()->OnUpdateEditor(timeStep, editorCamera);
 				break;
 			}
 			case SceneState::PLAY:
 			{
-				activeScene->OnUpdatePlay(timeStep);
+				SceneManager::GetActiveScene()->OnUpdatePlay(timeStep);
 				break;
 			}
 			default:
@@ -154,7 +154,7 @@ namespace Wizzard
 		{
 			int pixelData = frameBuffer->ReadPixel(1, mouseX, mouseY);
 
-			Entity nextHoveredEntity = pixelData == -1 ? Entity() : Entity(static_cast<entt::entity>(pixelData), activeScene.Get());
+			Entity nextHoveredEntity = pixelData == -1 ? Entity() : Entity(static_cast<entt::entity>(pixelData), SceneManager::GetActiveScene().Get());
 
 			if(nextHoveredEntity && hoveredEntity != nextHoveredEntity)
 			{
@@ -186,7 +186,7 @@ namespace Wizzard
 			}
 		}
 
-		if (activeScene->GetState() == SceneState::EDIT)
+		if (SceneManager::GetActiveScene()->GetState() == SceneState::EDIT)
 		{
 			if (Input::IsKeyPressed(Key::Space) || Input::IsMouseButtonPressed(Mouse::LeftButton))
 			{
@@ -285,7 +285,7 @@ namespace Wizzard
 
 		orthoCamController.OnEvent(event);
 
-		if(activeScene->GetState() == SceneState::EDIT)
+		if(SceneManager::GetActiveScene()->GetState() == SceneState::EDIT)
 		editorCamera.OnEvent(event);
 
 		panelManager->OnEvent(event);
@@ -297,102 +297,98 @@ namespace Wizzard
 		eventHandler.HandleEvent<ViewportSelectionChangedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionChanged));
 	}
 
-	void EditorLayer::SetActiveScene(WizRef<Scene> scene)
-	{
-		editorScene = scene;
-		activeScene = editorScene;
-		panelManager->SetSceneContext(activeScene);
-	}
-
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
-		if(keyEvent.GetKeyCode() == Key::F)
+		if (Input::IsQueryingInput())
 		{
-			Entity selectedEntity = propertiesPanel->GetSelectedEntity();
-			if (selectedEntity)
-				editorCamera.FocusOnPoint(selectedEntity.GetComponent<TransformComponent>().Translation);
-		}
-
-		if(keyEvent.GetKeyCode() == Key::Escape)
-		{
-			Entity selectedEntity = propertiesPanel->GetSelectedEntity();
-
-			if (selectedEntity)
+			if (keyEvent.GetKeyCode() == Key::F)
 			{
-				propertiesPanel->SetSelectedEntity({});
+				Entity selectedEntity = propertiesPanel->GetSelectedEntity();
+				if (selectedEntity)
+					editorCamera.FocusOnPoint(selectedEntity.GetComponent<TransformComponent>().Translation);
+			}
 
-				if(EntitySelection::IsMultiSelect())
+			if (keyEvent.GetKeyCode() == Key::Escape)
+			{
+				Entity selectedEntity = propertiesPanel->GetSelectedEntity();
+
+				if (selectedEntity)
 				{
-					EntitySelection::DeselectAll();
-					ScreenReaderLogger::QueueOutput("Deselected all");
+					propertiesPanel->SetSelectedEntity({});
+
+					if (EntitySelection::IsMultiSelect())
+					{
+						EntitySelection::DeselectAll();
+						ScreenReaderLogger::QueueOutput("Deselected all");
+					}
+					else
+					{
+						EntitySelection::DeselectEntity(selectedEntity);
+						glm::vec3 trans = selectedEntity.GetComponent<TransformComponent>().Translation;
+						ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string((int)trans.x) + " Y " + std::to_string((int)trans.y));
+					}
 				}
+			}
+
+			if (keyEvent.GetKeyCode() == Key::S)
+			{
+				if (propertiesPanel->GetSelectedEntity())
+				{
+					ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
+					SceneManager::GetActiveScene()->DestroyEntity(propertiesPanel->GetSelectedEntity());
+				}
+			}
+
+			if (keyEvent.GetKeyCode() == Key::D)
+			{
+				if (propertiesPanel->GetSelectedEntity())
+				{
+					ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
+					Entity duplicatedEntity = SceneManager::GetActiveScene()->DuplicateEntity(propertiesPanel->GetSelectedEntity());
+
+					if (!EntitySelection::IsMultiSelect())
+						EntitySelection::DeselectAll();
+
+					EntitySelection::SelectEntity(duplicatedEntity);
+					propertiesPanel->SetSelectedEntity(duplicatedEntity);
+				}
+			}
+
+			if (keyEvent.GetKeyCode() == Key::M)
+			{
+				EntitySelection::ToggleMultiSelectMode();
+
+				if (EntitySelection::IsMultiSelect())
+					ScreenReaderLogger::QueueOutput("Enabled entity multiselect mode");
 				else
 				{
-					EntitySelection::DeselectEntity(selectedEntity);
-					glm::vec3 trans = selectedEntity.GetComponent<TransformComponent>().Translation;
-					ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string((int)trans.x) + " Y " + std::to_string((int)trans.y));
+					EntitySelection::DeselectAll();
+					ScreenReaderLogger::QueueOutput("Disabled entity multiselect mode");
 				}
 			}
-		}
 
-		if (keyEvent.GetKeyCode() == Key::S)
-		{
-			if (propertiesPanel->GetSelectedEntity())
+			if (keyEvent.GetKeyCode() == Key::O)
 			{
-				ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
-				activeScene->DestroyEntity(propertiesPanel->GetSelectedEntity());
+				EntitySelection::DescribeSelectionsIsolated();
 			}
-		}
 
-		if (keyEvent.GetKeyCode() == Key::D)
-		{
-			if (propertiesPanel->GetSelectedEntity())
+			if (keyEvent.GetKeyCode() == Key::P)
 			{
-				ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
-				Entity duplicatedEntity = activeScene->DuplicateEntity(propertiesPanel->GetSelectedEntity());
-
-				if (!EntitySelection::IsMultiSelect())
-					EntitySelection::DeselectAll();
-
-				EntitySelection::SelectEntity(duplicatedEntity);
-				propertiesPanel->SetSelectedEntity(duplicatedEntity);
+				EntitySelection::DescribeSelectionsRelational();
 			}
-		}
 
-		if(keyEvent.GetKeyCode() == Key::M)
-		{
-			EntitySelection::ToggleMultiSelectMode();
-
-			if (EntitySelection::IsMultiSelect())
-				ScreenReaderLogger::QueueOutput("Enabled entity multiselect mode");
-			else
+			if (keyEvent.GetKeyCode() == Key::LeftShift)
 			{
-				EntitySelection::DeselectAll();
-				ScreenReaderLogger::QueueOutput("Disabled entity multiselect mode");
+				panelManager->CycleActivePanel();
 			}
-		}
 
-		if(keyEvent.GetKeyCode() == Key::O)
-		{
-			EntitySelection::DescribeSelectionsIsolated();
-		}
-
-		if (keyEvent.GetKeyCode() == Key::P)
-		{
-			EntitySelection::DescribeSelectionsRelational();
-		}
-
-		if(keyEvent.GetKeyCode() == Key::LeftShift)
-		{
-			panelManager->CycleActivePanel();
-		}
-
-		if (keyEvent.GetKeyCode() == Key::Space)
-		{
-			if (viewportPanel->IsHovered() /* && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt)*/)
+			if (keyEvent.GetKeyCode() == Key::Space)
 			{
-				EntitySelection::SelectEntity(hoveredEntity);
-				propertiesPanel->SetSelectedEntity(hoveredEntity);
+				if (viewportPanel->IsHovered() /* && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt)*/)
+				{
+					EntitySelection::SelectEntity(hoveredEntity);
+					propertiesPanel->SetSelectedEntity(hoveredEntity);
+				}
 			}
 		}
 
@@ -401,15 +397,18 @@ namespace Wizzard
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent)
 	{
-		if (mouseEvent.GetMouseButton() == Mouse::LeftButton)
+		if (Input::IsQueryingInput())
 		{
-			if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+			if (mouseEvent.GetMouseButton() == Mouse::LeftButton)
 			{
-				if (!EntitySelection::IsMultiSelect())
-					EntitySelection::DeselectAll();
+				if (viewportPanel->IsHovered() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+				{
+					if (!EntitySelection::IsMultiSelect())
+						EntitySelection::DeselectAll();
 
-				propertiesPanel->SetSelectedEntity(hoveredEntity);
-				EntitySelection::SelectEntity(hoveredEntity);
+					propertiesPanel->SetSelectedEntity(hoveredEntity);
+					EntitySelection::SelectEntity(hoveredEntity);
+				}
 			}
 		}
 
@@ -444,9 +443,9 @@ namespace Wizzard
 
 	void EditorLayer::OnOverlayRender()
 	{
-		if (activeScene->GetState() == SceneState::PLAY)
+		if (SceneManager::GetActiveScene()->GetState() == SceneState::PLAY)
 		{
-			Entity camera = activeScene->GetPrimaryCameraEntity();
+			Entity camera = SceneManager::GetActiveScene()->GetPrimaryCameraEntity();
 			if (!camera)
 				return;
 
@@ -480,12 +479,12 @@ namespace Wizzard
 
 	void EditorLayer::OnSceneBeginPlay()
 	{
-		activeScene->SetState(SceneState::PLAY);
+		SceneManager::GetActiveScene()->SetState(SceneState::PLAY);
 
-		activeScene = Scene::Copy(editorScene);
-		activeScene->OnBeginPlay();
+		SceneManager::SetActiveScene(Scene::CopyContentsTo(editorScene));
+		SceneManager::GetActiveScene()->OnBeginPlay();
 
-		panelManager->SetSceneContext(activeScene);
+		panelManager->SetSceneContext(SceneManager::GetActiveScene());
 		EntitySelection::DeselectAll();
 		propertiesPanel->SetSelectedEntity({});
 
@@ -496,13 +495,13 @@ namespace Wizzard
 
 	void EditorLayer::OnSceneEndPlay()
 	{
-		if (activeScene->GetState() == SceneState::PLAY)
-			activeScene->OnEndPlay();
+		if (SceneManager::GetActiveScene()->GetState() == SceneState::PLAY)
+			SceneManager::GetActiveScene()->OnEndPlay();
 
-		activeScene = editorScene;
+		SceneManager::SetActiveScene(editorScene);
 
-		activeScene->SetState(SceneState::EDIT);
-		panelManager->SetSceneContext(activeScene);
+		SceneManager::GetActiveScene()->SetState(SceneState::EDIT);
+		panelManager->SetSceneContext(SceneManager::GetActiveScene());
 
 		Audio::Stop(levelMusic);
 	}

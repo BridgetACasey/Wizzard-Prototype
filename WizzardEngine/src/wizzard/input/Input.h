@@ -86,11 +86,7 @@ namespace Wizzard
 			return actionFunc(actionKey);
 		}
 
-	private:
-		inline static bool initInput = false;
-		inline static bool queryInput = false;
-
-		inline static std::unordered_map<const char*, std::pair<int32_t, std::function<bool(uint32_t)>>> inputActions;	//Editor key bindings/actions, implemented per platform
+		static void SetQueryInput(bool input) { queryInput = input; }
 
 		static bool IsQueryingInput()
 		{
@@ -100,14 +96,23 @@ namespace Wizzard
 				return false;
 			}
 
+			//TODO: Re-implement later
+			/*
 			if (!queryInput)
 			{
 				WIZ_WARN("Trying to query input when 'queryInput' flag is set to FALSE! This flag is found in the Wizzard::Input class.");
 				return false;
 			}
+			*/
 
-			return true;
+			return initInput && queryInput;
 		}
+
+	private:
+		inline static bool initInput = false;
+		inline static bool queryInput = false;
+
+		inline static std::unordered_map<const char*, std::pair<int32_t, std::function<bool(uint32_t)>>> inputActions;	//Editor key bindings/actions, implemented per platform
 
 		/*
 		 * TODO: Find a way to make printing code values to the log less verbose than calling Get...CodeAsString from client side every time.

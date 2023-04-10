@@ -100,39 +100,6 @@ namespace Wizzard
 					transform.Translation.x = position.x;
 					transform.Translation.y = position.y;
 					transform.Rotation.z = body->GetAngle();
-
-					if (entity.HasComponent<CharacterControllerComponent>())
-					{
-						auto& ccc = entity.GetComponent<CharacterControllerComponent>();
-
-						body->SetFixedRotation(true);
-
-						if (Input::IsKeyDown(Key::D))
-							//transform.Translation.x += 500.0f * timeStep;
-						body->SetLinearVelocity(b2Vec2(100.0f * timeStep, body->GetLinearVelocity().y));
-						if (Input::IsKeyDown(Key::A))
-							//transform.Translation.x -= 500.0f * timeStep;
-						body->SetLinearVelocity(b2Vec2(-100.0f * timeStep, body->GetLinearVelocity().y));
-
-						if (!ccc.disableGravity)
-						{
-							body->SetGravityScale(1.0f);
-
-							if (ccc.canJump)
-							{
-								if (Input::IsKeyDown(Key::Space))
-								{
-									body->ApplyForceToCenter(b2Vec2(0.0f, 2000.0f * timeStep), true);
-									//ccc.canJump = false;
-								}
-							}
-
-							if (body->GetLinearVelocity().y > -0.001f && body->GetLinearVelocity().y < 0.001f)
-								ccc.canJump = true;
-						}
-						else
-							body->SetGravityScale(0.0f);
-					}
 				}
 			}
 		//}
@@ -197,10 +164,10 @@ namespace Wizzard
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return CreateEntityWithUUID(UUID(), name);
+		return CreateEntityWithUUID(UUID(), name, false);
 	}
 
-	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name, bool useBaseTag)
 	{
 		Entity entity = { registry.create(), this };
 
@@ -208,7 +175,7 @@ namespace Wizzard
 		entity.AddComponent<TransformComponent>();
 		auto& tagComponent = entity.AddComponent<TagComponent>();
 		tagComponent.baseTag = name.empty() ? "Entity" : name;
-		tagComponent.tag = name.empty() ? "Entity" : name + std::to_string(registry.size());
+		tagComponent.tag = useBaseTag ? tagComponent.baseTag : tagComponent.baseTag + std::to_string(registry.size());
 
 		return entity;
 	}
@@ -246,7 +213,7 @@ namespace Wizzard
 		return {};
 	}
 
-	WizRef<Scene> Scene::Copy(WizRef<Scene> other)
+	WizRef<Scene> Scene::CopyContentsTo(WizRef<Scene> other)
 	{
 		WizRef<Scene> newScene = WizRef<Scene>::CreateRef();
 
@@ -263,7 +230,7 @@ namespace Wizzard
 		{
 			UUID uuid = srcSceneRegistry.get<UUIDComponent>(e).uuid;
 			const auto& name = srcSceneRegistry.get<TagComponent>(e).tag;
-			Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
+			Entity newEntity = newScene->CreateEntityWithUUID(uuid, name, true);
 			enttMap[uuid] = (entt::entity)newEntity;
 		}
 
