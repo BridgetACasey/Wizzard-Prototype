@@ -38,6 +38,9 @@ namespace Wizzard
 		void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
 
+		void SetEnableTutorialMessages(bool enable) { enableTutorialMessages = enable; }
+		bool GetEnableTutorialMessages() { return enableTutorialMessages; }
+
 		//Temp functions
 		EditorCamera& GetEditorCamera() { return editorCamera; }
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
@@ -79,6 +82,8 @@ namespace Wizzard
 		Entity playerEntity;
 
 		bool lockSelectionToCamera = true;
+
+		bool enableTutorialMessages = true;
 
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];

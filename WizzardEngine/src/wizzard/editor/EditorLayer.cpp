@@ -65,11 +65,11 @@ namespace Wizzard
 
 		panelManager = CreateScope<PanelManager>();
 
-		appSettingsPanel = panelManager->AddPanel<ApplicationSettingsPanel>( PANELID_APP_SETTINGS, "PROJECT");
 		sceneHierarchyPanel = panelManager->AddPanel<SceneHierarchyPanel>(PANELID_SCENE_HIERARCHY, "SCENE");
 		propertiesPanel = panelManager->AddPanel<PropertiesPanel>(PANELID_PROPERTIES, "PROPERTIES");
 		viewportPanel = panelManager->AddPanel<ViewportPanel>(PANELID_VIEWPORT, "VIEWPORT");
 		toolbarPanel = panelManager->AddPanel<ViewportToolbarPanel>(PANELID_VIEWPORTTOOLBAR, "TOOLBAR");
+		appSettingsPanel = panelManager->AddPanel<ApplicationSettingsPanel>(PANELID_APP_SETTINGS, "PROJECT");
 
 		panelManager->SetSceneContext(SceneManager::GetActiveScene());
 
@@ -167,27 +167,27 @@ namespace Wizzard
 			//	WIZ_TRACE("Hovered Entity: {0}", hoveredEntity.GetName());
 		}
 
-		if (!ImGuizmo::IsUsing())
-		{
-			if (Input::IsKeyPressed(Key::W))
-			{
-				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
-				ScreenReaderLogger::QueueOutput("Transform type: Translate");
-			}
-			if (Input::IsKeyPressed(Key::E))
-			{
-				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
-				ScreenReaderLogger::QueueOutput("Transform type: Rotate");
-			}
-			if (Input::IsKeyPressed(Key::R))
-			{
-				viewportPanel->SetGizmoType(ImGuizmo::OPERATION::SCALE);
-				ScreenReaderLogger::QueueOutput("Transform type: Scale");
-			}
-		}
-
 		if (SceneManager::GetActiveScene()->GetState() == SceneState::EDIT)
 		{
+			if (!ImGuizmo::IsUsing())
+			{
+				if (Input::IsKeyPressed(Key::W))
+				{
+					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
+					ScreenReaderLogger::QueueOutput("Transform type: Translate");
+				}
+				if (Input::IsKeyPressed(Key::E))
+				{
+					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
+					ScreenReaderLogger::QueueOutput("Transform type: Rotate");
+				}
+				if (Input::IsKeyPressed(Key::R))
+				{
+					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::SCALE);
+					ScreenReaderLogger::QueueOutput("Transform type: Scale");
+				}
+			}
+
 			if (Input::IsKeyPressed(Key::Space) || Input::IsMouseButtonPressed(Mouse::LeftButton))
 			{
 				if (viewportPanel->IsFocused() && hoveredEntity)

@@ -42,13 +42,13 @@ namespace Wizzard
 
 		ImGui::SetItemDefaultFocus();
 
-		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
-		{
-			SceneSerialiser serializer(sceneContext);
-			serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		}
-
 		//TODO: Re-implement these later along with new/open scene functions
+		//if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
+		//{
+		//	SceneSerialiser serializer(sceneContext);
+		//	serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+		//}
+		//
 		//if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
 		//{
 		//	SceneSerialiser serializer(sceneContext);
@@ -68,17 +68,37 @@ namespace Wizzard
 		static bool tutorial = true;
 		if(ImGuiSR::Checkbox("TUTORIAL MESSAGES", &tutorial))
 		{
-			/*
-			 * ...
-			 */
+			Application::Get().GetEditorLayer()->SetEnableTutorialMessages(tutorial);
 		}
 
-		if(ImGuiSR::Button("PLAY AUDIO GLOSSARY", ImVec2(680.0f, 80.0f)))
+		if (ImGuiSR::Button("PLAY HOT KEY INFO", ImVec2(580.0f, 80.0f)))
 		{
-			/*
-			 * ...
-			 */
+			std::string hotKeyInfo = "In Edit Mode: ";
+			hotKeyInfo.append("Navigate with arrow keys or TAB. ");
+			hotKeyInfo.append("Change window panel with LEFT SHIFT. ");
+			hotKeyInfo.append("Toggle the scene camera to lock onto a selection with CAPSLOCK. ");
+			hotKeyInfo.append("Zoom in and out with the scene camera using the left and right bracket keys. ");
+			hotKeyInfo.append("Select entities or UI elements with SPACE. ");
+			hotKeyInfo.append("Change entity transform type with W, E, and R. ");
+			hotKeyInfo.append("Enable entity multiselect mode with M. ");
+			hotKeyInfo.append("Duplicate an entity with D. ");
+			hotKeyInfo.append("Delete an entity with S. ");
+			hotKeyInfo.append("Print information about the currently selected object with O. ");
+			hotKeyInfo.append("Print information about the relationships between multiple selected objects with P. ");
+
+			hotKeyInfo.append("In Play Mode: ");
+			hotKeyInfo.append("Move the player left and right with the A and D keys. Press SPACE to jump. ");
+
+			ScreenReaderLogger::QueueOutput(hotKeyInfo, true, true);
 		}
+
+		//TODO: Implement glossary of SFX cues
+		//if(ImGuiSR::Button("PLAY AUDIO GLOSSARY", ImVec2(680.0f, 80.0f)))
+		//{
+		//	/*
+		//	 * ...
+		//	 */
+		//}
 
 		if (ImGuiSR::Button("EXIT", ImVec2(161.0f, 80.5f)))
 		{

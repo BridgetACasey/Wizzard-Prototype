@@ -11,5 +11,6 @@ namespace Wizzard
 
 		bool disableGravity = false;
 		bool canJump = true;
+		glm::vec3 defaultPosition = {0.0f, 1.0f, 0.0f};
 	};
 }

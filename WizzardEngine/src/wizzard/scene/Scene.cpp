@@ -5,9 +5,12 @@
 #include "Scene.h"
 
 #include "Entity.h"
+#include "wizzard/audio/Audio.h"
+#include "wizzard/audio/AudioSource.h"
 
 #include "box2d/b2_world.h"
 #include "box2d/b2_body.h"
+#include "box2d/b2_contact.h"
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
 
@@ -21,6 +24,7 @@
 #include "component/BoxCollider2DComponent.h"
 #include "component/CharacterControllerComponent.h"
 #include "component/AudioListenerComponent.h"
+#include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/input/Input.h"
 
 namespace Wizzard
@@ -100,6 +104,103 @@ namespace Wizzard
 					transform.Translation.x = position.x;
 					transform.Translation.y = position.y;
 					transform.Rotation.z = body->GetAngle();
+
+					//TEMP - Player controls and related gameplay - TODO: Move this to a more appropriate location
+					if (entity.HasComponent<CharacterControllerComponent>())
+					{
+						if(position.y < -100.0f)
+						{
+							ScreenReaderLogger::QueueOutput("Resetting player position");
+							body->SetTransform(b2Vec2(0.0f, 2.0f), 0.0f);
+							transform.Translation.x = position.x;
+							transform.Translation.y = position.y;
+							transform.Rotation.z = body->GetAngle();
+						}
+
+						auto& ccc = entity.GetComponent<CharacterControllerComponent>();
+						body->SetFixedRotation(true);
+
+						if (Input::IsKeyDown(Key::D))
+							//transform.Translation.x += 500.0f * timeStep;
+							body->SetLinearVelocity(b2Vec2(150.0f * timeStep, body->GetLinearVelocity().y));
+						if (Input::IsKeyDown(Key::A))
+							//transform.Translation.x -= 500.0f * timeStep;
+							body->SetLinearVelocity(b2Vec2(-150.0f * timeStep, body->GetLinearVelocity().y));
+
+						if (!ccc.disableGravity)
+						{
+							static float jumpForce = 2000.0f;
+							body->SetGravityScale(1.0f);
+
+							if (ccc.canJump)
+							{
+								if (Input::IsKeyDown(Key::Space))
+								{
+									body->ApplyForceToCenter(b2Vec2(0.0f, jumpForce * timeStep), true);
+									jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (600.0f * timeStep);
+
+									if(jumpForce <= 0.1f)
+									ccc.canJump = false;
+								}
+							}
+
+							if (body->GetLinearVelocity().y > -0.001f && body->GetLinearVelocity().y < 0.001f)
+							{
+								ccc.canJump = true;
+								jumpForce = 2000.0f;
+							}
+						}
+						else
+							body->SetGravityScale(0.0f);
+
+						static b2ContactEdge* lastContact = nullptr;
+
+						//Collisions with other objects
+						auto contacts =  body->GetContactList();
+						if(contacts)
+						{
+							b2AABB firstBox = body->GetFixtureList()->GetAABB(0);
+							b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(0);
+
+							//if(firstBox.lowerBound.y >= secondBox.lowerBound.y && firstBox.lowerBound.y <= secondBox.upperBound.y)
+							//	WIZ_INFO("Bottom contact!!!");
+
+							float leftDist = b2Distance(b2Vec2(firstBox.lowerBound.x, 0.0f), b2Vec2(secondBox.lowerBound.x, 0.0f));
+							float rightDist = b2Distance(b2Vec2(firstBox.upperBound.x, 0.0f), b2Vec2(secondBox.upperBound.x, 0.0f));
+
+							auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
+
+							if (leftDist < 0.5f)
+							{
+								WIZ_INFO("Close on the LEFT!!!");
+								if(lastContact != contacts)
+								{
+									sfx.SetPosition(-1.0f, 0.0f, 0.0f);
+									Audio::Play(sfx);
+									lastContact = contacts;
+								}
+							}
+
+							else if (rightDist < 0.5f)
+							{
+								WIZ_INFO("Close on the RIGHT!!!");
+								if (lastContact != contacts)
+								{
+									sfx.SetPosition(1.0f, 0.0f, 0.0f);
+									Audio::Play(sfx);
+									lastContact = contacts;
+								}
+							}
+							else
+							{
+								lastContact = nullptr;
+							}
+						}
+						else
+						{
+							lastContact = nullptr;
+						}
+					}
 				}
 			}
 		//}
@@ -162,9 +263,9 @@ namespace Wizzard
 		Renderer2D::EndScene();
 	}
 
-	Entity Scene::CreateEntity(const std::string& name)
+	Entity Scene::CreateEntity(const std::string& name, bool useBaseTag)
 	{
-		return CreateEntityWithUUID(UUID(), name, false);
+		return CreateEntityWithUUID(UUID(), name, useBaseTag);
 	}
 
 	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name, bool useBaseTag)
@@ -183,7 +284,7 @@ namespace Wizzard
 	Entity Scene::DuplicateEntity(Entity entity)
 	{
 		std::string name = entity.GetBaseName().empty() ? entity.GetName() : entity.GetBaseName();
-		Entity newEntity = CreateEntity(name);
+		Entity newEntity = CreateEntity(name, false);
 
 		CopyComponentIfExists<TransformComponent>(newEntity, entity);
 		CopyComponentIfExists<SpriteComponent>(newEntity, entity);
@@ -266,7 +367,8 @@ namespace Wizzard
 	void Scene::OnBeginPhysics2D()
 	{
 		physicsWorld = new b2World({ 0.0f, -9.8f });
-
+		contactListener = new b2ContactListener();
+		physicsWorld->SetContactListener(contactListener);
 		auto view = registry.view<RigidBody2DComponent>();
 
 		for (auto currentEntity : view)
@@ -312,6 +414,8 @@ namespace Wizzard
 
 	void Scene::OnEndPhysics2D()
 	{
+		delete contactListener;
+		contactListener = nullptr;
 		delete physicsWorld;
 		physicsWorld = nullptr;
 	}

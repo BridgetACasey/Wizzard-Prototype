@@ -9,6 +9,7 @@
 #include "wizzard/editor/EditorCamera.h"
 
 class b2World;
+class b2ContactListener;
 
 namespace Wizzard
 {
@@ -37,8 +38,8 @@ namespace Wizzard
 
 		static WizRef<Scene> CopyContentsTo(WizRef<Scene> other);
 
-		Entity CreateEntity(const std::string& name = std::string());
-		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string(), bool useBaseTag = false);
+		Entity CreateEntity(const std::string& name = std::string(), bool useBaseTag = true);
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string(), bool useBaseTag = true);
 		Entity DuplicateEntity(Entity entity);
 		void DestroyEntity(Entity entity);
 
@@ -64,6 +65,7 @@ namespace Wizzard
 		int stepFrames = 0;
 
 		b2World* physicsWorld = nullptr;
+		b2ContactListener* contactListener = nullptr;
 
 		friend class Entity;
 		friend class SceneSerialiser;

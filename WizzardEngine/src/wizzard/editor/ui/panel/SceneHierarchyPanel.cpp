@@ -61,148 +61,150 @@ namespace Wizzard
 			//TODO: Fix later. Probably use event callbacks instead and pass to editor layer to handle.
 			//if (Input::IsKeyPressed(Key::Enter) || Input::IsMouseButtonPressed(Mouse::RightButton))
 				
-
-			if(ImGuiSR::Button("CREATE ENTITY", ImVec2(440.0f, 80.5f)))
-				openEntityCreationWindow = !openEntityCreationWindow;
-
-			if (openEntityCreationWindow)
+			if(sceneContext->GetState() == SceneState::EDIT)
 			{
-				if (ImGuiSR::Begin("Entity Creation"))
+				if (ImGuiSR::Button("CREATE ENTITY", ImVec2(440.0f, 80.5f)))
+					openEntityCreationWindow = !openEntityCreationWindow;
+
+				if (openEntityCreationWindow)
 				{
-					//ImGui::SetKeyboardFocusHere();
-
-					if (ImGuiSR::MenuItem("Create Floor (Short)"))
+					if (ImGuiSR::Begin("Entity Creation"))
 					{
-						auto floor = sceneContext->CreateEntity("Floor (Short)");
-						floor.GetComponent<TagComponent>().baseTag = "Floor (Short)";
-						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
-						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
-						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
-						floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
-						floor.GetComponent<TransformComponent>().Scale.x *= 3.0f;
-						floor.AddComponent<RigidBody2DComponent>();
-						floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
-						floor.AddComponent<BoxCollider2DComponent>();
-						openEntityCreationWindow = false;
-					}
+						//ImGui::SetKeyboardFocusHere();
 
-					if (ImGuiSR::MenuItem("Create Floor (Long)"))
-					{
-						auto floor = sceneContext->CreateEntity("Floor (Long)");
-						floor.GetComponent<TagComponent>().baseTag = "Floor (Long)";
-						floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
-						floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
-						floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
-						floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
-						floor.GetComponent<TransformComponent>().Scale.x *= 6.0f;
-						floor.AddComponent<RigidBody2DComponent>();
-						floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
-						floor.AddComponent<BoxCollider2DComponent>();
-						openEntityCreationWindow = false;
-					}
-
-					if (ImGuiSR::MenuItem("Create Wall (Short)"))
-					{
-						auto wall = sceneContext->CreateEntity("Wall (Short)");
-						wall.GetComponent<TagComponent>().baseTag = "Wall (Short)";
-						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
-						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
-						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
-						wall.GetComponent<TransformComponent>().Scale.y *= 1.5f;
-						wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
-						wall.AddComponent<RigidBody2DComponent>();
-						wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
-						wall.AddComponent<BoxCollider2DComponent>();
-						openEntityCreationWindow = false;
-					}
-
-					if (ImGuiSR::MenuItem("Create Wall (Tall)"))
-					{
-						auto wall = sceneContext->CreateEntity("Wall (Tall)");
-						wall.GetComponent<TagComponent>().baseTag = "Wall (Tall)";
-						wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
-						wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
-						wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
-						wall.GetComponent<TransformComponent>().Scale.y *= 3.0f;
-						wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
-						wall.AddComponent<RigidBody2DComponent>();
-						wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
-						wall.AddComponent<BoxCollider2DComponent>();
-						openEntityCreationWindow = false;
-					}
-
-					if (ImGuiSR::MenuItem("Create Player Character"))
-					{
-						if (!sceneContext->GetPrimaryCameraEntity())
+						if (ImGuiSR::MenuItem("Create Floor (Short)"))
 						{
-							auto player = sceneContext->CreateEntity("Player Character");
-							player.GetComponent<TagComponent>().baseTag = "Player Character";
-							player.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-							player.GetComponent<TransformComponent>().Translation.x = 0.0f;
-							player.GetComponent<TransformComponent>().Translation.y = 0.0f;
-							player.AddComponent<RigidBody2DComponent>();
-							player.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
-							player.AddComponent<BoxCollider2DComponent>();
-							player.AddComponent<CameraComponent>();
-							player.AddComponent<CharacterControllerComponent>();
+							auto floor = sceneContext->CreateEntity("Floor (Short)");
+							floor.GetComponent<TagComponent>().baseTag = "Floor (Short)";
+							floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+							floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
+							floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
+							floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
+							floor.GetComponent<TransformComponent>().Scale.x *= 3.0f;
+							floor.AddComponent<RigidBody2DComponent>();
+							floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+							floor.AddComponent<BoxCollider2DComponent>();
 							openEntityCreationWindow = false;
 						}
-						else
-							ScreenReaderLogger::QueueOutput("Scene already contains player entity called: " + sceneContext->GetPrimaryCameraEntity().GetName());
-					}
 
-					if (ImGuiSR::MenuItem("Create Empty Entity"))
-					{
-						sceneContext->CreateEntity("Empty Entity");
-						openEntityCreationWindow = false;
-					}
-
-
-					if (ImGuiSR::MenuItem("Close Window"))
-					{
-						ScreenReaderLogger::QueueOutput("Closed entity creation window");
-						openEntityCreationWindow = false;
-					}
-
-					ImGuiSR::End();
-				}
-			}
-
-			//if (ImGuiSR::Button("CREATE GROUP", ImVec2(440.0f, 80.5f)))
-			//	openEntityGroupWindow = !openEntityGroupWindow;
-
-			if (openEntityGroupWindow)
-			{
-				if (ImGuiSR::Begin("Group Entities"))
-				{
-					static std::string groupName = "EntityGroup";
-					char buffer[256];
-					memset(buffer, 0, sizeof(buffer));
-					strncpy_s(buffer, sizeof(buffer), groupName.c_str(), sizeof(buffer));
-					if (ImGuiSR::InputText("##Tag", buffer, sizeof(buffer), 0, 0, NULL, ("Rename " + groupName), true))
-					{
-						groupName = std::string(buffer);
-					}
-
-					if (ImGuiSR::Button("Create", ImVec2(440.0f, 80.5f)))
-					{
-						if (!EntitySelection::GetSelections().empty())
+						if (ImGuiSR::MenuItem("Create Floor (Long)"))
 						{
-							auto group = sceneContext->CreateEntity(groupName);
-
-							for (Entity selection : EntitySelection::GetSelections())
-								group.AddChild(selection);
-
-							groupName = "EntityGroup";
-							openEntityGroupWindow = false;
+							auto floor = sceneContext->CreateEntity("Floor (Long)");
+							floor.GetComponent<TagComponent>().baseTag = "Floor (Long)";
+							floor.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+							floor.GetComponent<TransformComponent>().Translation.x = 0.0f;
+							floor.GetComponent<TransformComponent>().Translation.y = 0.0f;
+							floor.GetComponent<TransformComponent>().Scale.y *= 0.5f;
+							floor.GetComponent<TransformComponent>().Scale.x *= 6.0f;
+							floor.AddComponent<RigidBody2DComponent>();
+							floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+							floor.AddComponent<BoxCollider2DComponent>();
+							openEntityCreationWindow = false;
 						}
+
+						if (ImGuiSR::MenuItem("Create Wall (Short)"))
+						{
+							auto wall = sceneContext->CreateEntity("Wall (Short)");
+							wall.GetComponent<TagComponent>().baseTag = "Wall (Short)";
+							wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+							wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
+							wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
+							wall.GetComponent<TransformComponent>().Scale.y *= 1.5f;
+							wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
+							wall.AddComponent<RigidBody2DComponent>();
+							wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+							wall.AddComponent<BoxCollider2DComponent>();
+							openEntityCreationWindow = false;
+						}
+
+						if (ImGuiSR::MenuItem("Create Wall (Tall)"))
+						{
+							auto wall = sceneContext->CreateEntity("Wall (Tall)");
+							wall.GetComponent<TagComponent>().baseTag = "Wall (Tall)";
+							wall.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+							wall.GetComponent<TransformComponent>().Translation.x = 0.0f;
+							wall.GetComponent<TransformComponent>().Translation.y = 0.0f;
+							wall.GetComponent<TransformComponent>().Scale.y *= 3.0f;
+							wall.GetComponent<TransformComponent>().Scale.x *= 0.5f;
+							wall.AddComponent<RigidBody2DComponent>();
+							wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
+							wall.AddComponent<BoxCollider2DComponent>();
+							openEntityCreationWindow = false;
+						}
+
+						if (ImGuiSR::MenuItem("Create Player Character"))
+						{
+							if (!sceneContext->GetPrimaryCameraEntity())
+							{
+								auto player = sceneContext->CreateEntity("Player Character");
+								player.GetComponent<TagComponent>().baseTag = "Player Character";
+								player.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+								player.GetComponent<TransformComponent>().Translation.x = 0.0f;
+								player.GetComponent<TransformComponent>().Translation.y = 0.0f;
+								player.AddComponent<RigidBody2DComponent>();
+								player.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Dynamic;
+								player.AddComponent<BoxCollider2DComponent>();
+								player.AddComponent<CameraComponent>();
+								player.AddComponent<CharacterControllerComponent>();
+								openEntityCreationWindow = false;
+							}
+							else
+								ScreenReaderLogger::QueueOutput("Scene already contains player entity called: " + sceneContext->GetPrimaryCameraEntity().GetName());
+						}
+
+						if (ImGuiSR::MenuItem("Create Empty Entity"))
+						{
+							sceneContext->CreateEntity("Empty Entity");
+							openEntityCreationWindow = false;
+						}
+
+
+						if (ImGuiSR::MenuItem("Close Window"))
+						{
+							ScreenReaderLogger::QueueOutput("Closed entity creation window");
+							openEntityCreationWindow = false;
+						}
+
+						ImGuiSR::End();
 					}
-
-					if (ImGuiSR::Button("Exit", ImVec2(440.0f, 80.5f)))
-						openEntityGroupWindow = false;
-
-					ImGuiSR::End();
 				}
+
+				//if (ImGuiSR::Button("CREATE GROUP", ImVec2(440.0f, 80.5f)))
+				//	openEntityGroupWindow = !openEntityGroupWindow;
+				//
+				//if (openEntityGroupWindow)
+				//{
+				//	if (ImGuiSR::Begin("Group Entities"))
+				//	{
+				//		static std::string groupName = "EntityGroup";
+				//		char buffer[256];
+				//		memset(buffer, 0, sizeof(buffer));
+				//		strncpy_s(buffer, sizeof(buffer), groupName.c_str(), sizeof(buffer));
+				//		if (ImGuiSR::InputText("##Tag", buffer, sizeof(buffer), 0, 0, NULL, ("Rename " + groupName), true))
+				//		{
+				//			groupName = std::string(buffer);
+				//		}
+				//
+				//		if (ImGuiSR::Button("Create", ImVec2(440.0f, 80.5f)))
+				//		{
+				//			if (!EntitySelection::GetSelections().empty())
+				//			{
+				//				auto group = sceneContext->CreateEntity(groupName);
+				//
+				//				for (Entity selection : EntitySelection::GetSelections())
+				//					group.AddChild(selection);
+				//
+				//				groupName = "EntityGroup";
+				//				openEntityGroupWindow = false;
+				//			}
+				//		}
+				//
+				//		if (ImGuiSR::Button("Exit", ImVec2(440.0f, 80.5f)))
+				//			openEntityGroupWindow = false;
+				//
+				//		ImGuiSR::End();
+				//	}
+				//}
 			}
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
