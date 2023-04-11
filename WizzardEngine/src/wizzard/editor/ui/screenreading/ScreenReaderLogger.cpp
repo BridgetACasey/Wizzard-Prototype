@@ -75,9 +75,11 @@ namespace Wizzard
 			{
 				if (!startedMessage)
 				{
-					OutputAll(messageBackLog.front(), false);
+					priorityMessageTriggered = messageBackLog.front().second;
 
-					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front(), priorityMessageTriggered);
+					OutputAll(messageBackLog.front().first, false);
+
+					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
 					OnScreenReaderMessageStarted(srEvent);
 
 					startedMessage = true;
@@ -85,7 +87,7 @@ namespace Wizzard
 			}
 			else if (startedMessage)
 			{
-				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front(), priorityMessageTriggered);
+				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
 				OnScreenReaderMessageEnded(srEvent);
 
 				startedMessage = false;
@@ -105,22 +107,30 @@ namespace Wizzard
 
 	void ScreenReaderLogger::ForceQueueOutput(const std::string& message)
 	{
-		messageBackLog.clear();
-		messageBackLog.emplace_back(std::string(message));
-		startedMessage = false;
+		if(!messageBackLog.empty() && startedMessage && IsSpeaking())
+		{
+			ScreenReaderMessageEndedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
+			OnScreenReaderMessageEnded(srEvent);
+		}
 
 		if(!priorityMessageTriggered)
-		Stop();
+		{
+			Stop();
+		}
+
+		messageBackLog.clear();
+		startedMessage = false;
+		messageBackLog.emplace_back(std::pair(std::string(message), true));
 	}
 
 	void ScreenReaderLogger::QueueOutput(const std::string& message, bool shouldInterrupt, bool isPriority)
 	{
-		priorityMessageTriggered = isPriority;
+		//priorityMessageTriggered = isPriority;
 
-		if (shouldInterrupt)
+		if (!shouldInterrupt || (isPriority && IsSpeaking()))
+			messageBackLog.emplace_back(std::pair(std::string(message), isPriority));
+		else if (shouldInterrupt && !isPriority)
 			ForceQueueOutput(message);
-		else if (!shouldInterrupt || (isPriority && IsSpeaking()))
-			messageBackLog.emplace_back(std::string(message));
 		else
 			OutputAll(message, shouldInterrupt);
 	}

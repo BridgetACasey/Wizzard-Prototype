@@ -43,26 +43,40 @@ namespace Wizzard
 		ImGui::SetItemDefaultFocus();
 
 		//TODO: Re-implement these later along with new/open scene functions
-		//if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
-		//{
-		//	SceneSerialiser serializer(sceneContext);
-		//	serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		//}
-		//
-		//if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
-		//{
-		//	SceneSerialiser serializer(sceneContext);
-		//	/*
-		//	 *	...
-		//		serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		//	*/
-		//}
-		//
-		//if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
-		//{
-		//	SceneSerialiser serializer(sceneContext);
-		//	serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-		//}
+		if (ImGuiSR::Button("NEW SCENE", ImVec2(400.0f, 80.5f)))
+		{
+			//SceneSerialiser serializer(sceneContext);
+			//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+			ScreenReaderLogger::QueueOutput("Opening file explorer...");
+			Application::Get().GetEditorLayer()->NewScene();
+		}
+
+		if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
+		{
+			//SceneSerialiser serializer(sceneContext);
+			//serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+			ScreenReaderLogger::QueueOutput("Opening file explorer...");
+			Application::Get().GetEditorLayer()->LoadScene();
+		}
+
+		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
+		{
+			//SceneSerialiser serializer(sceneContext);
+			//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+			ScreenReaderLogger::QueueOutput("Opening file explorer...");
+			Application::Get().GetEditorLayer()->SaveScene();
+		}
+		
+		if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
+		{
+			//SceneSerialiser serializer(sceneContext);
+			/*
+			 *	...
+				serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+			*/
+			ScreenReaderLogger::QueueOutput("Opening file explorer...");
+			Application::Get().GetEditorLayer()->SaveSceneAs();
+		}
 
 		//TODO: Add SR functions for remaining ImGui elements
 		static bool tutorial = true;
@@ -140,7 +154,7 @@ namespace Wizzard
 
 	bool ApplicationSettingsPanel::OnAppShutdown(AppShutdownEvent& appEvent)
 	{
-		WIZ_TRACE("Test message from app panel");
+		//WIZ_TRACE("Test message from app panel");
 		return true;
 	}
 }

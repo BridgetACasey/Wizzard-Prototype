@@ -26,11 +26,13 @@ namespace Wizzard
 		static void SerialiseEntity(YAML::Emitter& out, Entity entity);
 		static void DeserialiseEntities(YAML::Node& entitiesNode, WizRef<Scene> scene);
 
+		static std::string OpenFile(const char* filter);
+		static std::string SaveFile(const char* filter);
+
 		inline static std::string_view fileFilter = "Wizzard Scene (*.wizscene)\0*.wizscene\0";
 		inline static std::string_view defaultExtension = ".wizscene";
 
 	private:
 		WizRef<Scene> scene;
 	};
-
 }

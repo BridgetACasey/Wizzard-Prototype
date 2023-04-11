@@ -52,7 +52,9 @@ namespace Wizzard
 	{
 		if(!selectedEntities.empty())
 		{
-			ScreenReaderLogger::QueueOutput("Total " + std::to_string(selectedEntities.size()) + " selected entities.", false);
+			ScreenReaderLogger::Stop();
+
+			ScreenReaderLogger::QueueOutput("Total " + std::to_string(selectedEntities.size()) + " selected entities.", true, true);
 
 			for(auto entity : selectedEntities)
 			{
@@ -68,7 +70,7 @@ namespace Wizzard
 				if (entity.HasComponent<SpriteComponent>())
 				{
 					auto sprite = entity.GetComponent<SpriteComponent>();
-					ScreenReaderLogger::QueueOutput(name + " has sprite component. Describe colours here.");
+					ScreenReaderLogger::QueueOutput(name + " has sprite component. Describe colours here.", false, true);
 				}
 			}
 		}
@@ -80,7 +82,10 @@ namespace Wizzard
 	{
 		if (!selectedEntities.empty())
 		{
-			//ScreenReaderLogger::QueueOutput("Total " + std::to_string(selectedEntities.size()) + " selected entities.", false);
+			ScreenReaderLogger::Stop();
+
+			std::string message = "Total " + std::to_string(selectedEntities.size()) + " selected entities. ";
+			//ScreenReaderLogger::QueueOutput("Total " + std::to_string(selectedEntities.size()) + " selected entities.", false, true);
 
 			//Create unique pairs of objects. Entities should not be paired with themselves and being paired in reverse order should not count.
 			std::vector<std::pair<Entity, Entity>> entityPairs;
@@ -115,8 +120,11 @@ namespace Wizzard
 				//auto camera = entity.GetComponent<CameraComponent>();
 				//auto character = entity.GetComponent<CharacterControllerComponent>();
 
-				ScreenReaderLogger::QueueOutput(nameFirst + " at X " + std::to_string((int)transformFirst.Translation.x) + ", Y " + std::to_string((int)transformFirst.Translation.y)
-					+ " paired with " + nameSecond + " at X " + std::to_string((int)transformSecond.Translation.x) + ", Y " + std::to_string((int)transformSecond.Translation.y), false, true);
+				//ScreenReaderLogger::QueueOutput(nameFirst + " at X " + std::to_string((int)transformFirst.Translation.x) + ", Y " + std::to_string((int)transformFirst.Translation.y)
+				//	+ " paired with " + nameSecond + " at X " + std::to_string((int)transformSecond.Translation.x) + ", Y " + std::to_string((int)transformSecond.Translation.y), false, true);
+
+				//message.append(nameFirst + " at X " + std::to_string((int)transformFirst.Translation.x) + ", Y " + std::to_string((int)transformFirst.Translation.y)
+				//	+ " paired with " + nameSecond + " at X " + std::to_string((int)transformSecond.Translation.x) + ", Y " + std::to_string((int)transformSecond.Translation.y));
 
 				float spaceDiff = 0.01f;
 
@@ -126,14 +134,18 @@ namespace Wizzard
 					float yDiff = abs(transformFirst.Translation.y - transformSecond.Translation.y);
 
 					if ((transformFirst.Translation.x - transformSecond.Translation.x) > spaceDiff)
-						ScreenReaderLogger::QueueOutput(nameFirst + " is to the right of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units", false, true);
-					else
-						ScreenReaderLogger::QueueOutput(nameFirst + " is to the left of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units", false, true);
+						//ScreenReaderLogger::QueueOutput(nameFirst + " is to the right of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ", false, true);
+						message.append(nameFirst + " is to the right of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
+					else if ((transformFirst.Translation.x - transformSecond.Translation.x) < -spaceDiff)
+						//ScreenReaderLogger::QueueOutput(nameFirst + " is to the left of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ", false, true);
+						message.append(nameFirst + " is to the left of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
 					
 					if ((transformFirst.Translation.y - transformSecond.Translation.y) > spaceDiff)
-						ScreenReaderLogger::QueueOutput(nameFirst + " is above " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units", false, true);
-					else
-						ScreenReaderLogger::QueueOutput(nameFirst + " is below " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units", false, true);
+						//ScreenReaderLogger::QueueOutput(nameFirst + " is above " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ", false, true);
+						message.append(nameFirst + " is above " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
+					else if ((transformFirst.Translation.y - transformSecond.Translation.y) < -spaceDiff)
+						//ScreenReaderLogger::QueueOutput(nameFirst + " is below " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ", false, true);
+						message.append(nameFirst + " is below " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
 				}
 
 				//Describe collision details. Are they overlapping or not? In what way? At edges, corners, partially intersected, or exactly on top of each other?
@@ -144,10 +156,10 @@ namespace Wizzard
 
 					float first[8] =
 					{
-						transformFirst.Translation.x - (firstCol.Size.x / 2.0f),	//Left Middle
-						transformFirst.Translation.x + (firstCol.Size.x / 2.0f),	//Right Middle
-						transformFirst.Translation.y - (firstCol.Size.y / 2.0f),	//Bottom Middle
-						transformFirst.Translation.y + (firstCol.Size.y / 2.0f),	//Top Middle
+						transformFirst.Translation.x - (firstCol.Size.x / 2.0f),	//Left Edge Centre
+						transformFirst.Translation.x + (firstCol.Size.x / 2.0f),	//Right Edge Centre
+						transformFirst.Translation.y - (firstCol.Size.y / 2.0f),	//Bottom Edge Centre
+						transformFirst.Translation.y + (firstCol.Size.y / 2.0f),	//Top Edge Centre
 						transformFirst.Translation.x - (firstCol.Size.x / 2.0f) - (firstCol.Size.y / 2.0f),	//Bottom Left Corner
 						transformFirst.Translation.x + (firstCol.Size.x / 2.0f) + (firstCol.Size.y / 2.0f),	//Top Right Corner
 						transformFirst.Translation.y - (firstCol.Size.y / 2.0f) + (firstCol.Size.x / 2.0f),	//Bottom Right Corner
@@ -156,43 +168,63 @@ namespace Wizzard
 
 					float second[8] =
 					{
-						transformSecond.Translation.x - (secondCol.Size.x / 2.0f),	//Left Middle
-						transformSecond.Translation.x + (secondCol.Size.x / 2.0f),	//Right Middle
-						transformSecond.Translation.y - (secondCol.Size.y / 2.0f),	//Bottom Middle
-						transformSecond.Translation.y + (secondCol.Size.y / 2.0f),	//Top Middle
+						transformSecond.Translation.x - (secondCol.Size.x / 2.0f),	//Left Edge Centre
+						transformSecond.Translation.x + (secondCol.Size.x / 2.0f),	//Right Edge Centre
+						transformSecond.Translation.y - (secondCol.Size.y / 2.0f),	//Bottom Edge Centre
+						transformSecond.Translation.y + (secondCol.Size.y / 2.0f),	//Top Edge Centre
 						transformSecond.Translation.x - (secondCol.Size.x / 2.0f) - (secondCol.Size.y / 2.0f),	//Bottom Left Corner
 						transformSecond.Translation.x + (secondCol.Size.x / 2.0f) + (secondCol.Size.y / 2.0f),	//Top Right Corner
 						transformSecond.Translation.y - (secondCol.Size.y / 2.0f) + (secondCol.Size.x / 2.0f),	//Bottom Right Corner
 						transformSecond.Translation.y + (secondCol.Size.y / 2.0f) - (secondCol.Size.x / 2.0f),	//Top Left Corner
 					};
 
-					if((abs(second[1]) - abs(first[0])) > spaceDiff && (abs(first[0]) - abs(second[0])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond, false, true);
-
-					else if((abs(first[1]) - abs(second[0])) > spaceDiff && (abs(second[0]) - abs(first[0])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst, false, true);
-					
-					if ((abs(second[0]) - abs(first[1])) > spaceDiff && (abs(first[1]) - abs(second[1])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst, false, true);
-					
-					else if ((abs(first[0]) - abs(second[1])) > spaceDiff && (abs(second[1]) - abs(first[1])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond, false, true);
+					//if ((abs(second[1]) - abs(first[0])) > spaceDiff && (abs(first[0]) - abs(second[0])) < spaceDiff)
+					if(first[1] - second[0] < spaceDiff && first[0] > second[0])
+					{
+						//ScreenReaderLogger::QueueOutput("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond, false, true);
+						message.append("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond + ". ");
+					}
+					//else if ((abs(first[1]) - abs(second[0])) > spaceDiff && (abs(second[0]) - abs(first[0])) < spaceDiff)
+					else if (first[0] - second[1] < spaceDiff && second[0] > first[0])
+					{
+						//ScreenReaderLogger::QueueOutput("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst, false, true);
+						message.append("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst + ". ");
+					}
+				
+					//if ((abs(second[0]) - abs(first[1])) > spaceDiff && (abs(first[1]) - abs(second[1])) < spaceDiff)
+					if (second[1] - first[0] < spaceDiff && second[1] > first[1])
+					{
+						//ScreenReaderLogger::QueueOutput("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst, false, true);
+						message.append("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst + ". ");
+					}
+					//else if ((abs(first[0]) - abs(second[1])) > spaceDiff && (abs(second[1]) - abs(first[1])) < spaceDiff)
+					else if (second[0] - first[1] < spaceDiff && first[1] > second[1])
+					{
+						//ScreenReaderLogger::QueueOutput("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond, false, true);
+						message.append("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond + ". ");
+					}
 
 					if ((abs(second[3]) - abs(first[2])) > spaceDiff && (abs(first[2]) - abs(second[2])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
+						//ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
+						message.append("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond);
 
 					else if ((abs(first[3]) - abs(second[2])) > spaceDiff && (abs(second[2]) - abs(first[2])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
+						//ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
+						message.append("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst);
 
 					if ((abs(second[2]) - abs(first[3])) > spaceDiff && (abs(first[3]) - abs(second[3])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
+						//ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
+						message.append("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst);
 
 					else if ((abs(first[2]) - abs(second[3])) > spaceDiff && (abs(second[3]) - abs(first[3])) < spaceDiff)
-						ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
+						//ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
+						message.append("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond);
 				}
 			}
+
+			ScreenReaderLogger::QueueOutput(message, true, true);
 		}
 		else
-			ScreenReaderLogger::QueueOutput("No selected entities.", false, true);
+			ScreenReaderLogger::QueueOutput("No selected entities.", true, true);
 	}
 }

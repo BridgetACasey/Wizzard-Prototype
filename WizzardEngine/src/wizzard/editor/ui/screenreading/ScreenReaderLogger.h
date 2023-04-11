@@ -43,7 +43,7 @@ namespace Wizzard
 		static bool OutputSpeech(const std::string& message, bool shouldInterrupt);
 		static bool OutputBraille(const std::string& message);
 
-		inline static std::list<std::string> messageBackLog;
+		inline static std::list<std::pair<std::string, bool>> messageBackLog;
 
 		inline static bool startedMessage = false;
 		inline static bool priorityMessageTriggered = false;

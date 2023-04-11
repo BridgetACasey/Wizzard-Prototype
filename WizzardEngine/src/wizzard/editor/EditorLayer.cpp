@@ -81,7 +81,7 @@ namespace Wizzard
 
 		std::string title = "Game Editor - Example Scene";
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
-		ScreenReaderLogger::QueueOutput(title, true, true);
+		ScreenReaderLogger::QueueOutput(title, false, true);
 	}
 
 	void EditorLayer::OnDetach()
@@ -330,27 +330,30 @@ namespace Wizzard
 				}
 			}
 
-			if (keyEvent.GetKeyCode() == Key::S)
+			if(SceneManager::GetActiveScene()->GetState() == SceneState::EDIT)
 			{
-				if (propertiesPanel->GetSelectedEntity())
+				if (keyEvent.GetKeyCode() == Key::S)
 				{
-					ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
-					SceneManager::GetActiveScene()->DestroyEntity(propertiesPanel->GetSelectedEntity());
+					if (propertiesPanel->GetSelectedEntity())
+					{
+						ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
+						SceneManager::GetActiveScene()->DestroyEntity(propertiesPanel->GetSelectedEntity());
+					}
 				}
-			}
 
-			if (keyEvent.GetKeyCode() == Key::D)
-			{
-				if (propertiesPanel->GetSelectedEntity())
+				if (keyEvent.GetKeyCode() == Key::D)
 				{
-					ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
-					Entity duplicatedEntity = SceneManager::GetActiveScene()->DuplicateEntity(propertiesPanel->GetSelectedEntity());
+					if (propertiesPanel->GetSelectedEntity())
+					{
+						ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
+						Entity duplicatedEntity = SceneManager::GetActiveScene()->DuplicateEntity(propertiesPanel->GetSelectedEntity());
 
-					if (!EntitySelection::IsMultiSelect())
-						EntitySelection::DeselectAll();
+						if (!EntitySelection::IsMultiSelect())
+							EntitySelection::DeselectAll();
 
-					EntitySelection::SelectEntity(duplicatedEntity);
-					propertiesPanel->SetSelectedEntity(duplicatedEntity);
+						EntitySelection::SelectEntity(duplicatedEntity);
+						propertiesPanel->SetSelectedEntity(duplicatedEntity);
+					}
 				}
 			}
 
@@ -459,22 +462,72 @@ namespace Wizzard
 
 	void EditorLayer::NewScene()
 	{
+		SceneManager::SetActiveScene(WizRef<Scene>::CreateRef());
+		sceneHierarchyPanel->SetSceneContext(SceneManager::GetActiveScene());
+
+		editorScenePath = std::filesystem::path();
 	}
 
-	void EditorLayer::OpenScene()
+	void EditorLayer::LoadScene()
 	{
+		std::string filepath = SceneSerialiser::OpenFile("Wizzard Scene (*.wizzard)\0*.wizzard\0");
+		if (!filepath.empty())
+			LoadScene(filepath);
 	}
 
-	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	void EditorLayer::LoadScene(const std::filesystem::path& path)
 	{
+		if (SceneManager::GetActiveScene()->GetState() != SceneState::EDIT)
+			OnSceneEndPlay();
+
+		if(path == editorScenePath)
+		{
+			WIZ_WARN("Scene is currently open in editor!");
+			return;
+		}
+
+		if (path.extension().string() != ".wizzard")
+		{
+			WIZ_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
+
+		WizRef<Scene> newScene = WizRef<Scene>::CreateRef();
+		SceneSerialiser serialiser(newScene);
+		if (serialiser.Deserialise(path.string()))
+		{
+			editorScene = newScene;
+			sceneHierarchyPanel->SetSceneContext(editorScene);
+
+			SceneManager::SetActiveScene(editorScene);
+			editorScenePath = path;
+
+			std::string title = "Game Editor - ";
+			title.append(path.filename().string());
+			Application::Get().GetWindow().SetWindowTitle(title);
+		}
 	}
 
 	void EditorLayer::SaveScene()
 	{
+		if (!editorScenePath.empty())
+		{
+			SceneSerialiser serialiser(SceneManager::GetActiveScene());
+			serialiser.Serialise(editorScenePath.string());
+		}
+		else
+			SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
+		std::string filepath = SceneSerialiser::SaveFile("Wizzard Scene (*.wizzard)\0*.wizzard\0");
+		if (!filepath.empty())
+		{
+			SceneSerialiser serialiser(SceneManager::GetActiveScene());
+			serialiser.Serialise(filepath);
+			editorScenePath = filepath;
+		}
 	}
 
 	void EditorLayer::OnSceneBeginPlay()
@@ -502,6 +555,8 @@ namespace Wizzard
 
 		SceneManager::GetActiveScene()->SetState(SceneState::EDIT);
 		panelManager->SetSceneContext(SceneManager::GetActiveScene());
+		EntitySelection::DeselectAll();
+		propertiesPanel->SetSelectedEntity({});
 
 		Audio::Stop(levelMusic);
 	}

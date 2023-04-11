@@ -38,6 +38,7 @@
 #include "wizzard/scene/component/BoxCollider2DComponent.h"
 #include "wizzard/scene/component/CharacterControllerComponent.h"
 #include "wizzard/scene/component/AudioListenerComponent.h"
+#include "wizzard/scene/component/ScriptableComponent.h"
 #include "wizzard/scene/Scene.h"
 #include "wizzard/scene/SceneManager.h"
 

@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - UUID: 296562280995113719
+  - UUID: 11369012913724019026
     TagComponent:
       Tag: Floor
     TransformComponent:
@@ -19,7 +19,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 5241549905415977105
+  - UUID: 14256871700928123518
     TagComponent:
       Tag: Blue Square
     TransformComponent:
@@ -38,7 +38,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 17590773024278171648
+  - UUID: 15807706523477630332
     TagComponent:
       Tag: Red Square
     TransformComponent:
@@ -57,13 +57,13 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 172421129592292442
+  - UUID: 4617586680905456762
     TagComponent:
-      Tag: Green Square
+      Tag: Player
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.5, 1, 1]
+      Scale: [1, 1, 1]
     CameraComponent:
       Camera:
         ProjectionType: 1
@@ -89,3 +89,4 @@ Entities:
       RestitutionThreshold: 0.5
     CharacterControllerComponent:
       DisableGravity: false
+      CanJump: true

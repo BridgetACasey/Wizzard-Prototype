@@ -24,6 +24,7 @@
 #include "component/BoxCollider2DComponent.h"
 #include "component/CharacterControllerComponent.h"
 #include "component/AudioListenerComponent.h"
+#include "component/ScriptableComponent.h"
 #include "wizzard/editor/ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/input/Input.h"
 
@@ -108,7 +109,7 @@ namespace Wizzard
 					//TEMP - Player controls and related gameplay - TODO: Move this to a more appropriate location
 					if (entity.HasComponent<CharacterControllerComponent>())
 					{
-						if(position.y < -100.0f)
+						if (position.y < -100.0f)
 						{
 							ScreenReaderLogger::QueueOutput("Resetting player position");
 							body->SetTransform(b2Vec2(0.0f, 2.0f), 0.0f);
@@ -122,58 +123,74 @@ namespace Wizzard
 
 						if (Input::IsKeyDown(Key::D))
 							//transform.Translation.x += 500.0f * timeStep;
-							body->SetLinearVelocity(b2Vec2(150.0f * timeStep, body->GetLinearVelocity().y));
+							body->SetLinearVelocity(b2Vec2(100.0f * timeStep, body->GetLinearVelocity().y));
 						if (Input::IsKeyDown(Key::A))
 							//transform.Translation.x -= 500.0f * timeStep;
-							body->SetLinearVelocity(b2Vec2(-150.0f * timeStep, body->GetLinearVelocity().y));
+							body->SetLinearVelocity(b2Vec2(-100.0f * timeStep, body->GetLinearVelocity().y));
 
 						if (!ccc.disableGravity)
 						{
-							static float jumpForce = 2000.0f;
+							static float jumpForce = 500.0f;
 							body->SetGravityScale(1.0f);
 
 							if (ccc.canJump)
 							{
-								if (Input::IsKeyDown(Key::Space))
+								if (Input::IsKeyPressed(Key::Space))
 								{
-									body->ApplyForceToCenter(b2Vec2(0.0f, jumpForce * timeStep), true);
-									jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (600.0f * timeStep);
-
-									if(jumpForce <= 0.1f)
+									body->SetLinearVelocity(b2Vec2(0.0f, jumpForce * timeStep));
+									//jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (250.0f * timeStep);
+									//if(jumpForce <= 0.1f)
 									ccc.canJump = false;
+
+									auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
+									sfx.SetPitch(0.25f);
+									Audio::Play(sfx);
 								}
 							}
 
-							if (body->GetLinearVelocity().y > -0.001f && body->GetLinearVelocity().y < 0.001f)
+							if (body->GetLinearVelocity().y > -0.0001f && body->GetLinearVelocity().y < 0.0001f)
 							{
 								ccc.canJump = true;
-								jumpForce = 2000.0f;
+								//jumpForce = 200.0f;
 							}
 						}
 						else
 							body->SetGravityScale(0.0f);
 
 						static b2ContactEdge* lastContact = nullptr;
+						//static int contactCount = 0;
 
 						//Collisions with other objects
-						auto contacts =  body->GetContactList();
-						if(contacts)
+						auto contacts = body->GetContactList();
+						if (contacts)
 						{
 							b2AABB firstBox = body->GetFixtureList()->GetAABB(0);
-							b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(0);
+							//lastContact = contacts;
 
-							//if(firstBox.lowerBound.y >= secondBox.lowerBound.y && firstBox.lowerBound.y <= secondBox.upperBound.y)
-							//	WIZ_INFO("Bottom contact!!!");
+							//if (lastContact != nullptr)
+							//{
+							b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(0);
+							//b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(contactCount);
+
+							if ((firstBox.lowerBound.y - 0.05f) >= secondBox.upperBound.y)
+							{
+								//WIZ_INFO("Bottom contact!!!");
+								ccc.canJump = true;
+								auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
+								sfx.SetPitch(0.6f);
+								Audio::Play(sfx);
+							}
 
 							float leftDist = b2Distance(b2Vec2(firstBox.lowerBound.x, 0.0f), b2Vec2(secondBox.lowerBound.x, 0.0f));
 							float rightDist = b2Distance(b2Vec2(firstBox.upperBound.x, 0.0f), b2Vec2(secondBox.upperBound.x, 0.0f));
 
 							auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
+							sfx.SetPitch(1.0f);
 
 							if (leftDist < 0.5f)
 							{
 								WIZ_INFO("Close on the LEFT!!!");
-								if(lastContact != contacts)
+								if (lastContact != contacts)
 								{
 									sfx.SetPosition(-1.0f, 0.0f, 0.0f);
 									Audio::Play(sfx);
@@ -195,13 +212,30 @@ namespace Wizzard
 							{
 								lastContact = nullptr;
 							}
+
+							//lastContact = contacts->next;
+							//contactCount++;
 						}
 						else
 						{
 							lastContact = nullptr;
+							//contactCount = 0;
 						}
 					}
 				}
+
+				//registry.view<ScriptableComponent>().each([=](auto entity, auto& scriptable)
+				//{
+				//	if (!scriptable.entityInstance)
+				//	{
+				//		scriptable.entityInstance = scriptable.InstantiateCommand();
+				//		//nsc.entityInstance->entity = Entity{ entity, this };
+				//		//nsc.entityInstance->OnCreate();
+				//		scriptable.entityInstance = Entity{ entity, this };
+				//	}
+				//
+				////scriptable.entityInstance->OnUpdate(timeStep);
+				//});
 			}
 		//}
 
@@ -343,6 +377,7 @@ namespace Wizzard
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<CharacterControllerComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<AudioListenerComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<ScriptableComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -470,6 +505,11 @@ namespace Wizzard
 
 	template<>
 	void Scene::OnComponentAdded<AudioListenerComponent>(Entity entity, AudioListenerComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<ScriptableComponent>(Entity entity, ScriptableComponent& component)
 	{
 	}
 }

@@ -14,6 +14,7 @@
 #include "scene/component/CameraComponent.h"
 #include "scene/component/CharacterControllerComponent.h"
 #include "scene/component/RigidBody2DComponent.h"
+#include "scene/component/ScriptableComponent.h"
 #include "scene/component/SpriteComponent.h"
 #include "scene/component/TransformComponent.h"
 #include "wizzard/scene/component/TagComponent.h"
@@ -211,6 +212,7 @@ namespace Wizzard
 			DisplayAddComponentEntry<BoxCollider2DComponent>("Box Collider 2D");
 			DisplayAddComponentEntry<CharacterControllerComponent>("Character Controller");
 			//DisplayAddComponentEntry<AudioListenerComponent>("Audio Listener");
+			//DisplayAddComponentEntry<ScriptableComponent>("Scripted Command");
 
 			ImGui::EndPopup();
 		}
@@ -316,23 +318,70 @@ namespace Wizzard
 			});
 
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
-			{
-				ImGuiSR::DragFloat2("Offset", glm::value_ptr(component.Offset));
-				ImGuiSR::DragFloat2("Size", glm::value_ptr(component.Size));
-				ImGuiSR::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
-				ImGuiSR::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
-				ImGuiSR::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-				ImGuiSR::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
-			});
+		{
+			ImGuiSR::DragFloat2("Offset", glm::value_ptr(component.Offset));
+			ImGuiSR::DragFloat2("Size", glm::value_ptr(component.Size));
+			ImGuiSR::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+			ImGuiSR::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+			ImGuiSR::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+			ImGuiSR::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+		});
 
 		DrawComponent<CharacterControllerComponent>("Character Controller", entity, [](auto& component)
-			{
-				ImGuiSR::Checkbox("Disable Gravity", &component.disableGravity);
-			});
+		{
+			ImGuiSR::Checkbox("Disable Gravity", &component.disableGravity);
+		});
 
 		DrawComponent<AudioListenerComponent>("Audio Listener", entity, [](auto& component)
+		{
+			ImGuiSR::Checkbox("Active", &component.isActive);
+		});
+
+		DrawComponent<ScriptableComponent>("Scripted Command", entity, [](auto& component)
+		{
+			const char* conditionStrings[] = { "None", "On Collision" };
+			const char* commandStrings[] = {"None", "Set Position"};
+
+			if(ImGuiSR::BeginCombo("Condition", component.conditionName.c_str()))
 			{
-				ImGuiSR::Checkbox("Active", &component.isActive);
-			});
+				for(int i = 0; i < 2; i++)
+				{
+					bool isSelected = component.conditionName == conditionStrings[i];
+					if (ImGuiSR::Selectable(conditionStrings[i], ImVec2{}, isSelected))
+					{
+						component.conditionName = conditionStrings[i];
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			if (ImGuiSR::BeginCombo("Command", component.commandName.c_str()))
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					bool isSelected = component.commandName == commandStrings[i];
+					if (ImGuiSR::Selectable(commandStrings[i], ImVec2{}, isSelected))
+					{
+						component.commandName = commandStrings[i];
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			//if(component.commandName == commandStrings[1])
+			//{
+			//	//auto transform = entity.GetComponent<TransformComponent>();
+			//	//float pos[3] = { transform.Translation.x, transform.Translation.y, transform.Translation.z };
+			//	float pos[3] = { 0.0f, 0.0f, 0.0f };
+			//	if(ImGuiSR::DragFloat3("Position", pos))
+			//	{
+			//		//transform.Translation.x = pos[0];
+			//		//transform.Translation.y = pos[1];
+			//		//transform.Translation.z = pos[2];
+			//	}
+			//}
+		});
 	}
 }

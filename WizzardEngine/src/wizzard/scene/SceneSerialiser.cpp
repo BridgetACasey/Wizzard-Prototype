@@ -2,9 +2,15 @@
 
 #include "wzpch.h"
 
+#include <commdlg.h>
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
 #include "SceneSerialiser.h"
 
 #include "Entity.h"
+#include "wizzard/common/Application.h"
 #include "component/AudioListenerComponent.h"
 #include "component/BoxCollider2DComponent.h"
 #include "component/CameraComponent.h"
@@ -13,6 +19,7 @@
 #include "component/TagComponent.h"
 #include "component/TransformComponent.h"
 #include "component/CharacterControllerComponent.h"
+#include "component/ScriptableComponent.h"
 
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
@@ -271,6 +278,13 @@ namespace Wizzard
 					auto alc = deserializedEntity.AddComponent<AudioListenerComponent>();
 					alc.isActive = audioListenerComponent["IsActive"].as<bool>();
 				}
+
+				auto scriptableComponent = entity["ScriptableComponent"];
+				if(scriptableComponent)
+				{
+					auto sc = deserializedEntity.AddComponent<ScriptableComponent>();
+					sc.commandName = scriptableComponent["CommandName"].as<std::string>();
+				}
 			}
 		}
 
@@ -401,11 +415,69 @@ namespace Wizzard
 			out << YAML::EndMap;	//AudioListenerComponent
 		}
 
+		if(entity.HasComponent<ScriptableComponent>())
+		{
+			out << YAML::Key << "ScriptableComponent";
+			out << YAML::BeginMap;
+		
+			auto scComponent = entity.GetComponent<ScriptableComponent>();
+			out << YAML::Key << "CommandName" << YAML::Value << scComponent.commandName;
+		
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
 	void SceneSerialiser::DeserialiseEntities(YAML::Node& entitiesNode, WizRef<Scene> scene)
 	{
 		//Not yet implemented
+	}
+
+	std::string SceneSerialiser::OpenFile(const char* filter)
+	{
+		OPENFILENAMEA ofn;
+		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (GetOpenFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+
+		return std::string();
+	}
+
+	std::string SceneSerialiser::SaveFile(const char* filter)
+	{
+		OPENFILENAMEA ofn;
+		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+
+		// Sets the default extension by extracting it from the filter
+		ofn.lpstrDefExt = strchr(filter, '\0') + 1;
+
+		if (GetSaveFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+
+		return std::string();
 	}
 }

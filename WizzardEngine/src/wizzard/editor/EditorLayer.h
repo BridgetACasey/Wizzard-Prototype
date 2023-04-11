@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "wizzard/event/UIEvent.h"
 #include "wizzard/event/KeyEvent.h"
 #include "wizzard/event/EditorEvent.h"
@@ -51,6 +53,12 @@ namespace Wizzard
 		void OnSceneBeginPlay();
 		void OnSceneEndPlay();
 
+		void NewScene();
+		void LoadScene();
+		void LoadScene(const std::filesystem::path& path);
+		void SaveScene();
+		void SaveSceneAs();
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& keyEvent);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& mouseEvent);
@@ -58,12 +66,6 @@ namespace Wizzard
 		bool OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent);
 
 		void OnOverlayRender();
-
-		void NewScene();
-		void OpenScene();
-		void OpenScene(const std::filesystem::path& path);
-		void SaveScene();
-		void SaveSceneAs();
 
 		OrthographicCameraController orthoCamController;
 		EditorCamera editorCamera;
@@ -78,6 +80,7 @@ namespace Wizzard
 		Entity hoveredEntity;
 
 		WizRef<Scene> editorScene;
+		std::filesystem::path editorScenePath;
 
 		Entity playerEntity;
 
