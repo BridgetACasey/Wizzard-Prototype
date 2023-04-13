@@ -107,7 +107,13 @@ namespace Wizzard
 
 		std::string flagStatus = (*flags) ? " ON" : " OFF";
 
-		if (imguiLayer->GetLogElementMessage())
+		if (pressed || ImGui::IsItemActivated())
+		{
+			Audio::Play(clickSFX);
+			ScreenReaderLogger::QueueOutput(label + flagStatus, true, true);
+			imguiLayer->SetLogElementMessage(false);
+		}
+		else if (imguiLayer->GetLogElementMessage())
 		{
 			if (imguiLayer->GetUIElementMessageID() == ImGui::GetItemID())
 			{
@@ -118,12 +124,6 @@ namespace Wizzard
 
 				imguiLayer->SetLogElementMessage(false);
 			}
-		}
-
-		if (pressed)
-		{
-			Audio::Play(clickSFX);
-			ScreenReaderLogger::QueueOutput(label + flagStatus);
 		}
 
 		return pressed;

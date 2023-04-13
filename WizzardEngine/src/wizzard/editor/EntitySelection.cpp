@@ -6,6 +6,7 @@
 
 #include <queue>
 
+#include "wizzard/common/Application.h"
 #include "ui/screenreading/ScreenReaderLogger.h"
 #include "wizzard/scene/component/TransformComponent.h"
 #include "wizzard/scene/component/BoxCollider2DComponent.h"
@@ -45,7 +46,9 @@ namespace Wizzard
 	void EntitySelection::DeselectAll()
 	{
 		if(!selectedEntities.empty())
-		selectedEntities.clear();
+		{
+			selectedEntities.clear();
+		}
 	}
 
 	void EntitySelection::DescribeSelectionsIsolated()

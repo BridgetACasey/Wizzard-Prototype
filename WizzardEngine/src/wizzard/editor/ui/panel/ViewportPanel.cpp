@@ -25,6 +25,11 @@ namespace Wizzard
 
 	void ViewportPanel::OnUpdate(TimeStep timeStep)
 	{
+		if (sceneContext->GetState() == SceneState::PLAY)
+			displayFPS = 1.0f / timeStep;
+		else
+			displayFPS = 0.0f;
+
 		if (Input::IsKeyUp(Key::Left))
 			if (Input::IsKeyUp(Key::Right))
 				if (Input::IsKeyUp(Key::Up))
@@ -62,14 +67,34 @@ namespace Wizzard
 	{
 		static ImGuiWindowFlags viewportFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 
+		static std::string message = "Viewport.";
+
+		if (Application::Get().GetEditorLayer()->GetEnableTutorialMessages())
+		{
+			auto& tutorialMessage = Application::Get().GetEditorLayer()->GetTutorialMessages().at("Viewport");
+
+			if (!tutorialMessage.second)
+			{
+				message = tutorialMessage.first;
+				tutorialMessage.second = true;
+				Application::Get().GetEditorLayer()->IncrementTutorialMessagesPlayed();
+			}
+		}
+		else
+			message = "Viewport.";
+
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::QueueOutput("VIEWPORT");
+
+			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("Viewport");
+			//if(!tutorial)
+				//ScreenReaderLogger::QueueOutput(message, true, true);
+
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 		}
 
-		ImGuiSR::Begin("VIEWPORT", nullptr, viewportFlags);
+		ImGuiSR::Begin("VIEWPORT", nullptr, viewportFlags, message, true);
 
 		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
@@ -99,8 +124,8 @@ namespace Wizzard
 		
 		uint64_t textureID = Application::Get().GetEditorLayer()->GetFrameBuffer()->GetColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportSize.x, viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				
-		if (Application::Get().GetEditorLayer()->GetEditorCamera().GetEnableUserControl() && Application::Get().GetEditorLayer()->GetLockOnSelection())
+
+		if (isFocused && Application::Get().GetEditorLayer()->GetEditorCamera().GetEnableUserControl() && Application::Get().GetEditorLayer()->GetLockOnSelection())
 			Input::SetMousePosition(viewportOffset.x + (viewportSize.x / 2.0f), viewportOffset.y + (viewportSize.y / 2.0f));	//TODO: Ensure this is centred even on resize
 		
 		//Gizmos
@@ -275,6 +300,12 @@ namespace Wizzard
 		}
 
 		ImGui::End();	//End Viewport
+
+		ImGuiSR::Begin("##debug", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		std::string fps = "FPS: ";
+		fps.append(std::to_string(displayFPS));
+		ImGui::Text(fps.c_str());
+		ImGuiSR::End();
 	}
 
 	bool ViewportPanel::OnKeyPressed(KeyPressedEvent& keyEvent)
@@ -296,15 +327,41 @@ namespace Wizzard
 
 	void ViewportToolbarPanel::OnImGuiRender()
 	{
+		static std::string message = "Viewport toolbar.";
+
+		if (Application::Get().GetEditorLayer()->GetEnableTutorialMessages())
+		{
+			auto& tutorialMessage = Application::Get().GetEditorLayer()->GetTutorialMessages().at("ViewportToolbar");
+
+			if (!tutorialMessage.second)
+			{
+				message = tutorialMessage.first;
+				tutorialMessage.second = true;
+				Application::Get().GetEditorLayer()->IncrementTutorialMessagesPlayed();
+			}
+		}
+		else
+			message = "Viewport toolbar.";
+
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::QueueOutput("VIEWPORT TOOLBAR");
+
+			//if(Application::Get().GetEditorLayer()->GetEnableTutorialMessages() && sceneContext->GetState() == SceneState::PLAY)
+			//{
+			//	auto playTutorial = Application::Get().GetEditorLayer()->GetTutorialMessages().at("PlayModeEntered");
+			//	message = playTutorial.first;
+			//}
+			//else
+			//	message = "Viewport toolbar.";
+
+			//ScreenReaderLogger::QueueOutput(message, true, true);
+
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}
 
-		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse, "VIEWPORT TOOLBAR", true);
+		ImGuiSR::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse, message, true);
 
 		//if(sceneContext->GetState() == SceneState::PLAY)
 		//	ImGui::SetKeyboardFocusHere();

@@ -45,6 +45,8 @@ namespace Wizzard
 		glm::vec3 entityBaseTranslation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 entityBaseRotation = {0.0f, 0.0f, 0.0f};
 		glm::vec3 entityBaseScale = { 0.0f, 0.0f, 0.0f };
+
+		float displayFPS = 0.0f;
 	};
 
 	class ViewportToolbarPanel : public EditorPanel

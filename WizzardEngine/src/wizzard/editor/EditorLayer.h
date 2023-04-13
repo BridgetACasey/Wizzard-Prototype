@@ -40,12 +40,18 @@ namespace Wizzard
 		void OnImGuiRender() override;
 		void OnEvent(Event& event) override;
 
-		void SetEnableTutorialMessages(bool enable) { enableTutorialMessages = enable; }
-		bool GetEnableTutorialMessages() { return enableTutorialMessages; }
+		float GetEditorFPS() const { return fps; }
+
+		bool TriggerTutorialMessage(const std::string& name, bool shouldInterrupt = false);
+		void SetEnableTutorialMessages(bool enable);
+		bool GetEnableTutorialMessages() const { return enableTutorialMessages; }
+		void IncrementTutorialMessagesPlayed();
+		std::unordered_map<std::string, std::pair<std::string, bool>>& GetTutorialMessages() { return tutorialMessages; }
 
 		//Temp functions
 		EditorCamera& GetEditorCamera() { return editorCamera; }
 		WizRef<Framebuffer>& GetFrameBuffer() { return frameBuffer; }
+		WizRef<ViewportPanel>& GetViewportPanel() { return viewportPanel; }
 		WizRef<PropertiesPanel>& GetPropertiesPanel() { return propertiesPanel; }
 		Entity GetSelectedEntity() { return propertiesPanel->GetSelectedEntity(); }
 		bool GetLockOnSelection() const { return lockSelectionToCamera; }
@@ -67,6 +73,14 @@ namespace Wizzard
 
 		void OnOverlayRender();
 
+		void InitTutorialMessages();
+
+		int tutorialMessagesPlayed = 0;
+		bool enableTutorialMessages = true;
+		std::unordered_map<std::string, std::pair<std::string, bool>> tutorialMessages;
+
+		float fps = 0.0f;
+
 		OrthographicCameraController orthoCamController;
 		EditorCamera editorCamera;
 
@@ -86,8 +100,6 @@ namespace Wizzard
 
 		bool lockSelectionToCamera = true;
 
-		bool enableTutorialMessages = true;
-
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		glm::vec2 viewportBounds[2];
 
@@ -98,5 +110,9 @@ namespace Wizzard
 		AudioSource selectSFX;
 		AudioSource errorSFX;
 		AudioSource moveEntitySFX;
+
+		//TEMP - Not supposed to be in editor
+		AudioSource playerJumpSFX;
+		AudioSource playerLandSFX;
 	};
 }

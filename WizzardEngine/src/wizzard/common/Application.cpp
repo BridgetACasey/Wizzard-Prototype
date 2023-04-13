@@ -74,11 +74,15 @@ namespace Wizzard
 
 			if(appShutdownDelegate.HasHandledAll())
 			{
-				if (!ScreenReaderLogger::IsSpeaking() && ScreenReaderLogger::MessageQueueCount() == 0)
+				static float tempCountDown = 0.0f;	//Due to a bug causing shutdown to not always initiate properly when using NVDA, TODO: FIX THIS!
+
+				if (!ScreenReaderLogger::IsSpeaking() && (ScreenReaderLogger::MessageQueueCount() == 0 || tempCountDown > 3.0f))
 				{
 					Close();
 					OnApplicationShutdown();
 				}
+
+				tempCountDown += timeStep;
 			}
 		}
 	}

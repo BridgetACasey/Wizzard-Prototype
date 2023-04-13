@@ -88,9 +88,11 @@ namespace Wizzard
 		//{
 			// Physics
 			{
-				const int32_t velocityIterations = 6;
+				const int32_t velocityIterations = 4;
 				const int32_t positionIterations = 2;
-				physicsWorld->Step(timeStep, velocityIterations, positionIterations);
+				const float fixedTimeStep = 1.0f / 45.0f;
+				//physicsWorld->Step(timeStep, velocityIterations, positionIterations);
+				physicsWorld->Step(fixedTimeStep, velocityIterations, positionIterations);
 
 				// Retrieve transform from Box2D
 				auto view = registry.view<RigidBody2DComponent>();
@@ -123,36 +125,37 @@ namespace Wizzard
 
 						if (Input::IsKeyDown(Key::D))
 							//transform.Translation.x += 500.0f * timeStep;
-							body->SetLinearVelocity(b2Vec2(100.0f * timeStep, body->GetLinearVelocity().y));
+							body->SetLinearVelocity(b2Vec2(80.0f * fixedTimeStep, body->GetLinearVelocity().y));
 						if (Input::IsKeyDown(Key::A))
 							//transform.Translation.x -= 500.0f * timeStep;
-							body->SetLinearVelocity(b2Vec2(-100.0f * timeStep, body->GetLinearVelocity().y));
+							body->SetLinearVelocity(b2Vec2(-80.0f * fixedTimeStep, body->GetLinearVelocity().y));
 
 						if (!ccc.disableGravity)
 						{
-							static float jumpForce = 500.0f;
-							body->SetGravityScale(1.0f);
+							static float jumpForce = 10000.0f;
+							body->SetGravityScale(0.5f);
 
 							if (ccc.canJump)
 							{
 								if (Input::IsKeyPressed(Key::Space))
 								{
-									body->SetLinearVelocity(b2Vec2(0.0f, jumpForce * timeStep));
-									//jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (250.0f * timeStep);
+									//body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, jumpForce * timeStep));
+									body->ApplyForceToCenter(b2Vec2(0.0f, jumpForce * fixedTimeStep), true);
+									//jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (5000.0f * timeStep);
 									//if(jumpForce <= 0.1f)
 									ccc.canJump = false;
 
-									auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
-									sfx.SetPitch(0.25f);
+									auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_PLAYERJUMP);
+									//sfx.SetPitch(0.25f);
 									Audio::Play(sfx);
 								}
 							}
-
-							if (body->GetLinearVelocity().y > -0.0001f && body->GetLinearVelocity().y < 0.0001f)
-							{
-								ccc.canJump = true;
-								//jumpForce = 200.0f;
-							}
+							//else if (body->GetLinearVelocity().y > -0.001f && body->GetLinearVelocity().y < 0.001f)
+							//else if (Input::IsKeyUp(Key::Space))
+							//{
+							//	ccc.canJump = true;
+							//	//jumpForce = 750.0f;
+							//}
 						}
 						else
 							body->SetGravityScale(0.0f);
@@ -172,12 +175,12 @@ namespace Wizzard
 							b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(0);
 							//b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(contactCount);
 
-							if ((firstBox.lowerBound.y - 0.05f) >= secondBox.upperBound.y)
+							if ((firstBox.lowerBound.y + 0.0001f) <= secondBox.upperBound.y)
 							{
 								//WIZ_INFO("Bottom contact!!!");
 								ccc.canJump = true;
-								auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED);
-								sfx.SetPitch(0.6f);
+								auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_PLAYERLAND);
+								//sfx.SetPitch(0.6f);
 								Audio::Play(sfx);
 							}
 

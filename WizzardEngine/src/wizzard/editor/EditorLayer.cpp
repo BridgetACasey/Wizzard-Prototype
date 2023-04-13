@@ -51,8 +51,12 @@ namespace Wizzard
 
 		editorLaunchSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "start-computeraif-14572.mp3"), false, true, WIZ_AUDIO_EDITORSTARTUP);
 		selectSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "mixkit-cool-interface-click-tone-2568.mp3"));
-		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"));
+		errorSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "invalid-selection-39351.mp3"), false, true, WIZ_AUDIO_EDITORSHUTDOWN);
 		moveEntitySFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "sound97.mp3"), true, true, WIZ_AUDIO_ENTITYMOVED);
+
+		//TEMP AUDIO FILES
+		playerJumpSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "retro-game-sfx_jump-bumpwav-14853.mp3"), false, true, WIZ_AUDIO_PLAYERJUMP);
+		playerLandSFX = AudioSource::LoadFromFile(ResourcePath::GetResourcePath(SFX, "FEETHmn-Jumping-on-concrete-2-(ID-1836)-BSB.mp3"), false, true, WIZ_AUDIO_PLAYERLAND);
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = WINDOW_WIDTH;
@@ -62,6 +66,8 @@ namespace Wizzard
 
 		editorScene = WizRef<Scene>::CreateRef();
 		SceneManager::SetActiveScene(editorScene);
+
+		InitTutorialMessages();
 
 		panelManager = CreateScope<PanelManager>();
 
@@ -79,9 +85,15 @@ namespace Wizzard
 
 		Audio::QueuePlay(editorLaunchSFX);
 
-		std::string title = "Game Editor - Example Scene";
+		Input::SetMousePosition(0.0f, 0.0f);
+
+		std::string title = "WIZZARD Game Editor - Untitled Scene";
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
-		ScreenReaderLogger::QueueOutput(title, false, true);
+		//ScreenReaderLogger::QueueOutput(title, false, true);
+
+		ScreenReaderLogger::QueueOutput(tutorialMessages.at("EditorLaunch").first, false, true);
+		tutorialMessages.at("EditorLaunch").second = true;
+		IncrementTutorialMessagesPlayed();
 	}
 
 	void EditorLayer::OnDetach()
@@ -91,6 +103,8 @@ namespace Wizzard
 
 	void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
+		fps = 1.0f / timeStep;
+
 		Audio::GetEventListener()->OnUpdate();
 		ScreenReaderLogger::OnUpdate();
 
@@ -119,6 +133,8 @@ namespace Wizzard
 		// Clear our entity ID attachment to -1
 		frameBuffer->ClearAttachment(1, -1);
 
+		panelManager->OnUpdate(timeStep);
+
 		switch (SceneManager::GetActiveScene()->GetState())
 		{
 			case SceneState::EDIT:
@@ -128,13 +144,23 @@ namespace Wizzard
 
 				editorCamera.OnUpdate(timeStep);
 
-				panelManager->OnUpdate(timeStep);
-
 				SceneManager::GetActiveScene()->OnUpdateEditor(timeStep, editorCamera);
 				break;
 			}
 			case SceneState::PLAY:
 			{
+				//if (Input::IsKeyPressed(Key::Space))
+				//	SceneManager::GetActiveScene()->playerJumpSpeed = 5000.0f * timeStep;
+				//else
+				//	SceneManager::GetActiveScene()->playerJumpSpeed = 0.0f;
+				//
+				//if (Input::IsKeyDown(Key::D))
+				//	SceneManager::GetActiveScene()->playerMoveSpeed = 500.0f * timeStep;
+				//else if(Input::IsKeyDown(Key::A))
+				//	SceneManager::GetActiveScene()->playerMoveSpeed = -500.0f * timeStep;
+				//else
+				//	SceneManager::GetActiveScene()->playerMoveSpeed = 0.0f;
+
 				SceneManager::GetActiveScene()->OnUpdatePlay(timeStep);
 				break;
 			}
@@ -173,18 +199,39 @@ namespace Wizzard
 			{
 				if (Input::IsKeyPressed(Key::W))
 				{
-					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
-					ScreenReaderLogger::QueueOutput("Transform type: Translate");
+					if(!EntitySelection::GetSelections().empty())
+					{
+						viewportPanel->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
+
+						if (enableTutorialMessages)
+							TriggerTutorialMessage("TransformTranslate", true);
+						else
+							ScreenReaderLogger::QueueOutput("Transform type: Translate");
+					}
 				}
 				if (Input::IsKeyPressed(Key::E))
 				{
-					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
-					ScreenReaderLogger::QueueOutput("Transform type: Rotate");
+					if (!EntitySelection::GetSelections().empty())
+					{
+						viewportPanel->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
+
+						if (enableTutorialMessages)
+							TriggerTutorialMessage("TransformRotate", true);
+						else
+							ScreenReaderLogger::QueueOutput("Transform type: Rotate");
+					}
 				}
 				if (Input::IsKeyPressed(Key::R))
 				{
-					viewportPanel->SetGizmoType(ImGuizmo::OPERATION::SCALE);
-					ScreenReaderLogger::QueueOutput("Transform type: Scale");
+					if (!EntitySelection::GetSelections().empty())
+					{
+						viewportPanel->SetGizmoType(ImGuizmo::OPERATION::SCALE);
+
+						if (enableTutorialMessages)
+							TriggerTutorialMessage("TransformScale", true);
+						else
+							ScreenReaderLogger::QueueOutput("Transform type: Scale");
+					}
 				}
 			}
 
@@ -204,6 +251,7 @@ namespace Wizzard
 		if (Input::IsActionTriggered(WIZ_IA_RETRYDETECTSCREENREADER))
 		{
 			WIZ_TRACE("Attempting to detect screen reader at runtime.");
+
 			ScreenReaderLogger::DetectScreenReader();
 		}
 
@@ -297,6 +345,46 @@ namespace Wizzard
 		eventHandler.HandleEvent<ViewportSelectionChangedEvent>(WIZ_BIND_EVENT_FN(EditorLayer::OnViewportSelectionChanged));
 	}
 
+	bool EditorLayer::TriggerTutorialMessage(const std::string& name, bool shouldInterrupt)
+	{
+		if (enableTutorialMessages)
+		{
+			if (!tutorialMessages.at(name).second)
+			{
+				ScreenReaderLogger::QueueOutput(tutorialMessages.at(name).first, shouldInterrupt, true);
+				tutorialMessages.at(name).second = true;
+				IncrementTutorialMessagesPlayed();
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void EditorLayer::SetEnableTutorialMessages(bool enable)
+	{
+		enableTutorialMessages = enable;
+
+		if(enableTutorialMessages)
+		{
+			tutorialMessagesPlayed = 0;
+
+			for(auto message : tutorialMessages)
+				message.second.second = false;
+		}
+	}
+
+	void EditorLayer::IncrementTutorialMessagesPlayed()
+	{
+		tutorialMessagesPlayed++;
+
+		if(tutorialMessagesPlayed >= tutorialMessages.size())
+		{
+			enableTutorialMessages = false;
+		}
+	}
+
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& keyEvent)
 	{
 		if (Input::IsQueryingInput())
@@ -316,16 +404,19 @@ namespace Wizzard
 				{
 					propertiesPanel->SetSelectedEntity({});
 
-					if (EntitySelection::IsMultiSelect())
-					{
-						EntitySelection::DeselectAll();
-						ScreenReaderLogger::QueueOutput("Deselected all");
-					}
-					else
+					if (!EntitySelection::IsMultiSelect() || EntitySelection::GetSelections().size() == 1)
 					{
 						EntitySelection::DeselectEntity(selectedEntity);
 						glm::vec3 trans = selectedEntity.GetComponent<TransformComponent>().Translation;
+
 						ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string((int)trans.x) + " Y " + std::to_string((int)trans.y));
+
+						TriggerTutorialMessage("ViewportEntityDeselected", true);
+					}
+					else
+					{
+						EntitySelection::DeselectAll();
+						ScreenReaderLogger::QueueOutput("Deselected all");
 					}
 				}
 			}
@@ -337,7 +428,9 @@ namespace Wizzard
 					if (propertiesPanel->GetSelectedEntity())
 					{
 						ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
+						EntitySelection::DeselectAll();
 						SceneManager::GetActiveScene()->DestroyEntity(propertiesPanel->GetSelectedEntity());
+						propertiesPanel->SetSelectedEntity({});
 					}
 				}
 
@@ -380,7 +473,7 @@ namespace Wizzard
 				EntitySelection::DescribeSelectionsRelational();
 			}
 
-			if (keyEvent.GetKeyCode() == Key::LeftShift)
+			if (keyEvent.GetKeyCode() == Key::LeftControl || keyEvent.GetKeyCode() == Key::RightControl)
 			{
 				panelManager->CycleActivePanel();
 			}
@@ -391,6 +484,11 @@ namespace Wizzard
 				{
 					EntitySelection::SelectEntity(hoveredEntity);
 					propertiesPanel->SetSelectedEntity(hoveredEntity);
+
+					if (EntitySelection::GetSelections().size() >= 2)
+						Application::Get().GetEditorLayer()->TriggerTutorialMessage("EntityMultiSelected", true);
+					else
+						TriggerTutorialMessage("ViewportEntitySelected", true);
 				}
 			}
 		}
@@ -411,6 +509,11 @@ namespace Wizzard
 
 					propertiesPanel->SetSelectedEntity(hoveredEntity);
 					EntitySelection::SelectEntity(hoveredEntity);
+
+					//if (EntitySelection::GetSelections().size() >= 2)
+					//	Application::Get().GetEditorLayer()->TriggerTutorialMessage("EntityMultiSelected");
+					//else
+					//	TriggerTutorialMessage("ViewportEntitySelected");
 				}
 			}
 		}
@@ -431,15 +534,14 @@ namespace Wizzard
 		editorCamera.FocusOnPoint(trans);
 
 		//if(hoveredEntity != sceneEvent.GetSelectionContext())
-		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), true, true);
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), !enableTutorialMessages, true);
+		Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED).SetPitch(1.0f);
+		Audio::Play(selectSFX);
 
 		viewportPanel->SetEntityBaseTranslation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
 		viewportPanel->SetEntityBaseRotation(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Rotation);
 		viewportPanel->SetEntityBaseScale(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Scale);
 		viewportPanel->SetMoveUnitCount(0);
-		Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED).SetPitch(1.0f);
-
-		Audio::Play(selectSFX);
 
 		return false;
 	}
@@ -460,6 +562,105 @@ namespace Wizzard
 		Renderer2D::EndScene();
 	}
 
+	void EditorLayer::InitTutorialMessages()
+	{
+		//Each message only triggers the first time the respective action has been performed. Once all messages have been played, tutorial messages are switched off in application settings.
+
+		//Editor Launch
+		std::string editorLaunchMessage = "Welcome to the Wizzard Game Editor. The goal of Wizzard is to allow you to manipulate objects in a scene to make a basic level for a 2D platformer game, without the use of your vision. ";
+		editorLaunchMessage.append("This tool is designed to function similarly to a typical game engine editor, and it features a viewport, a 2D scene, and a hierarchy of objects you can place. ");
+		editorLaunchMessage.append("The default scene has a controllable character and a static floor. Press the LEFT CONTROL key to switch between panel windows, and the TAB key to cycle through that panel's interactive elements. ");
+		editorLaunchMessage.append("You can also use arrow keys for menu navigation. End Tutorial Message.");
+
+		tutorialMessages.emplace("EditorLaunch", std::pair(editorLaunchMessage, false));
+
+
+		//Viewport
+		std::string viewportMessage = "VIEWPORT panel selected. This panel allows you to manipulate the scene's objects directly in 2D space. Use the arrow keys to move the editor camera up and down. ";
+		viewportMessage.append("Your cursor is locked to the middle of the viewport screen by default. Press SPACE when hovering over an entity to select it. End Tutorial Message.");
+
+		tutorialMessages.emplace("Viewport", std::pair(viewportMessage, false));
+
+
+		//Viewport Toolbar
+		std::string viewportToolbarMessage = "VIEWPORT TOOLBAR selected. When you are ready to simulate your scene in the editor, press the PLAY button in this toolbar. ";
+		viewportToolbarMessage.append("To stop and reset your scene, navigate back to this toolbar during runtime and press the STOP button. End Tutorial Message.");
+
+		tutorialMessages.emplace("ViewportToolbar", std::pair(viewportToolbarMessage, false));
+
+
+		//Entity Selected in Viewport
+		std::string viewportEntitySelectedMessage = "You selected an entity. Use the arrow keys to move it around. You will hear a directional sound effect that increases in pitch the further away you move the object from it's original position. ";
+		viewportEntitySelectedMessage.append("Each ping indicates you have moved by 0.5 units. You can switch to different transform modes by pressing the W, E, and R keys. ");
+		viewportEntitySelectedMessage.append("You can also duplicate your currently selection with the 'D' key, or delete it from the scene with the 'S' key. When you are happy, press ESCAPE to deselect the entity. End Tutorial Message.");
+
+		tutorialMessages.emplace("ViewportEntitySelected", std::pair(viewportEntitySelectedMessage, false));
+
+
+		//Transform Type - Translate (with an entity actively selected)
+		std::string transformTranslateMessage = "Transform type: Translate selected. Use the arrow keys to move your entity around. ";
+		transformTranslateMessage.append("You will hear a directional sound effect that increases in pitch the further away you move the object from it's original position. End Tutorial Message.");
+
+		tutorialMessages.emplace("TransformTranslate", std::pair(transformTranslateMessage, false));
+
+
+		//Transform Type - Rotate (with an entity actively selected)
+		std::string transformRotateMessage = "Transform type: Rotate selected. Use the left and right arrow keys to rotate your entity in forward axis. Each press rotates the object by 10 degrees. End Tutorial Message.";
+
+		tutorialMessages.emplace("TransformRotate", std::pair(transformRotateMessage, false));
+
+
+		//Transform Type - Scale (with an entity actively selected)
+		std::string transformScaleMessage = "Transform type: Scale selected. Use the up and down arrow keys to make your entity larger or smaller respectively. Each press scales the object by 0.1 units. End Tutorial Message.";
+
+		tutorialMessages.emplace("TransformScale", std::pair(transformScaleMessage, false));
+
+
+		//Entity Deselected in Viewport
+		std::string viewportEntityDeselectedMessage = "You deselected an entity. You can also enable the ability to select and transform multiple entities at the same time by pressing the M key. ";
+		viewportEntityDeselectedMessage.append("You can press the CAPSLOCK key to switch between moving the scene camera and transforming your selected entities when you press the arrow keys. This also frees your mouse cursor inside the viewport. ");
+		viewportEntityDeselectedMessage.append("To add new entities, you can open the ENTITY CREATION menu by pressing the C key, or the 'CREATE ENTITY' button in the SCENE HIERARCHY panel. End Tutorial Message.");
+
+		tutorialMessages.emplace("ViewportEntityDeselected", std::pair(viewportEntityDeselectedMessage, false));
+
+
+		//Multiple Entities Selected at Once (in Scene Hierarchy or in Viewport)
+		std::string entityMultiSelectedMessage = "You've selected multiple entities. If you are ever unsure about how your scene looks, you can press the O and P keys to output information about your selections to your screen reader. ";
+		entityMultiSelectedMessage.append("The 'O' key prints information about individual entities and their components. ");
+		entityMultiSelectedMessage.append("The 'P' key prints information about the relationships between each selection and how they interact. End Tutorial Message.");
+
+		tutorialMessages.emplace("EntityMultiSelected", std::pair(entityMultiSelectedMessage, false));
+
+
+		//Application Settings
+		std::string appSettingsMessage = "PROJECT panel selected. Here you can save and load scenes you have worked on, or toggle some of the editor's settings. End Tutorial Message.";
+
+		tutorialMessages.emplace("ApplicationSettings", std::pair(appSettingsMessage, false));
+
+
+		//Object Properties
+		std::string objPropertiesMessage = "PROPERTIES panel selected. If you have selected an entity from the SCENE HIERARCHY or the VIEWPORT, their components will appear here, and you can change their values. ";
+		objPropertiesMessage.append("Attaching different components will apply different properties to the entity. ");
+		objPropertiesMessage.append("Component types include Transform for translation, rotation, and scaling; Sprite for colour changes; Rigid Body 2D for physics; and Box Collider 2D for collisions. End Tutorial Message.");
+
+		tutorialMessages.emplace("ObjectProperties", std::pair(objPropertiesMessage, false));
+
+
+		//Scene Hierarchy
+		std::string sceneHierarchyMessage = "SCENE HIERARCHY panel selected. This panel contains a list of all your objects currently in the scene. TAB through each object to select it. You can also add new entities from a list of presets with the 'CREATE ENTITY' button. ";
+		sceneHierarchyMessage.append("To edit the components of your last selection, navigate to the PROPERTIES panel. Alternatively, to manipulate it directly in 2D space, navigate to the VIEWPORT panel. End Tutorial Message.");
+
+		tutorialMessages.emplace("SceneHierarchy", std::pair(sceneHierarchyMessage, false));
+
+
+		//Entered Play Mode
+		std::string playModeEnteredMessage = "The game scene is now playing. Most editing functionality will be disabled until you choose to end the simulation. Use the A and D keys to move the player character left and right. Press SPACE to jump. ";
+		playModeEnteredMessage.append("You should hear a directional sound cue when you approach the edge of the object you are standing on. There should also be cues for jumping and landing successfully on a platform. ");
+		playModeEnteredMessage.append("To stop simulating the scene, navigate to the VIEWPORT TOOLBAR and press the STOP button. End Tutorial Message.");
+
+		tutorialMessages.emplace("PlayModeEntered", std::pair(playModeEnteredMessage, false));
+	}
+
 	void EditorLayer::NewScene()
 	{
 		SceneManager::SetActiveScene(WizRef<Scene>::CreateRef());
@@ -470,7 +671,7 @@ namespace Wizzard
 
 	void EditorLayer::LoadScene()
 	{
-		std::string filepath = SceneSerialiser::OpenFile("Wizzard Scene (*.wizzard)\0*.wizzard\0");
+		std::string filepath = SceneSerialiser::OpenFile("WIZZARD Scene (*.wizzard)\0*.wizzard\0");
 		if (!filepath.empty())
 			LoadScene(filepath);
 	}
@@ -502,7 +703,7 @@ namespace Wizzard
 			SceneManager::SetActiveScene(editorScene);
 			editorScenePath = path;
 
-			std::string title = "Game Editor - ";
+			std::string title = "WIZZARD Game Editor - ";
 			title.append(path.filename().string());
 			Application::Get().GetWindow().SetWindowTitle(title);
 		}
@@ -521,7 +722,7 @@ namespace Wizzard
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::string filepath = SceneSerialiser::SaveFile("Wizzard Scene (*.wizzard)\0*.wizzard\0");
+		std::string filepath = SceneSerialiser::SaveFile("WIZZARD Scene (*.wizzard)\0*.wizzard\0");
 		if (!filepath.empty())
 		{
 			SceneSerialiser serialiser(SceneManager::GetActiveScene());
@@ -544,6 +745,8 @@ namespace Wizzard
 		viewportPanel->SetShouldTriggerFocus(true);
 
 		Audio::Play(levelMusic);
+
+		TriggerTutorialMessage("PlayModeEntered", true);
 	}
 
 	void EditorLayer::OnSceneEndPlay()

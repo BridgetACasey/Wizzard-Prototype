@@ -5,6 +5,7 @@
 #include "PropertiesPanel.h"
 
 #include "imgui_internal.h"
+#include "wizzard/common/Application.h"
 #include "wizzard/audio/Audio.h"
 #include "wizzard/event/EventHandler.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -24,15 +25,35 @@ namespace Wizzard
 {
 	void PropertiesPanel::OnImGuiRender()
 	{
+		static std::string message = "Object properties.";
+
+		if (Application::Get().GetEditorLayer()->GetEnableTutorialMessages())
+		{
+			auto& tutorialMessage = Application::Get().GetEditorLayer()->GetTutorialMessages().at("ObjectProperties");
+
+			if (!tutorialMessage.second)
+			{
+				message = tutorialMessage.first;
+				tutorialMessage.second = true;
+				Application::Get().GetEditorLayer()->IncrementTutorialMessagesPlayed();
+			}
+		}
+		else
+			message = "Object properties.";
+
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::QueueOutput("OBJECT PROPERTIES");
+
+			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("ObjectProperties");
+			//if (!tutorial)
+			//ScreenReaderLogger::QueueOutput(message, true, true);
+
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}
 
-		ImGuiSR::Begin("PROPERTIES", nullptr, 0, "Object properties.", true);
+		ImGuiSR::Begin("PROPERTIES", nullptr, 0, message, true);
 		if (selectionContext)
 		{
 			DrawComponents(selectionContext);

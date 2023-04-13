@@ -16,6 +16,9 @@ namespace Wizzard
 #define WIZ_AUDIO_ENTITYSELECTED "EntitySelected"
 #define WIZ_AUDIO_ENTITYMOVED "EntityMoved"
 
+#define WIZ_AUDIO_PLAYERJUMP "PlayerJump"
+#define WIZ_AUDIO_PLAYERLAND "PlayerLand"
+
 	class Audio
 	{
 	public:

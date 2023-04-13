@@ -75,9 +75,9 @@ namespace Wizzard
 			{
 				if (!startedMessage)
 				{
-					priorityMessageTriggered = messageBackLog.front().second;
+					//priorityMessageTriggered = messageBackLog.front().second;
 
-					OutputAll(messageBackLog.front().first, false);
+					OutputAll(messageBackLog.front().first, messageBackLog.front().second);
 
 					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
 					OnScreenReaderMessageStarted(srEvent);
@@ -113,10 +113,12 @@ namespace Wizzard
 			OnScreenReaderMessageEnded(srEvent);
 		}
 
-		if(!priorityMessageTriggered)
-		{
-			Stop();
-		}
+		//if(!priorityMessageTriggered)
+		//{
+		//	Stop();
+		//}
+
+		Stop();
 
 		messageBackLog.clear();
 		startedMessage = false;
@@ -127,10 +129,10 @@ namespace Wizzard
 	{
 		//priorityMessageTriggered = isPriority;
 
-		if (!shouldInterrupt || (isPriority && IsSpeaking()))
-			messageBackLog.emplace_back(std::pair(std::string(message), isPriority));
-		else if (shouldInterrupt && !isPriority)
+		if (shouldInterrupt && isPriority)
 			ForceQueueOutput(message);
+		else if ((!shouldInterrupt && isPriority) || (isPriority && IsSpeaking()))
+			messageBackLog.emplace_back(std::pair(std::string(message), shouldInterrupt));
 		else
 			OutputAll(message, shouldInterrupt);
 	}

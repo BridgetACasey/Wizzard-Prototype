@@ -478,7 +478,7 @@ namespace Wizzard
 
 		inputActions.insert(std::pair(WIZ_IA_TOGGLECAMENTITYLOCK, std::pair(Key::CapsLock, Input::IsKeyPressed)));
 		inputActions.insert(std::pair(WIZ_IA_RETRYDETECTSCREENREADER, std::pair(Key::Z, Input::IsKeyPressed)));
-		inputActions.insert(std::pair(WIZ_IA_CYCLEUIWINDOW, std::pair(Key::LeftShift, Input::IsKeyPressed)));
+		inputActions.insert(std::pair(WIZ_IA_CYCLEUIWINDOW, std::pair(Key::LeftControl, Input::IsKeyPressed)));
 
 		queryInput = true;
 		initInput = true;

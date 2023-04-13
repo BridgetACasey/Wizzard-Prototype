@@ -33,15 +33,35 @@ namespace Wizzard
 	}
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
+		static std::string message = "Scene hierarchy.";
+
+		if (Application::Get().GetEditorLayer()->GetEnableTutorialMessages())
+		{
+			auto& tutorialMessage = Application::Get().GetEditorLayer()->GetTutorialMessages().at("SceneHierarchy");
+
+			if (!tutorialMessage.second)
+			{
+				message = tutorialMessage.first;
+				tutorialMessage.second = true;
+				Application::Get().GetEditorLayer()->IncrementTutorialMessagesPlayed();
+			}
+		}
+		else
+			message = "Scene hierarchy.";
+
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::QueueOutput("SCENE HIERARCHY");
+
+			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("SceneHierarchy");
+			//if (!tutorial)
+				//ScreenReaderLogger::QueueOutput(message, true, true);
+
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}
 
-		ImGuiSR::Begin("SCENE", nullptr, 0, "Scene hierarchy.", true);
+		ImGuiSR::Begin("SCENE", nullptr, 0, message, true);
 
 		ImGui::SetItemDefaultFocus();
 
@@ -209,9 +229,12 @@ namespace Wizzard
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
-				EntitySelection::DeselectAll();
-				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
-				ScreenReaderLogger::QueueOutput("Deselected all");
+				if(!EntitySelection::GetSelections().empty())
+				{
+					EntitySelection::DeselectAll();
+					Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
+					ScreenReaderLogger::QueueOutput("Deselected all");
+				}
 			}
 		}
 		ImGui::End();
@@ -225,7 +248,7 @@ namespace Wizzard
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGuiSR::TreeNodeEx(tag.c_str(), (void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
-		if (ImGui::IsItemClicked() || ImGui::IsItemFocused())
+		if ((EntitySelection::IsMultiSelect() && ImGui::IsItemActivated()) || (!EntitySelection::IsMultiSelect() && ImGui::IsItemFocused()))
 		{
 			if (EntitySelection::GetSelections().empty() || EntitySelection::GetSelections().back() != entity)
 			{
@@ -316,7 +339,7 @@ namespace Wizzard
 			//		ScreenReaderLogger::QueueOutput("Closed entity grouping window");
 			//}
 
-			if (keyEvent.GetKeyCode() == Key::LeftShift)
+			if (keyEvent.GetKeyCode() == Key::LeftControl || keyEvent.GetKeyCode() == Key::RightControl)
 			{
 				if (openEntityCreationWindow)
 					ScreenReaderLogger::QueueOutput("Closed entity creation window");

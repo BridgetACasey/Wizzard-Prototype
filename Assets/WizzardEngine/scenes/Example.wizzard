@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - UUID: 11369012913724019026
+  - UUID: 13714031925944385904
     TagComponent:
       Tag: Floor
     TransformComponent:
@@ -19,7 +19,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 14256871700928123518
+  - UUID: 16120146262567338634
     TagComponent:
       Tag: Blue Square
     TransformComponent:
@@ -38,7 +38,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 15807706523477630332
+  - UUID: 3091744835343167412
     TagComponent:
       Tag: Red Square
     TransformComponent:
@@ -57,7 +57,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - UUID: 4617586680905456762
+  - UUID: 12844477009463995897
     TagComponent:
       Tag: Player
     TransformComponent:

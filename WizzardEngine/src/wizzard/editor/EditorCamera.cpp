@@ -186,6 +186,7 @@ namespace Wizzard
 
 	bool EditorCamera::OnViewportSelectionChanged(ViewportSelectionChangedEvent& sceneEvent)
 	{
+		if(sceneEvent.GetSelectionContext())
 		SmoothAutoPan(sceneEvent.GetSelectionContext().GetComponent<TransformComponent>().Translation);
 
 		return false;

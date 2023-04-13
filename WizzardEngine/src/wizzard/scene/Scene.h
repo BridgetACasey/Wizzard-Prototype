@@ -50,6 +50,9 @@ namespace Wizzard
 		void SetState(const SceneState& state) { sceneState = state; }
 		SceneState GetState() const { return sceneState; }
 
+		float playerMoveSpeed = 0.0f;
+		float playerJumpSpeed = 0.0f;
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

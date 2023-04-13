@@ -30,56 +30,77 @@ namespace Wizzard
     {
 		static bool openExitMenu = false;
 
+		static std::string message = "Project settings.";
+
+		if(Application::Get().GetEditorLayer()->GetEnableTutorialMessages())
+		{
+			auto& tutorialMessage = Application::Get().GetEditorLayer()->GetTutorialMessages().at("ApplicationSettings");
+
+			if (!tutorialMessage.second)
+			{
+				message = tutorialMessage.first;
+				tutorialMessage.second = true;
+				Application::Get().GetEditorLayer()->IncrementTutorialMessagesPlayed();
+			}
+		}
+		else
+			message = "Project settings.";
+
 		if (shouldTriggerFocus)
 		{
 			ImGui::SetNextWindowFocus();
-			ScreenReaderLogger::QueueOutput("PROJECT SETTINGS");
+
+			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("ApplicationSettings");
+			//if (!tutorial)
+			//ScreenReaderLogger::QueueOutput(message, true, true);
+
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
 		}
 
-        ImGuiSR::Begin("PROJECT", nullptr, 0, "Project settings.", true);
+        ImGuiSR::Begin("PROJECT", nullptr, 0, message, true);
 
 		ImGui::SetItemDefaultFocus();
 
-		//TODO: Re-implement these later along with new/open scene functions
-		if (ImGuiSR::Button("NEW SCENE", ImVec2(400.0f, 80.5f)))
+		if(sceneContext->GetState() == SceneState::EDIT)
 		{
-			//SceneSerialiser serializer(sceneContext);
-			//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-			ScreenReaderLogger::QueueOutput("Opening file explorer...");
-			Application::Get().GetEditorLayer()->NewScene();
+			if (ImGuiSR::Button("NEW SCENE", ImVec2(400.0f, 80.5f)))
+			{
+				//SceneSerialiser serializer(sceneContext);
+				//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				Application::Get().GetEditorLayer()->NewScene();
+			}
+
+			if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
+			{
+				//SceneSerialiser serializer(sceneContext);
+				//serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				Application::Get().GetEditorLayer()->LoadScene();
+			}
+
+			if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
+			{
+				//SceneSerialiser serializer(sceneContext);
+				//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				Application::Get().GetEditorLayer()->SaveScene();
+			}
+
+			if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
+			{
+				//SceneSerialiser serializer(sceneContext);
+				/*
+				 *	...
+					serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
+				*/
+				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				Application::Get().GetEditorLayer()->SaveSceneAs();
+			}
 		}
 
-		if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
-		{
-			//SceneSerialiser serializer(sceneContext);
-			//serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-			ScreenReaderLogger::QueueOutput("Opening file explorer...");
-			Application::Get().GetEditorLayer()->LoadScene();
-		}
-
-		if (ImGuiSR::Button("SAVE SCENE", ImVec2(400.0f, 80.5f)))
-		{
-			//SceneSerialiser serializer(sceneContext);
-			//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-			ScreenReaderLogger::QueueOutput("Opening file explorer...");
-			Application::Get().GetEditorLayer()->SaveScene();
-		}
-		
-		if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
-		{
-			//SceneSerialiser serializer(sceneContext);
-			/*
-			 *	...
-				serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-			*/
-			ScreenReaderLogger::QueueOutput("Opening file explorer...");
-			Application::Get().GetEditorLayer()->SaveSceneAs();
-		}
-
-		//TODO: Add SR functions for remaining ImGui elements
-		static bool tutorial = true;
+		bool tutorial = Application::Get().GetEditorLayer()->GetEnableTutorialMessages();
 		if(ImGuiSR::Checkbox("TUTORIAL MESSAGES", &tutorial))
 		{
 			Application::Get().GetEditorLayer()->SetEnableTutorialMessages(tutorial);
@@ -89,7 +110,7 @@ namespace Wizzard
 		{
 			std::string hotKeyInfo = "In Edit Mode: ";
 			hotKeyInfo.append("Navigate with arrow keys or TAB. ");
-			hotKeyInfo.append("Change window panel with LEFT SHIFT. ");
+			hotKeyInfo.append("Change window panel with LEFT CONTROL. ");
 			hotKeyInfo.append("Toggle the scene camera to lock onto a selection with CAPSLOCK. ");
 			hotKeyInfo.append("Zoom in and out with the scene camera using the left and right bracket keys. ");
 			hotKeyInfo.append("Select entities or UI elements with SPACE. ");
@@ -154,7 +175,8 @@ namespace Wizzard
 
 	bool ApplicationSettingsPanel::OnAppShutdown(AppShutdownEvent& appEvent)
 	{
-		//WIZ_TRACE("Test message from app panel");
+		auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_EDITORSHUTDOWN);
+		Audio::Play(sfx);
 		return true;
 	}
 }
