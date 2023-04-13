@@ -144,6 +144,7 @@ namespace Wizzard
 									//jumpForce = (jumpForce < 0.0f) ? 0.0f : jumpForce - (5000.0f * timeStep);
 									//if(jumpForce <= 0.1f)
 									ccc.canJump = false;
+									ccc.isJumping = true;
 
 									auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_PLAYERJUMP);
 									//sfx.SetPitch(0.25f);
@@ -175,13 +176,21 @@ namespace Wizzard
 							b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(0);
 							//b2AABB secondBox = contacts->other->GetFixtureList()->GetAABB(contactCount);
 
-							if ((firstBox.lowerBound.y + 0.0001f) <= secondBox.upperBound.y)
+							if ((firstBox.lowerBound.y + 0.0001f) > secondBox.upperBound.y)
 							{
 								//WIZ_INFO("Bottom contact!!!");
 								ccc.canJump = true;
-								auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_PLAYERLAND);
-								//sfx.SetPitch(0.6f);
-								Audio::Play(sfx);
+
+								//TODO: Fix this, currently doesn't play if key is held down when landing
+								if (Input::IsKeyUp(Key::Space))
+									ccc.isJumping = false;
+
+								if(ccc.canJump && !ccc.isJumping)
+								{
+									auto sfx = Audio::GetEditorAudioSource(WIZ_AUDIO_PLAYERLAND);
+									//sfx.SetPitch(0.6f);
+									Audio::Play(sfx);
+								}
 							}
 
 							float leftDist = b2Distance(b2Vec2(firstBox.lowerBound.x, 0.0f), b2Vec2(secondBox.lowerBound.x, 0.0f));

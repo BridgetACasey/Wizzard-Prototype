@@ -270,6 +270,7 @@ namespace Wizzard
 					auto ccc = deserializedEntity.AddComponent<CharacterControllerComponent>();
 					ccc.disableGravity = characterControllerComponent["DisableGravity"].as<bool>();
 					ccc.canJump = characterControllerComponent["CanJump"].as<bool>();
+					ccc.isJumping = characterControllerComponent["IsJumping"].as<bool>();
 				}
 
 				auto audioListenerComponent = entity["AudioListenerComponent"];
@@ -400,6 +401,7 @@ namespace Wizzard
 			auto ccComponent = entity.GetComponent<CharacterControllerComponent>();
 			out << YAML::Key << "DisableGravity" << YAML::Value << ccComponent.disableGravity;
 			out << YAML::Key << "CanJump" << YAML::Value << ccComponent.canJump;
+			out << YAML::Key << "IsJumping" << YAML::Value << ccComponent.isJumping;
 
 			out << YAML::EndMap;	//CharacterControllerComponent
 		}

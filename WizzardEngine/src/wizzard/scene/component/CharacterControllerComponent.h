@@ -13,7 +13,8 @@ namespace Wizzard
 		bool disableGravity = false;
 
 		//Hidden from editor
-		bool canJump = true;
+		bool canJump = false;
+		bool isJumping = false;
 		glm::vec3 defaultPosition = {0.0f, 1.0f, 0.0f};
 	};
 }
