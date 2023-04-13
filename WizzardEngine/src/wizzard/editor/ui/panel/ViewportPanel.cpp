@@ -355,7 +355,7 @@ namespace Wizzard
 			//else
 			//	message = "Viewport toolbar.";
 
-			//ScreenReaderLogger::QueueOutput(message, true, true);
+			ScreenReaderLogger::QueueOutput("Cycled to " + message, true, true);
 
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
@@ -372,8 +372,6 @@ namespace Wizzard
 
 		if (ImGuiSR::Button(playButtonLabel, ImVec2(175.0f, 80.5f), playButtonDesc, true))
 		{
-			ImGui::SetItemDefaultFocus();
-
 			switch (sceneContext->GetState())
 			{
 			case SceneState::EDIT:
@@ -391,6 +389,8 @@ namespace Wizzard
 			}
 			}
 		}
+
+		ImGui::SetItemDefaultFocus();
 
 		ImGui::End();
 	}

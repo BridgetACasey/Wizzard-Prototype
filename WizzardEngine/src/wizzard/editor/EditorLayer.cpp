@@ -427,7 +427,7 @@ namespace Wizzard
 				{
 					if (propertiesPanel->GetSelectedEntity())
 					{
-						ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName());
+						ScreenReaderLogger::QueueOutput("Deleted " + propertiesPanel->GetSelectedEntity().GetName(), false, true);
 						EntitySelection::DeselectAll();
 						SceneManager::GetActiveScene()->DestroyEntity(propertiesPanel->GetSelectedEntity());
 						propertiesPanel->SetSelectedEntity({});
@@ -438,7 +438,7 @@ namespace Wizzard
 				{
 					if (propertiesPanel->GetSelectedEntity())
 					{
-						ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName());
+						ScreenReaderLogger::QueueOutput("Duplicated " + propertiesPanel->GetSelectedEntity().GetBaseName(), false, true);
 						Entity duplicatedEntity = SceneManager::GetActiveScene()->DuplicateEntity(propertiesPanel->GetSelectedEntity());
 
 						if (!EntitySelection::IsMultiSelect())
@@ -576,14 +576,14 @@ namespace Wizzard
 
 
 		//Viewport
-		std::string viewportMessage = "VIEWPORT panel selected. This panel allows you to manipulate the scene's objects directly in 2D space. Use the arrow keys to move the editor camera up and down. ";
+		std::string viewportMessage = "VIEWPORT panel. This panel allows you to manipulate the scene's objects directly in 2D space. Use the arrow keys to move the editor camera up and down. ";
 		viewportMessage.append("Your cursor is locked to the middle of the viewport screen by default. Press SPACE when hovering over an entity to select it. End Tutorial Message.");
 
 		tutorialMessages.emplace("Viewport", std::pair(viewportMessage, false));
 
 
 		//Viewport Toolbar
-		std::string viewportToolbarMessage = "VIEWPORT TOOLBAR selected. When you are ready to simulate your scene in the editor, press the PLAY button in this toolbar. ";
+		std::string viewportToolbarMessage = "VIEWPORT TOOLBAR. When you are ready to simulate your scene in the editor, press the PLAY button in this toolbar. ";
 		viewportToolbarMessage.append("To stop and reset your scene, navigate back to this toolbar during runtime and press the STOP button. End Tutorial Message.");
 
 		tutorialMessages.emplace("ViewportToolbar", std::pair(viewportToolbarMessage, false));
@@ -633,13 +633,13 @@ namespace Wizzard
 
 
 		//Application Settings
-		std::string appSettingsMessage = "PROJECT panel selected. Here you can save and load scenes you have worked on, or toggle some of the editor's settings. End Tutorial Message.";
+		std::string appSettingsMessage = "PROJECT panel. Here you can save and load scenes you have worked on, or toggle some of the editor's settings. End Tutorial Message.";
 
 		tutorialMessages.emplace("ApplicationSettings", std::pair(appSettingsMessage, false));
 
 
 		//Object Properties
-		std::string objPropertiesMessage = "PROPERTIES panel selected. If you have selected an entity from the SCENE HIERARCHY or the VIEWPORT, their components will appear here, and you can change their values. ";
+		std::string objPropertiesMessage = "PROPERTIES panel. If you have selected an entity from the SCENE HIERARCHY or the VIEWPORT, their components will appear here, and you can change their values. ";
 		objPropertiesMessage.append("Attaching different components will apply different properties to the entity. ");
 		objPropertiesMessage.append("Component types include Transform for translation, rotation, and scaling; Sprite for colour changes; Rigid Body 2D for physics; and Box Collider 2D for collisions. End Tutorial Message.");
 
@@ -647,7 +647,7 @@ namespace Wizzard
 
 
 		//Scene Hierarchy
-		std::string sceneHierarchyMessage = "SCENE HIERARCHY panel selected. This panel contains a list of all your objects currently in the scene. TAB through each object to select it. You can also add new entities from a list of presets with the 'CREATE ENTITY' button. ";
+		std::string sceneHierarchyMessage = "SCENE HIERARCHY panel. This panel contains a list of all your objects currently in the scene. TAB through each object to select it. You can also add new entities from a list of presets with the 'CREATE ENTITY' button. ";
 		sceneHierarchyMessage.append("To edit the components of your last selection, navigate to the PROPERTIES panel. Alternatively, to manipulate it directly in 2D space, navigate to the VIEWPORT panel. End Tutorial Message.");
 
 		tutorialMessages.emplace("SceneHierarchy", std::pair(sceneHierarchyMessage, false));

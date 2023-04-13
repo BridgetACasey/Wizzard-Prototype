@@ -55,7 +55,7 @@ namespace Wizzard
 
 			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("SceneHierarchy");
 			//if (!tutorial)
-				//ScreenReaderLogger::QueueOutput(message, true, true);
+				ScreenReaderLogger::QueueOutput("Cycled to " + message, true, true);
 
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;

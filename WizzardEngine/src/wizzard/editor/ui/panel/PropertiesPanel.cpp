@@ -47,7 +47,7 @@ namespace Wizzard
 
 			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("ObjectProperties");
 			//if (!tutorial)
-			//ScreenReaderLogger::QueueOutput(message, true, true);
+			ScreenReaderLogger::QueueOutput("Cycled to " + message, true, true);
 
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
@@ -208,6 +208,8 @@ namespace Wizzard
 					Input::SetQueryInput(true);
 			}
 		}
+
+		ImGui::SetItemDefaultFocus();
 
 		//TODO: Re-add at a later date
 		ImGui::SameLine();

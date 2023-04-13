@@ -73,7 +73,31 @@ namespace Wizzard
 				if (entity.HasComponent<SpriteComponent>())
 				{
 					auto sprite = entity.GetComponent<SpriteComponent>();
-					ScreenReaderLogger::QueueOutput(name + " has sprite component. Describe colours here.", false, true);
+					ScreenReaderLogger::QueueOutput(name + " has sprite component. ", false, true);
+				}
+
+				if (entity.HasComponent<BoxCollider2DComponent>())
+				{
+					auto col = entity.GetComponent<BoxCollider2DComponent>();
+					ScreenReaderLogger::QueueOutput(name + " has box collider 2D component. ", false, true);
+				}
+
+				if (entity.HasComponent<RigidBody2DComponent>())
+				{
+					auto rb = entity.GetComponent<RigidBody2DComponent>();
+					ScreenReaderLogger::QueueOutput(name + " has rigid body 2D component. ", false, true);
+				}
+
+				if (entity.HasComponent<CharacterControllerComponent>())
+				{
+					auto charcontroller = entity.GetComponent<CharacterControllerComponent>();
+					ScreenReaderLogger::QueueOutput(name + " has character controller component. ", false, true);
+				}
+
+				if (entity.HasComponent<CameraComponent>())
+				{
+					auto cam = entity.GetComponent<CameraComponent>();
+					ScreenReaderLogger::QueueOutput(name + " has camera component. ", false, true);
 				}
 			}
 		}
@@ -137,18 +161,14 @@ namespace Wizzard
 					float yDiff = abs(transformFirst.Translation.y - transformSecond.Translation.y);
 
 					if ((transformFirst.Translation.x - transformSecond.Translation.x) > spaceDiff)
-						//ScreenReaderLogger::QueueOutput(nameFirst + " is to the right of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ", false, true);
-						message.append(nameFirst + " is to the right of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
+						message.append("The centre of " + nameFirst + " is to the right of " + nameSecond + "'s centre by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
 					else if ((transformFirst.Translation.x - transformSecond.Translation.x) < -spaceDiff)
-						//ScreenReaderLogger::QueueOutput(nameFirst + " is to the left of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ", false, true);
-						message.append(nameFirst + " is to the left of " + nameSecond + " by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
+						message.append("The centre of " + nameFirst + " is to the left of " + nameSecond + "'s centre by " + std::to_string(floor(xDiff * 100.0f) / 100.0f) + " units. ");
 					
 					if ((transformFirst.Translation.y - transformSecond.Translation.y) > spaceDiff)
-						//ScreenReaderLogger::QueueOutput(nameFirst + " is above " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ", false, true);
-						message.append(nameFirst + " is above " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
+						message.append("The centre of " + nameFirst + " is above " + nameSecond + "'s centre by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
 					else if ((transformFirst.Translation.y - transformSecond.Translation.y) < -spaceDiff)
-						//ScreenReaderLogger::QueueOutput(nameFirst + " is below " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ", false, true);
-						message.append(nameFirst + " is below " + nameSecond + " by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
+						message.append("The centre of " + nameFirst + " is below " + nameSecond + "'s centre by " + std::to_string(floor(yDiff * 100.0f) / 100.0f) + " units. ");
 				}
 
 				//Describe collision details. Are they overlapping or not? In what way? At edges, corners, partially intersected, or exactly on top of each other?
@@ -156,6 +176,9 @@ namespace Wizzard
 				{
 					auto firstCol = entityPair.first.GetComponent<BoxCollider2DComponent>();
 					auto secondCol = entityPair.first.GetComponent<BoxCollider2DComponent>();
+
+					std::string colMessage;
+					int colTest = 0;
 
 					float first[8] =
 					{
@@ -181,47 +204,55 @@ namespace Wizzard
 						transformSecond.Translation.y + (secondCol.Size.y / 2.0f) - (secondCol.Size.x / 2.0f),	//Top Left Corner
 					};
 
-					//if ((abs(second[1]) - abs(first[0])) > spaceDiff && (abs(first[0]) - abs(second[0])) < spaceDiff)
-					if(first[1] - second[0] < spaceDiff && first[0] > second[0])
+					if(first[1] >= second[0] && first[1] < second[1])
 					{
-						//ScreenReaderLogger::QueueOutput("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond, false, true);
-						message.append("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond + ". ");
+						colMessage.append("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond + ". ");
+						colTest++;
 					}
-					//else if ((abs(first[1]) - abs(second[0])) > spaceDiff && (abs(second[0]) - abs(first[0])) < spaceDiff)
-					else if (first[0] - second[1] < spaceDiff && second[0] > first[0])
+					else if (second[1] >= first[0] && second[1] < first[1])
 					{
-						//ScreenReaderLogger::QueueOutput("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst, false, true);
-						message.append("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst + ". ");
+						colMessage.append("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst + ". ");
+						colTest++;
 					}
-				
-					//if ((abs(second[0]) - abs(first[1])) > spaceDiff && (abs(first[1]) - abs(second[1])) < spaceDiff)
-					if (second[1] - first[0] < spaceDiff && second[1] > first[1])
+					else if(second[0] <= first[1] && second[0] > first[0])
 					{
-						//ScreenReaderLogger::QueueOutput("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst, false, true);
-						message.append("The right edge of " + nameSecond + " is overlapping the left edge of " + nameFirst + ". ");
+						colMessage.append("The left edge of " + nameSecond + " is overlapping the right edge of " + nameFirst + ". ");
+						colTest++;
 					}
-					//else if ((abs(first[0]) - abs(second[1])) > spaceDiff && (abs(second[1]) - abs(first[1])) < spaceDiff)
-					else if (second[0] - first[1] < spaceDiff && first[1] > second[1])
+					else if (first[0] <= second[1] && first[0] > second[0])
 					{
-						//ScreenReaderLogger::QueueOutput("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond, false, true);
-						message.append("The right edge of " + nameFirst + " is overlapping the left edge of " + nameSecond + ". ");
+						colMessage.append("The left edge of " + nameFirst + " is overlapping the right edge of " + nameSecond + ". ");
+						colTest++;
 					}
 
-					if ((abs(second[3]) - abs(first[2])) > spaceDiff && (abs(first[2]) - abs(second[2])) < spaceDiff)
-						//ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
-						message.append("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond);
+					if (second[3] >= first[2] && second[3] < first[3])
+					{
+						colMessage.append("The bottom edge of " + nameFirst + " is overlapping the top edge of " + nameSecond + ". ");
+						colTest++;
+					}
+					else if (first[3] >= second[2] && first[3] < second[3])
+					{
+						colMessage.append("The bottom edge of " + nameSecond + " is overlapping the top edge of " + nameFirst + ". ");
+						colTest++;
+					}
+					else if(first[2] <= second[3] && first[2] > second[2])
+					{
+						colMessage.append("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst + ". ");
+						colTest++;
+					}
+					else if (second[2] <= first[3] && second[2] > first[2])
+					{
+						colMessage.append("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond + ". ");
+						colTest++;
+					}
 
-					else if ((abs(first[3]) - abs(second[2])) > spaceDiff && (abs(second[2]) - abs(first[2])) < spaceDiff)
-						//ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
-						message.append("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst);
-
-					if ((abs(second[2]) - abs(first[3])) > spaceDiff && (abs(first[3]) - abs(second[3])) < spaceDiff)
-						//ScreenReaderLogger::QueueOutput("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst, false, true);
-						message.append("The top edge of " + nameSecond + " is overlapping the bottom edge of " + nameFirst);
-
-					else if ((abs(first[2]) - abs(second[3])) > spaceDiff && (abs(second[3]) - abs(first[3])) < spaceDiff)
-						//ScreenReaderLogger::QueueOutput("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond, false, true);
-						message.append("The top edge of " + nameFirst + " is overlapping the bottom edge of " + nameSecond);
+					if (colTest >= 2)
+					{
+						message.append(nameFirst + " and " + nameSecond + " are colliding. ");
+						message.append(colMessage);
+					}
+					else
+						message.append(nameFirst + " and " + nameSecond + " are not colliding. ");
 				}
 			}
 

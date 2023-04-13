@@ -77,23 +77,24 @@ namespace Wizzard
 				{
 					//priorityMessageTriggered = messageBackLog.front().second;
 
-					OutputAll(messageBackLog.front().first, messageBackLog.front().second);
+					OutputAll(messageBackLog.front().first, false);
 
 					ScreenReaderMessageStartedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
 					OnScreenReaderMessageStarted(srEvent);
 
 					startedMessage = true;
 				}
-			}
-			else if (startedMessage)
-			{
-				ScreenReaderMessageEndedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
-				OnScreenReaderMessageEnded(srEvent);
+				else// if (startedMessage)
+				{
+					ScreenReaderMessageEndedEvent srEvent(messageBackLog.front().first, messageBackLog.front().second);
+					OnScreenReaderMessageEnded(srEvent);
 
-				startedMessage = false;
-				priorityMessageTriggered = false;
-				messageBackLog.pop_front();		//Pop off queen! (painting nails emoji)
+					startedMessage = false;
+					priorityMessageTriggered = false;
+					messageBackLog.pop_front();		//Pop off queen! (painting nails emoji)
+				}
 			}
+			
 		}
 	}
 
@@ -129,11 +130,11 @@ namespace Wizzard
 	{
 		//priorityMessageTriggered = isPriority;
 
-		if (shouldInterrupt && isPriority)
-			ForceQueueOutput(message);
-		else if ((!shouldInterrupt && isPriority) || (isPriority && IsSpeaking()))
+		if ((!shouldInterrupt && isPriority) || (isPriority && IsSpeaking()) || startedMessage)
 			messageBackLog.emplace_back(std::pair(std::string(message), shouldInterrupt));
-		else
+		else if (shouldInterrupt && isPriority)
+			ForceQueueOutput(message);
+		else if (!IsSpeaking())
 			OutputAll(message, shouldInterrupt);
 	}
 

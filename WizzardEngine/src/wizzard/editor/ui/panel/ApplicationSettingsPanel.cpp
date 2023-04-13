@@ -52,7 +52,7 @@ namespace Wizzard
 
 			//bool tutorial = Application::Get().GetEditorLayer()->TriggerTutorialMessage("ApplicationSettings");
 			//if (!tutorial)
-			//ScreenReaderLogger::QueueOutput(message, true, true);
+			ScreenReaderLogger::QueueOutput("Cycled to " + message, true, true);
 
 			Audio::Play(Audio::GetEditorAudioSource(WIZ_AUDIO_UIWINDOWCHANGED));
 			shouldTriggerFocus = false;
@@ -72,6 +72,8 @@ namespace Wizzard
 				Application::Get().GetEditorLayer()->NewScene();
 			}
 
+			ImGui::SetItemDefaultFocus();
+
 			if (ImGuiSR::Button("LOAD SCENE", ImVec2(400.0f, 80.5f)))
 			{
 				//SceneSerialiser serializer(sceneContext);
@@ -90,7 +92,7 @@ namespace Wizzard
 
 			if (ImGuiSR::Button("SAVE SCENE AS", ImVec2(440.0f, 80.5f)))
 			{
-				//SceneSerialiser serializer(sceneContext);
+					//SceneSerialiser serializer(sceneContext);
 				/*
 				 *	...
 					serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
