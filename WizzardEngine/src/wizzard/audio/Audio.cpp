@@ -44,7 +44,7 @@ namespace Wizzard
 	//TODO:: Make this accessible through Audio header and in the rest of the project
 	static AudioData* audioData = new AudioData();
 
-	static bool debugLogging = true;
+	static bool debugLogging = false;
 
 	static mp3dec_t mp3d;
 

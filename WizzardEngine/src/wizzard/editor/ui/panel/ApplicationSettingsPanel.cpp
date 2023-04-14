@@ -68,7 +68,7 @@ namespace Wizzard
 			{
 				//SceneSerialiser serializer(sceneContext);
 				//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				ScreenReaderLogger::QueueOutput("Creating new scene...", false, true);
 				Application::Get().GetEditorLayer()->NewScene();
 			}
 
@@ -78,7 +78,7 @@ namespace Wizzard
 			{
 				//SceneSerialiser serializer(sceneContext);
 				//serializer.Deserialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				ScreenReaderLogger::QueueOutput("Opening file explorer to load scene...", false, true);
 				Application::Get().GetEditorLayer()->LoadScene();
 			}
 
@@ -86,7 +86,7 @@ namespace Wizzard
 			{
 				//SceneSerialiser serializer(sceneContext);
 				//serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
-				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				ScreenReaderLogger::QueueOutput("Saving current scene...", false, true);
 				Application::Get().GetEditorLayer()->SaveScene();
 			}
 
@@ -97,7 +97,7 @@ namespace Wizzard
 				 *	...
 					serializer.Serialise(ResourcePath::GetResourcePath(SCENE, "Example.wizzard"));
 				*/
-				ScreenReaderLogger::QueueOutput("Opening file explorer...");
+				ScreenReaderLogger::QueueOutput("Opening file explorer to save scene as file...", false, true);
 				Application::Get().GetEditorLayer()->SaveSceneAs();
 			}
 		}
@@ -111,20 +111,20 @@ namespace Wizzard
 		if (ImGuiSR::Button("PLAY HOT KEY INFO", ImVec2(580.0f, 80.0f)))
 		{
 			std::string hotKeyInfo = "In Edit Mode: ";
-			hotKeyInfo.append("Navigate with arrow keys or TAB. ");
-			hotKeyInfo.append("Change window panel with LEFT CONTROL. ");
-			hotKeyInfo.append("Toggle the scene camera to lock onto a selection with CAPSLOCK. ");
+			hotKeyInfo.append("Navigate with arrow keys or TAB key. ");
+			hotKeyInfo.append("Change window panel with LEFT CONTROL key. ");
+			hotKeyInfo.append("Toggle the scene camera to lock onto a selection with CAPSLOCK key. ");
 			hotKeyInfo.append("Zoom in and out with the scene camera using the left and right bracket keys. ");
-			hotKeyInfo.append("Select entities or UI elements with SPACE. ");
-			hotKeyInfo.append("Change entity transform type with W, E, and R. ");
-			hotKeyInfo.append("Enable entity multiselect mode with M. ");
-			hotKeyInfo.append("Duplicate an entity with D. ");
-			hotKeyInfo.append("Delete an entity with S. ");
-			hotKeyInfo.append("Print information about the currently selected object with O. ");
-			hotKeyInfo.append("Print information about the relationships between multiple selected objects with P. ");
+			hotKeyInfo.append("Select entities or UI elements with SPACE key. ");
+			hotKeyInfo.append("Change entity transform type with W, E, and R keys. ");
+			hotKeyInfo.append("Enable entity multiselect mode with M key. ");
+			hotKeyInfo.append("Duplicate an entity with D key. ");
+			hotKeyInfo.append("Delete an entity with S key. ");
+			hotKeyInfo.append("Print information about the currently selected object with O key. ");
+			hotKeyInfo.append("Print information about the relationships between multiple selected objects with P key. ");
 
 			hotKeyInfo.append("In Play Mode: ");
-			hotKeyInfo.append("Move the player left and right with the A and D keys. Press SPACE to jump. ");
+			hotKeyInfo.append("Move the player left and right with the A and D keys. Press SPACE key to jump. ");
 
 			ScreenReaderLogger::QueueOutput(hotKeyInfo, true, true);
 		}

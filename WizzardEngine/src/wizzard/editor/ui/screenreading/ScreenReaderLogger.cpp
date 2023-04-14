@@ -240,14 +240,14 @@ namespace Wizzard
 
 	bool ScreenReaderLogger::OnScreenReaderMessageStarted(ScreenReaderMessageStartedEvent& srEvent)
 	{
-		WIZ_TRACE(srEvent);
+		//WIZ_TRACE(srEvent);
 
 		return false;
 	}
 
 	bool ScreenReaderLogger::OnScreenReaderMessageEnded(ScreenReaderMessageEndedEvent& srEvent)
 	{
-		WIZ_TRACE(srEvent);
+		//WIZ_TRACE(srEvent);
 
 		return false;
 	}

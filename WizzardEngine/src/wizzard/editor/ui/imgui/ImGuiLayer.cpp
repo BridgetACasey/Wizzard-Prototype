@@ -183,7 +183,7 @@ namespace Wizzard
 			currentHoveredWindow = context->HoveredWindow;
 
 			UIWindowHoveredEvent uiWindowEvent(currentHoveredWindow->ID, true);
-			WIZ_INFO("ImGui Window Name: {0}, TABID: {1}", currentHoveredWindow->Name, currentHoveredWindow->TabId);
+			//WIZ_INFO("ImGui Window Name: {0}, TABID: {1}", currentHoveredWindow->Name, currentHoveredWindow->TabId);
 			OnUIWindowHoveredEvent(uiWindowEvent);
 		}
 
@@ -192,7 +192,7 @@ namespace Wizzard
 			currentActiveWindow = context->ActiveIdWindow;
 
 			UIWindowFocusEvent uiWindowEvent(currentActiveWindow->ID, true);
-			WIZ_INFO("ImGui Window Name: {0}, TabID: {1}", currentActiveWindow->Name, currentActiveWindow->TabId);
+			//WIZ_INFO("ImGui Window Name: {0}, TabID: {1}", currentActiveWindow->Name, currentActiveWindow->TabId);
 			OnUIWindowFocusEvent(uiWindowEvent);
 		}
 
@@ -231,7 +231,7 @@ namespace Wizzard
 
 	bool ImGuiLayer::OnUIWindowHoveredEvent(UIWindowHoveredEvent& uiWindowHoveredEvent)
 	{
-		WIZ_TRACE(uiWindowHoveredEvent);
+		//WIZ_TRACE(uiWindowHoveredEvent);
 
 		uiWindowMessageID = uiWindowHoveredEvent.GetElementID();
 		logWindowMessage = true;
@@ -241,7 +241,7 @@ namespace Wizzard
 
 	bool ImGuiLayer::OnUIWindowFocusEvent(UIWindowFocusEvent& uiWindowFocusEvent)
 	{
-		WIZ_TRACE(uiWindowFocusEvent);
+		//WIZ_TRACE(uiWindowFocusEvent);
 
 		uiWindowMessageID = uiWindowFocusEvent.GetElementID();
 		//logWindowMessage = true;
@@ -255,7 +255,7 @@ namespace Wizzard
 
 	bool ImGuiLayer::OnUIElementHovered(UIElementHoveredEvent& uiElementHoveredEvent)
 	{
-		WIZ_TRACE(uiElementHoveredEvent);
+		//WIZ_TRACE(uiElementHoveredEvent);
 
 		uiElementMessageID = uiElementHoveredEvent.GetElementID();
 		logElementMessage = true;
@@ -267,7 +267,7 @@ namespace Wizzard
 
 	bool ImGuiLayer::OnUIElementSelected(UIElementSelectedEvent& uiElementSelectedEvent)
 	{
-		WIZ_TRACE(uiElementSelectedEvent);
+		//WIZ_TRACE(uiElementSelectedEvent);
 
 		uiElementMessageID = uiElementSelectedEvent.GetElementID();
 		//logElementMessage = true;

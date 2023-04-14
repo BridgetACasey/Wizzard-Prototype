@@ -104,6 +104,7 @@ namespace Wizzard
 							floor.AddComponent<RigidBody2DComponent>();
 							floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
 							floor.AddComponent<BoxCollider2DComponent>();
+							floor.GetComponent<BoxCollider2DComponent>().Size = glm::vec2(0.5f, 3.0f);
 							openEntityCreationWindow = false;
 						}
 
@@ -119,6 +120,7 @@ namespace Wizzard
 							floor.AddComponent<RigidBody2DComponent>();
 							floor.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
 							floor.AddComponent<BoxCollider2DComponent>();
+							floor.GetComponent<BoxCollider2DComponent>().Size = glm::vec2(0.5f, 6.0f);
 							openEntityCreationWindow = false;
 						}
 
@@ -134,6 +136,7 @@ namespace Wizzard
 							wall.AddComponent<RigidBody2DComponent>();
 							wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
 							wall.AddComponent<BoxCollider2DComponent>();
+							wall.GetComponent<BoxCollider2DComponent>().Size = glm::vec2(0.5f, 1.5f);
 							openEntityCreationWindow = false;
 						}
 
@@ -149,6 +152,7 @@ namespace Wizzard
 							wall.AddComponent<RigidBody2DComponent>();
 							wall.GetComponent<RigidBody2DComponent>().Type = RigidBody2DComponent::BodyType::Static;
 							wall.AddComponent<BoxCollider2DComponent>();
+							wall.GetComponent<BoxCollider2DComponent>().Size = glm::vec2(0.5f, 3.0f);
 							openEntityCreationWindow = false;
 						}
 
@@ -299,7 +303,7 @@ namespace Wizzard
 				EntitySelection::DeselectEntity(entity);
 				Application::Get().GetEditorLayer()->GetPropertiesPanel()->SetSelectedEntity({});
 				glm::vec3 trans = entity.GetComponent<TransformComponent>().Translation;
-				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), true, true);
+				ScreenReaderLogger::QueueOutput("Deselected " + entity.GetName() + " at X " + std::to_string(trans.x) + ", Y " + std::to_string(trans.y), true, true);
 			}
 		}
 	}

@@ -68,7 +68,7 @@ namespace Wizzard
 				//auto camera = entity.GetComponent<CameraComponent>();
 				//auto character = entity.GetComponent<CharacterControllerComponent>();
 
-				ScreenReaderLogger::QueueOutput(name + " at X " + std::to_string((int)transform.Translation.x) + ", Y " + std::to_string((int)transform.Translation.y), false, true);
+				ScreenReaderLogger::QueueOutput(name + " at X " + std::to_string(transform.Translation.x) + ", Y " + std::to_string(transform.Translation.y), false, true);
 
 				if (entity.HasComponent<SpriteComponent>())
 				{
@@ -246,7 +246,7 @@ namespace Wizzard
 						colTest++;
 					}
 
-					if (colTest >= 2)
+					if (colTest > 0)
 					{
 						message.append(nameFirst + " and " + nameSecond + " are colliding. ");
 						message.append(colMessage);

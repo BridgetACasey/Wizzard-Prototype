@@ -36,7 +36,7 @@ namespace Wizzard
 						//TODO: Fix audio callback for track begin, also currently event callbacks in other classes are overwritten by this class's
 						if (alGetError() == AL_NO_ERROR)
 						{
-							WIZ_TRACE("Source is playing");
+							//WIZ_TRACE("Source is playing");
 
 							//if (alIsSource(source.sourceHandle))
 							//{
@@ -80,14 +80,14 @@ namespace Wizzard
 
 	bool AudioEventListener::OnAudioTrackStarted(AudioTrackStartedEvent& audioEvent)
 	{
-		WIZ_TRACE(audioEvent);
+		//WIZ_TRACE(audioEvent);
 
 		return false;
 	}
 
 	bool AudioEventListener::OnAudioTrackEnded(AudioTrackEndedEvent& audioEvent)
 	{
-		WIZ_TRACE(audioEvent);
+		//WIZ_TRACE(audioEvent);
 
 		return false;
 	}

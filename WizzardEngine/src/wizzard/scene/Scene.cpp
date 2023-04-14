@@ -201,7 +201,7 @@ namespace Wizzard
 
 							if (leftDist < 0.5f)
 							{
-								WIZ_INFO("Close on the LEFT!!!");
+								//WIZ_INFO("Close on the LEFT!!!");
 								if (lastContact != contacts)
 								{
 									sfx.SetPosition(-1.0f, 0.0f, 0.0f);
@@ -212,7 +212,7 @@ namespace Wizzard
 
 							else if (rightDist < 0.5f)
 							{
-								WIZ_INFO("Close on the RIGHT!!!");
+								//WIZ_INFO("Close on the RIGHT!!!");
 								if (lastContact != contacts)
 								{
 									sfx.SetPosition(1.0f, 0.0f, 0.0f);

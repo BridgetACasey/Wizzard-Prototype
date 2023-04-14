@@ -26,22 +26,22 @@ void GameApplicationLayer::OnAttach()
 	player.AddComponent<Wizzard::CharacterControllerComponent>();
 	
 	// Entity
-	auto squareTwo = gameScene->CreateEntity("Red Square");
-	squareTwo.GetComponent<Wizzard::TagComponent>().baseTag = "Red Square";
-	squareTwo.AddComponent<Wizzard::SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-	squareTwo.GetComponent<Wizzard::TransformComponent>().Translation.x -= 2.0f;
-	squareTwo.AddComponent<Wizzard::RigidBody2DComponent>();
-	squareTwo.GetComponent<Wizzard::RigidBody2DComponent>().Type = Wizzard::RigidBody2DComponent::BodyType::Dynamic;
-	squareTwo.AddComponent<Wizzard::BoxCollider2DComponent>();
-	
-	// Entity
-	auto squareThree = gameScene->CreateEntity("Blue Square");
-	squareThree.GetComponent<Wizzard::TagComponent>().baseTag = "Blue Square";
-	squareThree.AddComponent<Wizzard::SpriteComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-	squareThree.GetComponent<Wizzard::TransformComponent>().Translation.x += 2.0f;
-	squareThree.AddComponent<Wizzard::RigidBody2DComponent>();
-	squareThree.GetComponent<Wizzard::RigidBody2DComponent>().Type = Wizzard::RigidBody2DComponent::BodyType::Dynamic;
-	squareThree.AddComponent<Wizzard::BoxCollider2DComponent>();
+	//auto squareTwo = gameScene->CreateEntity("Red Square");
+	//squareTwo.GetComponent<Wizzard::TagComponent>().baseTag = "Red Square";
+	//squareTwo.AddComponent<Wizzard::SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	//squareTwo.GetComponent<Wizzard::TransformComponent>().Translation.x -= 2.0f;
+	//squareTwo.AddComponent<Wizzard::RigidBody2DComponent>();
+	//squareTwo.GetComponent<Wizzard::RigidBody2DComponent>().Type = Wizzard::RigidBody2DComponent::BodyType::Dynamic;
+	//squareTwo.AddComponent<Wizzard::BoxCollider2DComponent>();
+	//
+	//// Entity
+	//auto squareThree = gameScene->CreateEntity("Blue Square");
+	//squareThree.GetComponent<Wizzard::TagComponent>().baseTag = "Blue Square";
+	//squareThree.AddComponent<Wizzard::SpriteComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+	//squareThree.GetComponent<Wizzard::TransformComponent>().Translation.x += 2.0f;
+	//squareThree.AddComponent<Wizzard::RigidBody2DComponent>();
+	//squareThree.GetComponent<Wizzard::RigidBody2DComponent>().Type = Wizzard::RigidBody2DComponent::BodyType::Dynamic;
+	//squareThree.AddComponent<Wizzard::BoxCollider2DComponent>();
 	
 	// Entity
 	auto floor = gameScene->CreateEntity("Floor");

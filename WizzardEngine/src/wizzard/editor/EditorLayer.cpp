@@ -91,7 +91,7 @@ namespace Wizzard
 		Application::Get().GetWindow().SetWindowTitle(title);	//TODO: Fix this to match actual scene name!
 		//ScreenReaderLogger::QueueOutput(title, false, true);
 
-		ScreenReaderLogger::QueueOutput(tutorialMessages.at("EditorLaunch").first, false, true);
+		ScreenReaderLogger::QueueOutput(tutorialMessages.at("EditorLaunch").first, true, true);
 		tutorialMessages.at("EditorLaunch").second = true;
 		IncrementTutorialMessagesPlayed();
 	}
@@ -409,7 +409,7 @@ namespace Wizzard
 						EntitySelection::DeselectEntity(selectedEntity);
 						glm::vec3 trans = selectedEntity.GetComponent<TransformComponent>().Translation;
 
-						ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string((int)trans.x) + " Y " + std::to_string((int)trans.y));
+						ScreenReaderLogger::QueueOutput("Deselected " + selectedEntity.GetName() + " at X " + std::to_string(trans.x) + " Y " + std::to_string(trans.y));
 
 						TriggerTutorialMessage("ViewportEntityDeselected", true);
 					}
@@ -534,7 +534,7 @@ namespace Wizzard
 		editorCamera.FocusOnPoint(trans);
 
 		//if(hoveredEntity != sceneEvent.GetSelectionContext())
-		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName() + " at X " + std::to_string((int)trans.x) + ", Y " + std::to_string((int)trans.y), !enableTutorialMessages, true);
+		ScreenReaderLogger::QueueOutput(sceneEvent.GetSelectionContext().GetName() + " at X " + std::to_string(trans.x) + ", Y " + std::to_string(trans.y), !enableTutorialMessages, true);
 		Audio::GetEditorAudioSource(WIZ_AUDIO_ENTITYMOVED).SetPitch(1.0f);
 		Audio::Play(selectSFX);
 
@@ -592,7 +592,7 @@ namespace Wizzard
 		//Entity Selected in Viewport
 		std::string viewportEntitySelectedMessage = "You selected an entity. Use the arrow keys to move it around. You will hear a directional sound effect that increases in pitch the further away you move the object from it's original position. ";
 		viewportEntitySelectedMessage.append("Each ping indicates you have moved by 0.5 units. You can switch to different transform modes by pressing the W, E, and R keys. ");
-		viewportEntitySelectedMessage.append("You can also duplicate your currently selection with the 'D' key, or delete it from the scene with the 'S' key. When you are happy, press ESCAPE to deselect the entity. End Tutorial Message.");
+		viewportEntitySelectedMessage.append("You can also duplicate your current selection with the 'D' key, or delete it from the scene with the 'S' key. When you are happy, press ESCAPE to deselect the entity. End Tutorial Message.");
 
 		tutorialMessages.emplace("ViewportEntitySelected", std::pair(viewportEntitySelectedMessage, false));
 
@@ -746,7 +746,7 @@ namespace Wizzard
 
 		Audio::Play(levelMusic);
 
-		TriggerTutorialMessage("PlayModeEntered", true);
+		TriggerTutorialMessage("PlayModeEntered", false);
 	}
 
 	void EditorLayer::OnSceneEndPlay()
